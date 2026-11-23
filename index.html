@@ -12,22 +12,31 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Schwelmer Kegeltreff</title>
 <style>
-:root{--gelb:#FDD615;--gelb2:#FFF6C7;--gelb3:#F3C800;--ink:#1D1D1B;--ink2:#55544f;--muted:#86847c;--linie:#ebe8de;--linie2:#cfccc2;--bg:#f5f4ef;--card:#fff;--input:#fff;--chip:#efede5;--tapbg:#f3f1ea;--rot:#b3261e;--rotbg:#fdeceb;--gruen:#1e7b34;--gruenbg:#e6f4ea;--r:18px;--hdr:58px;
- --dark:#1D1D1B;--on-accent:#1D1D1B;--hbar:#FDD615;--navbg:rgba(255,255,255,.96);--navtext:#55544f;--navtext-on:#1D1D1B;--barc:#4a4943;--avtext:#FDD615;--hero-accent:#FDD615;--hero-accent-ink:#1D1D1B;color-scheme:light}
-[data-theme=dark]{--gelb2:#3a3314;--ink:#EDEBE4;--ink2:#c9c6bc;--muted:#9c998f;--linie:#33322e;--linie2:#4a4843;--bg:#121211;--card:#1e1e1c;--input:#181816;--chip:#2b2a27;--tapbg:#252421;--rot:#ff8a80;--rotbg:#3f1c1a;--gruen:#7bd88f;--gruenbg:#173823;
- --dark:#000;--navbg:rgba(22,22,20,.96);--navtext:#a9a69c;--navtext-on:#EDEBE4;--barc:#b9b6ab;color-scheme:dark}
-[data-theme=dark] .card.hero{box-shadow:0 0 0 1px #3a3934}
-[data-theme=bvb]{--gelb:#FDE100;--gelb2:#FFF4A3;--gelb3:#E9CF00;--bg:#FDE100;--linie:#ece08a;--linie2:#d9c94a;--muted:#5f5600;--ink2:#2b2800;--chip:#f6f0c4;--tapbg:#fbf7dc;--dark:#000;--hbar:#FDE100;--navbg:#000;--navtext:#FDE100;--navtext-on:#FDE100;--barc:#111;--avtext:#FDE100}
-[data-theme=bvb] .sec{color:#000}
-[data-theme=fcb]{--gelb:#DC052D;--gelb2:#FDE3E8;--gelb3:#DC052D;--on-accent:#fff;--bg:#f3f4f7;--linie:#e3e5ea;--linie2:#c9ccd4;--chip:#eceef2;--tapbg:#f1f2f5;--dark:#DC052D;--hbar:#0066B2;--navtext:#4b4f5a;--navtext-on:#DC052D;--barc:#0066B2;--avtext:#fff;--hero-accent:#fff;--hero-accent-ink:#DC052D}
-[data-theme=fcb] .hero .seg .ja{background:#0066B2}
-.slogan{font-weight:800;letter-spacing:.3px}
+:root{--gelb:#FFD400;--gelb2:#FFF3B0;--gelb3:#F2C500;--ink:#111827;--ink2:#374151;--muted:#5B6270;--linie:#E5E7EB;--linie2:#CBD0D8;--bg:#F3F4F6;--card:#fff;--input:#fff;--chip:#EEF0F3;--tapbg:#F1F3F6;--rot:#b3261e;--rotbg:#fdeceb;--gruen:#1e7b34;--gruenbg:#e6f4ea;--r:20px;--hdr:58px;
+ --dark:#111827;--on-accent:#111827;--hbar:var(--gelb);--navbg:rgba(255,255,255,.97);--navtext:#5B6270;--navtext-on:#111827;--navon:var(--gelb);--navon-ink:var(--on-accent);--barc:#4B5563;--avtext:var(--gelb);
+ --hero-accent:var(--gelb);--hero-accent-ink:var(--on-accent);--hero-bg:var(--dark);--slogan:var(--gelb);--glow:transparent;--font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-d:var(--font);color-scheme:light}
+/* ===== Stil: Vereinsheim (hell, ruhig) ===== */
+[data-stil=vereinsheim]{--font:'Plus Jakarta Sans',system-ui,sans-serif;--font-d:var(--font);--r:22px;--navon:var(--dark);--navon-ink:#fff;--navtext-on:var(--ink);--slogan:var(--ink)}
+/* ===== Stil: Flutlicht (dunkel, sportlich) ===== */
+[data-stil=flutlicht]{--bg:#0E0F12;--card:#17191E;--input:#121418;--ink:#F2F2F0;--ink2:#C9CCD1;--muted:#A3A7AF;--linie:#2A2E36;--linie2:#3A3F49;--chip:#23262D;--tapbg:#1F2228;
+ --dark:#2A2E36;--hero-bg:#17191E;--rot:#FF8A80;--rotbg:#3A1E1E;--gruen:#6EE7A0;--gruenbg:#14301F;--barc:#7A808B;--navbg:rgba(23,25,30,.96);--navtext:#A3A7AF;--navtext-on:#F2F2F0;
+ --gelb2:#3A3314;--glow:rgba(255,212,0,.35);--font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-d:'Space Grotesk',system-ui,sans-serif;color-scheme:dark}
+/* ===== Stil: Anzeigetafel (plakativ, große Zahlen) ===== */
+[data-stil=anzeigetafel]{--bg:#ECECE7;--ink:#0A0A0A;--ink2:#2E2E2B;--muted:#4A4A45;--linie:#D4D4CC;--linie2:#9C9C94;--chip:#E2E2DA;--tapbg:#fff;--dark:#0A0A0A;--r:6px;--barc:#0A0A0A;
+ --navbg:var(--dark);--navtext:#BDBDB6;--navtext-on:#fff;--font:'Barlow',system-ui,sans-serif;--font-d:'Barlow Condensed','Arial Narrow',sans-serif}
+/* ===== Farbwelt Rot-Weiß (FC Bayern) ===== */
+[data-farbe=rw]{--gelb:#DC052D;--gelb2:#FDE3E8;--gelb3:#B00425;--on-accent:#fff;--hbar:#0066B2;--avtext:#fff;--slogan:#fff}
+[data-stil=vereinsheim][data-farbe=rw]{--dark:#0E2240;--navon:#DC052D;--slogan:#DC052D}
+[data-stil=flutlicht][data-farbe=rw]{--gelb2:#3A1420;--gelb3:#FF4D6A;--glow:rgba(220,5,45,.45);--avtext:#FF8095}
+[data-stil=anzeigetafel][data-farbe=rw]{--dark:#0E2240;--barc:#0E2240;--hbar:#DC052D}
+[data-farbe=rw] .hero .seg .ja{background:#0066B2}
+.slogan{font-weight:800;letter-spacing:.3px;color:var(--slogan)}
 main.wide{max-width:1180px}
 @media (min-width:760px){.abend-2{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
  .abend-2 .col-r{position:sticky;top:calc(var(--hdr) + 14px);max-height:calc(100vh - var(--hdr) - 96px);overflow:auto;border-radius:var(--r)}}
 
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--font);-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit}
 header{position:sticky;top:0;z-index:6;background:var(--dark);color:#fff;display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 16px 8px;min-height:var(--hdr)}
 header::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:var(--hbar)}
@@ -41,9 +50,9 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:6;background:var(--navbg);bac
 nav .in{max-width:720px;margin:0 auto;display:flex}
 nav button{flex:1;border:0;background:none;padding:2px 0;font-size:11.5px;color:var(--navtext);display:flex;flex-direction:column;align-items:center;gap:3px}
 nav button i{font-style:normal;font-size:20px;line-height:30px;width:52px;border-radius:99px;transition:background .15s}
-nav button.on{color:var(--navtext-on);font-weight:700}nav button.on i{background:var(--gelb);color:var(--on-accent)}
+nav button.on{color:var(--navtext-on);font-weight:700}nav button.on i{background:var(--navon);color:var(--navon-ink)}
 .card{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px var(--linie)}
-.card.hero{background:var(--dark);color:#fff;box-shadow:none}
+.card.hero{background:var(--hero-bg);color:#fff;box-shadow:none}
 .card.hero .muted{color:rgba(255,255,255,.72)}
 h2{font-size:22px;margin:0 0 2px;line-height:1.2}h3{font-size:16px;margin:0 0 10px}
 .sec{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 4px 8px}
@@ -142,12 +151,63 @@ details[open]>summary::after{transform:rotate(270deg)}
  .kat{padding:8px 9px;min-height:48px}
  .erf-main{margin-bottom:12px}}
 @media (min-width:1000px){.erf{grid-template-columns:300px minmax(0,1fr)}.grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
+
+/* ---------- Stil-Details ---------- */
+h2,h3,.big,header .t b,.tile .v,.tap b{font-family:var(--font-d)}
+[data-stil=vereinsheim] header{background:var(--bg);color:var(--ink)}
+[data-stil=vereinsheim] header::after{display:none}
+[data-stil=vereinsheim] header img{background:var(--dark);border-radius:12px;padding:5px 9px;height:44px;filter:none}
+[data-stil=vereinsheim] header .t small,[data-stil=vereinsheim] #sync{color:var(--muted)}
+[data-stil=vereinsheim] header .hb{color:var(--ink)}
+[data-stil=vereinsheim] h2{letter-spacing:-.02em;font-weight:800}
+[data-stil=vereinsheim] .card{box-shadow:none}
+[data-stil=vereinsheim] .tap{background:var(--tapbg)}
+[data-stil=vereinsheim] nav,[data-stil=flutlicht] nav{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto;border-radius:24px;border:0;padding:6px 4px;box-shadow:0 10px 30px -12px rgba(17,24,39,.35)}
+[data-stil=flutlicht] nav{box-shadow:0 0 0 1px var(--linie),0 10px 30px -12px rgba(0,0,0,.6)}
+[data-stil=vereinsheim] main,[data-stil=flutlicht] main{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
+[data-stil=flutlicht] header{background:var(--bg);border-bottom:1px solid var(--linie)}
+[data-stil=flutlicht] header::after{display:none}
+[data-stil=flutlicht] .card{box-shadow:0 0 0 1px var(--linie)}
+[data-stil=flutlicht] .card.hero{box-shadow:0 0 0 1px var(--linie),0 22px 50px -24px var(--glow)}
+[data-stil=flutlicht] .tap{box-shadow:0 0 0 1px var(--linie)}
+[data-stil=flutlicht] .tap:active{background:var(--gelb);color:var(--on-accent)}
+[data-stil=flutlicht] .kat.on,[data-stil=anzeigetafel] .kat.on{background:var(--gelb);color:var(--on-accent);box-shadow:none}
+[data-stil=flutlicht] #sheet .grip{background:#3A3F49}
+[data-stil=anzeigetafel] h2,[data-stil=anzeigetafel] h3,[data-stil=anzeigetafel] header .t b,[data-stil=anzeigetafel] .sec,[data-stil=anzeigetafel] nav button,[data-stil=anzeigetafel] .btn,[data-stil=anzeigetafel] .kat span,[data-stil=anzeigetafel] details>summary{font-family:var(--font-d);text-transform:uppercase;letter-spacing:.04em}
+[data-stil=anzeigetafel] h2{font-size:28px}[data-stil=anzeigetafel] h3{font-size:19px}[data-stil=anzeigetafel] header .t b{font-size:21px}
+[data-stil=anzeigetafel] .btn{font-weight:800;font-size:17px}
+[data-stil=anzeigetafel] .card{box-shadow:0 0 0 2px var(--ink)}
+[data-stil=anzeigetafel] .card.hero{box-shadow:none}
+[data-stil=anzeigetafel] .tap{box-shadow:0 0 0 2px var(--ink);background:#fff}
+[data-stil=anzeigetafel] .tap b{font-size:46px;line-height:1}
+[data-stil=anzeigetafel] .tap:active{background:var(--gelb);color:var(--on-accent)}
+[data-stil=anzeigetafel] .btn,[data-stil=anzeigetafel] .chip,[data-stil=anzeigetafel] .kat,[data-stil=anzeigetafel] input,[data-stil=anzeigetafel] select,[data-stil=anzeigetafel] textarea,[data-stil=anzeigetafel] .tile,[data-stil=anzeigetafel] .pill{border-radius:4px}
+[data-stil=anzeigetafel] input,[data-stil=anzeigetafel] select,[data-stil=anzeigetafel] textarea{border:2px solid var(--ink)}
+[data-stil=anzeigetafel] .tile{box-shadow:0 0 0 2px var(--ink)}[data-stil=anzeigetafel] .tile .v{font-size:24px}
+[data-stil=anzeigetafel] .big{font-size:44px}
+[data-stil=anzeigetafel] nav{border-top:0}[data-stil=anzeigetafel] nav button{font-size:13px;font-weight:800}[data-stil=anzeigetafel] nav button.on i{border-radius:4px}
+[data-stil=anzeigetafel] .kat{background:var(--dark);color:#fff}[data-stil=anzeigetafel] .kat small{opacity:.85}
+[data-stil=anzeigetafel] #sheet .sh{border-radius:8px 8px 0 0}
+.stilwahl{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.stilwahl button{border:0;border-radius:16px;padding:0;overflow:hidden;text-align:left;cursor:pointer;box-shadow:0 0 0 1px var(--linie);background:var(--card);color:var(--ink)}
+.stilwahl button.on{box-shadow:0 0 0 3px var(--gelb3)}
+.stilwahl .pv{height:64px;display:flex;align-items:flex-end;gap:5px;padding:8px}
+.stilwahl .pv i{display:block;border-radius:5px;flex:1}
+.stilwahl .tx{padding:8px 10px 10px}.stilwahl .tx b{display:block;font-size:14px}.stilwahl .tx span{font-size:12px;color:var(--muted)}
 @media (orientation:landscape) and (max-height:540px){:root{--hdr:44px}
  header{min-height:44px;padding-top:calc(4px + env(safe-area-inset-top));padding-bottom:4px}header img{height:32px}header .t b{font-size:15px}header small{display:none}
  nav{padding:2px 0 calc(2px + env(safe-area-inset-bottom))}nav button{font-size:0;gap:0}nav button i{line-height:28px}
  main{padding:10px calc(14px + env(safe-area-inset-right)) calc(60px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
  .tap{padding:8px 4px}.tap b{font-size:24px}.card{padding:12px;margin-bottom:10px}
  .kat{min-height:40px;padding:5px 8px;font-size:13px}.kat i{font-size:17px}.kat small{font-size:10px}.katnav{gap:6px}.kopf2 select{padding:10px}}
+.guthol{position:fixed;inset:0;z-index:60;background:rgba(10,10,12,.72);backdrop-filter:blur(2px);cursor:pointer;animation:ghIn .25s ease-out}
+.guthol canvas{position:absolute;inset:0;width:100%;height:100%}
+.guthol .gh-t{position:absolute;left:0;right:0;bottom:12%;text-align:center;color:#fff;display:flex;flex-direction:column;gap:4px;pointer-events:none;animation:ghT .5s 1.2s both ease-out}
+.guthol .gh-t b{font-size:clamp(40px,9vw,84px);line-height:1;color:var(--gelb);letter-spacing:-.02em;text-shadow:0 4px 30px rgba(0,0,0,.5)}
+.guthol .gh-t span{font-size:17px;font-weight:600}.guthol .gh-t small{opacity:.7;font-size:12px;margin-top:6px}
+.guthol.aus{opacity:0;transition:opacity .35s}
+@keyframes ghIn{from{opacity:0}to{opacity:1}}@keyframes ghT{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.guthol .gh-t{animation:none}}
 </style>
 </head>
 <body>
@@ -158,7 +218,7 @@ details[open]>summary::after{transform:rotate(270deg)}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='0.9.0';
+const APP_VERSION='1.0.0';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -300,8 +360,23 @@ const nameOf=id=>M(id)?.spitzname||S.hist?.namen?.[id]||id;
 const meName=()=>Store.isDemo()?'Demo':(M(S.me)?.spitzname||'?');
 const aktive=()=>(S.verein?.mitglieder||[]).filter(m=>m.aktiv).sort((a,b)=>a.spitzname.localeCompare(b.spitzname,'de'));
 const hasRole=r=>(M(S.me)?.rollen||[]).includes(r);
-const isAdmin=()=>hasRole('admin');
-const isKasse=()=>hasRole('admin')||hasRole('kassenwart');
+/* ---------- Admin-Bereich ----------
+   Admin ist, wer auf diesem Gerät das Admin-Passwort eingegeben hat (nicht mehr über die Person).
+   In verein.json liegt nur ein PBKDF2-Prüfwert. Nach 30 Minuten ohne Tippen sperrt sich der Bereich. */
+const ADMIN_MIN=30;
+const adminCfg=()=>S.verein?.admin;
+const adminOffen=()=>!!adminCfg()&&+(lsGet('kt_admin_bis')||0)>Date.now();
+const isAdmin=()=>adminOffen();
+const isKasse=()=>adminOffen();
+const darfEinrichten=()=>!adminCfg()&&(hasRole('admin')||Store.isDemo());
+let ADMIN_WAR=false;
+async function pwHash(pw,saltB64,iter){const salt=Uint8Array.from(atob(saltB64),c=>c.charCodeAt(0));
+ const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
+ const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations:iter},key,256);
+ return btoa(String.fromCharCode(...new Uint8Array(bits)))}
+function adminAuf(){lsSet('kt_admin_bis',String(Date.now()+ADMIN_MIN*60000));ADMIN_WAR=true}
+document.addEventListener('pointerdown',()=>{if(adminOffen())adminAuf()},true);
+setInterval(()=>{if(ADMIN_WAR&&!adminOffen()){ADMIN_WAR=false;lsDel('kt_admin_bis');if(S.verein&&$('#app header')){closeSheet();shell();rerender();toast('🔒 Admin-Bereich automatisch gesperrt',4000)}}},15000);
 const strafen=()=>S.verein?.strafen||DEFAULT_STRAFEN;
 const termineSorted=()=>[...(S.termine?.termine||[])].sort((a,b)=>a.datum.localeCompare(b.datum));
 const T=id=>S.termine?.termine.find(t=>t.id===id);
@@ -370,7 +445,7 @@ function konto(mid){
 /* ---------------- Rahmen ---------------- */
 const TABS=[['start','🏠','Start'],['termine','📅','Termine'],['abend','🎳','Abend'],['essen','🍽️','Essen'],['spiele','🎲','Spiele'],['mehr','☰','Mehr']];
 function shell(){
- $('#app').innerHTML=`<header><img src="logo.png" alt=""><div class="t"><b id="htitle">Schwelmer Kegeltreff</b><small>${esc(meName())}${Store.isDemo()?' · Demo':''}${THEMES[themeAktiv()]?.motto?` · <span class="slogan" style="color:${THEMES[themeAktiv()].farbe}">${THEMES[themeAktiv()].motto}</span>`:''}</small></div><span id="sync" onclick="act.syncJetzt()" style="cursor:pointer"></span><button class="hb" title="Aktualisieren" onclick="act.reload()">↻</button></header>
+ $('#app').innerHTML=`<header><img src="logo.png" alt=""><div class="t"><b id="htitle">Schwelmer Kegeltreff</b><small>${esc(meName())}${Store.isDemo()?' · Demo':''}${THEMES[themeAktiv()]?.motto?` · <span class="slogan">${THEMES[themeAktiv()].motto}</span>`:''}</small></div><span id="sync" onclick="act.syncJetzt()" style="cursor:pointer"></span>${adminOffen()?`<button class="hb adm" title="Admin-Bereich sperren" aria-label="Admin-Bereich sperren" onclick="act.adminSperren()">🔓</button>`:''}<button class="hb" title="${stilAktiv()==='flutlicht'?'Hell':'Dunkel'} schalten" aria-label="Hell oder dunkel" onclick="act.hellDunkel()">${stilAktiv()==='flutlicht'?'☀️':'🌙'}</button><button class="hb" title="Aktualisieren" onclick="act.reload()">↻</button></header>
  <main id="main"></main>
  <nav><div class="in">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</div></nav>`;
  syncAnzeige();
@@ -385,6 +460,26 @@ function rerender(){const y=scrollY;render();scrollTo(0,y)}
 let afterHooks=[];function after(){const h=afterHooks;afterHooks=[];h.forEach(f=>f())}
 const terminOpts=(sel,filter=()=>true)=>kegelTermine().filter(filter).map(t=>`<option value="${t.id}" ${t.id===sel?'selected':''}>${fmtD(t.datum)}${t.status==='ausgefallen'?' (ausgefallen)':t.status==='abgeschlossen'?' ✓':''}</option>`).join('');
 const act={};
+act.adminLogin=weiter=>{window._adminWeiter=weiter||null;
+ if(!adminCfg())return darfEinrichten()?act.adminSetzen():toast('Es ist noch kein Admin-Passwort festgelegt.',4000);
+ sheet(`<h3>🔒 Admin-Bereich entsperren</h3><p class="muted small" style="margin-top:0">Für Kasse, Mitglieder, Termine, Strafenkatalog und das Abschließen eines Abends.</p>
+ <label>Admin-Passwort</label><input id="ap" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')act.adminPruefen()">
+ <div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn p f" onclick="act.adminPruefen()">Entsperren</button></div>`);setTimeout(()=>$('#ap')?.focus(),60)};
+act.adminPruefen=async()=>{const a=adminCfg(),el=$('#ap'),pw=el?.value||'';if(!pw||!a)return;
+ let h='';try{h=await pwHash(pw,a.salt,a.iter||150000)}catch(e){return toast('⚠ Prüfung nicht möglich: '+e.message,5000)}
+ if(h!==a.hash){el.value='';el.focus();vib();return toast('Falsches Passwort')}
+ adminAuf();closeSheet();shell();const w=window._adminWeiter;window._adminWeiter=null;rerender();toast('🔓 Admin-Bereich offen – sperrt nach '+ADMIN_MIN+' Min. ohne Tippen',3500);if(w)w()};
+act.adminSperren=()=>{lsDel('kt_admin_bis');ADMIN_WAR=false;shell();rerender();toast('🔒 Admin-Bereich gesperrt')};
+act.adminSetzen=()=>{const neu=!adminCfg();if(!neu&&!adminOffen())return act.adminLogin(act.adminSetzen);if(neu&&!darfEinrichten())return toast('Das Passwort kann nur ein Admin festlegen.');
+ sheet(`<h3>${neu?'Admin-Passwort festlegen':'Admin-Passwort ändern'}</h3><p class="muted small" style="margin-top:0">Mindestens 10 Zeichen. Gespeichert wird nur ein verschlüsselter Prüfwert – das Passwort selbst steht nirgends.${neu?' Danach gilt: Admin ist, wer dieses Passwort kennt.':''}</p>
+ <label>Neues Passwort</label><input id="ap1" type="password" autocomplete="new-password"><label>Wiederholen</label><input id="ap2" type="password" autocomplete="new-password" onkeydown="if(event.key==='Enter')act.adminSpeichern()">
+ <div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn p f" onclick="act.adminSpeichern()">Speichern</button></div>`);setTimeout(()=>$('#ap1')?.focus(),60)};
+act.adminSpeichern=async()=>{const p1=$('#ap1').value,p2=$('#ap2').value,neu=!adminCfg();
+ if(p1.length<10)return toast('Bitte mindestens 10 Zeichen');if(p1!==p2)return toast('Die beiden Eingaben sind nicht gleich');
+ if(neu?!darfEinrichten():!adminOffen())return toast('Keine Berechtigung');
+ const salt=btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16)))),iter=150000,hash=await pwHash(p1,salt,iter);
+ closeSheet();try{await saveVerein(d=>{d.admin={salt,iter,hash,gesetzt:new Date().toISOString(),von:S.me}},'Admin-Passwort '+(neu?'festgelegt':'geändert'))}catch(e){return toast('⚠ '+e.message,5000)}
+ adminAuf();shell();rerender();toast('✓ Admin-Passwort gespeichert',3000)};
 act.syncJetzt=async()=>{toast(S.offline?'Versuche zu verbinden…':'Speichere…');await flushOutbox();if(lsGet('kt_abend_dirty'))await speichereAbend();syncAnzeige();if(!OUT.list.length&&!lsGet('kt_abend_dirty'))toast('✓ Alles hochgeladen')};
 
 /* ---------------- TERMINE ---------------- */
@@ -502,7 +597,7 @@ function vAbend(){
  }
  h+=`</div></div>${spieleHeute(tid,true)}<div id="abend-sum"></div>
  <div class="card"><details ${S.reOpen??!num(a.rechnung.gesamt??a.rechnung.getraenke)?'open':''} ontoggle="S.reOpen=this.open"><summary>🧾 Rechnung Samos</summary><div id="rechnung"></div></details></div>
- <div class="row"><button class="btn f" onclick="speichereAbend()">💾 Speichern</button>${isKasse()?`<button class="btn d f" onclick="act.abschliessen()">Abend abschließen</button>`:''}</div>
+ <div class="row"><button class="btn f" onclick="speichereAbend()">💾 Speichern</button>${isKasse()?`<button class="btn d f" onclick="act.abschliessen()">Abend abschließen</button>`:`<button class="btn d f" onclick="act.adminLogin(()=>act.abschliessen())">🔒 Abend abschließen</button>`}</div>
  ${isKasse()?`<button class="btn w" style="margin-top:18px;background:var(--rotbg);color:var(--rot)" onclick="act.abendReset('${tid}')">🗑 Abend zurücksetzen</button>`:''}`;
  afterHooks.push(()=>{renderAbendSum();renderRechnung();const n=$('.katnav'),k=$('.kat.on');if(n&&k&&getComputedStyle(n).display==='flex')n.scrollLeft=k.offsetLeft-n.clientWidth/2+k.offsetWidth/2});return h;
 }
@@ -548,7 +643,49 @@ act.abschliessen=async()=>{if(lsGet('kt_abend_dirty')){await speichereAbend();if
   if(p.counts?.figur)fig[p.id]=p.counts.figur;
   stats[p.id]={pudel:p.counts?.pudel||0,glocke:p.counts?.glocke||0,neun:p.counts?.neun||0,kranz:p.counts?.kranz||0,figur:p.counts?.figur||0,spiele:r2(num(p.spiele)+(r.spieleAuto||0)),strafe:r.strafe}}
  S.termine=await save('termine.json',d=>{const t=d.termine.find(x=>x.id===a.id);Object.assign(t,{status:'abgeschlossen',spieleErg:(S.spielCache[a.id]?.spiele||[]).map(g=>({name:g.name,typ:g.typ,sieger:g.typ==='einzel'?(g.rang||[]).slice(0,1):(g.teams?.[g.sieger]||[])})),abrechnung:abr,figur:fig,gaeste,abwesend:abw,stats,strafen:str,abgeschlossenVon:S.me,abgeschlossenAm:new Date().toISOString()});return d},`Abend ${a.id} abgeschlossen`);
- toast('Abend abgerechnet ✓');S.selAbend=a.id;rerender();setTimeout(()=>act.bericht(a.id),400)})};
+ S.selAbend=a.id;rerender();gutHolz(()=>act.bericht(a.id))})};
+/* ---------- Abschluss-Animation „Gut Holz!“ ----------
+   Kugel rollt in die neun Kegel, die fliegen um, danach rieseln Kegel und Kugeln wie Konfetti.
+   Antippen schließt sofort; bei „Bewegung reduzieren“ nur der Schriftzug. */
+function gutHolz(danach){
+ const reduziert=matchMedia('(prefers-reduced-motion: reduce)').matches,akz=getComputedStyle(document.documentElement).getPropertyValue('--gelb').trim()||'#FFD400';
+ const box=document.createElement('div');box.className='guthol';box.setAttribute('role','status');
+ box.innerHTML=`<canvas></canvas><div class="gh-t"><b>Gut Holz!</b><span>Abend abgeschlossen & abgerechnet</span><small>Tippen zum Schließen</small></div>`;
+ document.body.appendChild(box);vib();
+ let fertig=false,raf=0;const ende=()=>{if(fertig)return;fertig=true;cancelAnimationFrame(raf);box.classList.add('aus');setTimeout(()=>{box.remove();danach&&danach()},350)};
+ box.addEventListener('click',ende);setTimeout(ende,reduziert?2500:6500);if(reduziert)return;
+ const cv=box.querySelector('canvas'),ctx=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1);let W,H;
+ const groesse=()=>{W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)};groesse();
+ const kegel=(x,y,sz,rot,al=1)=>{ctx.save();ctx.globalAlpha=al;ctx.translate(x,y);ctx.rotate(rot);const s=sz;
+  ctx.beginPath();ctx.moveTo(-s*.13,0);ctx.bezierCurveTo(-s*.24,-s*.22,-s*.2,-s*.46,-s*.07,-s*.6);ctx.bezierCurveTo(-s*.03,-s*.66,-s*.13,-s*.8,-s*.08,-s*.92);
+  ctx.arc(0,-s*.9,s*.09,Math.PI*1.1,Math.PI*1.9);ctx.bezierCurveTo(s*.13,-s*.8,s*.03,-s*.66,s*.07,-s*.6);ctx.bezierCurveTo(s*.2,-s*.46,s*.24,-s*.22,s*.13,0);ctx.closePath();
+  ctx.fillStyle='#fafafa';ctx.fill();ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=Math.max(1,s*.02);ctx.stroke();
+  ctx.fillStyle='#d7263d';ctx.fillRect(-s*.075,-s*.72,s*.15,s*.035);ctx.fillRect(-s*.07,-s*.665,s*.14,s*.025);ctx.restore()};
+ const kugel=(x,y,r,rot,farbe='#1b1b1f',al=1)=>{ctx.save();ctx.globalAlpha=al;ctx.translate(x,y);ctx.rotate(rot);
+  const g=ctx.createRadialGradient(-r*.35,-r*.35,r*.1,0,0,r);g.addColorStop(0,'#5a5a66');g.addColorStop(1,farbe);ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,r,0,7);ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,.65)';[[-.25,-.3],[.15,-.38],[-.02,-.08]].forEach(([a,b])=>{ctx.beginPath();ctx.arc(a*r,b*r,r*.11,0,7);ctx.fill()});ctx.restore()};
+ // Aufstellung als Raute (wie auf der Kegelbahn), Abstand je nach Bildschirm
+ const sz=Math.min(W,H)*.15,cx=W/2,cy=H*.42,dx=sz*.42,dy=sz*.2,pins=[];
+ for(let r=0;r<3;r++)for(let c=0;c<3;c++)pins.push({x:cx+(c-r)*dx,y:cy+(c+r-2)*dy,vx:0,vy:0,rot:0,vr:0,fall:false});
+ pins.sort((a,b)=>a.y-b.y);
+ const ball={x:cx,y:H+sz,r:sz*.2};const t0=performance.now(),TREFF=1100;let konf=[];
+ const neuKonf=n=>{for(let i=0;i<n;i++){const k=Math.random()<.45?'kugel':Math.random()<.85?'kegel':'schnipsel';
+  konf.push({k,x:Math.random()*W,y:-40-Math.random()*H*.6,vx:(Math.random()-.5)*60,vy:120+Math.random()*160,rot:Math.random()*6,vr:(Math.random()-.5)*5,s:k==='kegel'?18+Math.random()*22:7+Math.random()*9,
+   c:['#d7263d',akz,'#ffffff','#1b1b1f'][i%4],w:Math.random()*6})}};
+ let last=t0,konfDa=false;
+ const schritt=now=>{const t=now-t0,dt=Math.min(.05,(now-last)/1000);last=now;ctx.clearRect(0,0,W,H);
+  // Kugel rollt von unten auf die Kegel zu (wird mit der Entfernung kleiner)
+  if(t<TREFF){const p=t/TREFF,e=1-Math.pow(1-p,2);ball.y=H+sz-(H+sz-(cy+dy*2))*e;ball.r=sz*(.26-.08*e);ball.x=cx+Math.sin(p*3)*sz*.08}
+  else{ball.y-=dt*sz*5;ball.r*=.985;
+   pins.forEach((k,i)=>{if(!k.fall){k.fall=true;const ang=Math.atan2(k.y-cy-dy*2,k.x-cx)||-Math.PI/2;const v=sz*(4+Math.random()*3);k.vx=Math.cos(ang)*v*.6+(Math.random()-.5)*sz*3;k.vy=-sz*(3+Math.random()*3);k.vr=(Math.random()<.5?-1:1)*(4+Math.random()*6)}
+    k.vy+=sz*14*dt;k.x+=k.vx*dt;k.y+=k.vy*dt;k.rot+=k.vr*dt})}
+  if(t>TREFF+250&&!konfDa){konfDa=true;neuKonf(Math.round(Math.min(90,W*H/9000)))}
+  pins.forEach(k=>kegel(k.x,k.y,sz,k.rot,t>TREFF?Math.max(0,1-(t-TREFF)/2200):1));
+  if(ball.r>2&&ball.y>-ball.r)kugel(ball.x,ball.y,ball.r,t/120);
+  konf.forEach(k=>{k.x+=k.vx*dt+Math.sin((k.y+k.w*40)/60)*.6;k.y+=k.vy*dt;k.rot+=k.vr*dt;
+   if(k.k==='kugel')kugel(k.x,k.y,k.s,k.rot);else if(k.k==='kegel')kegel(k.x,k.y,k.s*1.6,k.rot);else{ctx.save();ctx.translate(k.x,k.y);ctx.rotate(k.rot);ctx.fillStyle=k.c;ctx.fillRect(-k.s/2,-k.s/4,k.s,k.s/2);ctx.restore()}});
+  konf=konf.filter(k=>k.y<H+60);if(!fertig)raf=requestAnimationFrame(schritt)};
+ raf=requestAnimationFrame(schritt)}
 function abgeschlossenAnsicht(t){const ab=t.abrechnung||{};let s=0;
  const rows=Object.entries(ab).sort((a,b)=>nameOf(a[0]).localeCompare(nameOf(b[0]),'de')).map(([id,b])=>{s+=b;return`<tr><td>${esc(nameOf(id))}${t.abwesend?.includes(id)?' <span class="muted small">(abwesend)</span>':''}</td><td>${eur(b)}</td></tr>`}).join('');
  const g=(t.gaeste||[]).map(x=>{s+=x.betrag;return`<tr><td>${esc(x.name)} <span class="muted small">(Gast)</span></td><td>${eur(x.betrag)}</td></tr>`}).join('');
@@ -1101,11 +1238,12 @@ function vStatistik(){
 
 /* ---------------- MEHR ---------------- */
 function vMehr(){
- const subs={kasse:['💶','Kasse · Mitgliederkonten',vKasse],statistik:['📊','Statistiken',vStatistik],kassenstand:['💰','Kassenstand',vKassenstand],strafen:['📜','Strafenkatalog & Regeln',vStrafen],verwaltung:['⚙️','Verwaltung',vVerwaltung],profil:['👤','Profil & Verbindung',vProfil]};
+ const subs={kasse:['💶','Kasse · Mitgliederkonten',vKasse],statistik:['📊','Statistiken',vStatistik],kassenstand:['💰','Kassenstand',vKassenstand],strafen:['📜','Strafenkatalog & Regeln',vStrafen],admin:[adminOffen()?'🔓':'🔒','Admin-Bereich',vAdmin],profil:['👤','Profil & Verbindung',vProfil]};
+ if(S.sub==='verwaltung')S.sub='admin';
  if(S.sub&&subs[S.sub]){afterHooks.push(()=>{const t=$('#htitle');if(t)t.textContent=subs[S.sub][1]});
   return`<button class="btn s" style="margin-bottom:12px" onclick="S.sub=null;render();scrollTo(0,0)">‹ Zurück</button>`+subs[S.sub][2]()}
  afterHooks.push(()=>{const t=$('#htitle');if(t)t.textContent='Schwelmer Kegeltreff'});
- return`<div class="card"><ul class="l menu">${Object.entries(subs).filter(([k])=>k!=='verwaltung'||isAdmin()).map(([k,[i,l]])=>`<li onclick="S.sub='${k}';render();scrollTo(0,0)"><span class="ic">${i}</span><div class="g"><b>${l}</b></div><span class="muted">›</span></li>`).join('')}</ul></div>
+ return`<div class="card"><ul class="l menu">${Object.entries(subs).map(([k,[i,l]])=>`<li onclick="S.sub='${k}';render();scrollTo(0,0)"><span class="ic">${i}</span><div class="g"><b>${l}</b></div><span class="muted">›</span></li>`).join('')}</ul></div>
  <p class="muted small" style="text-align:center">App ${APP_VERSION}</p>`;
 }
 const KFELD=[['email','E-Mail','email','name@beispiel.de'],['telefon','Telefon','tel','0170 …'],['strasse','Straße & Nr.','text',''],['plz','PLZ','text',''],['ort','Ort','text',''],['geburtstag','Geburtstag','date','']];
@@ -1116,18 +1254,27 @@ act.meinKontakt=()=>saveKontakt(S.me,kontaktLesen('pk'),'Kontaktdaten '+meName()
 function naechsterGeburtstag(){const h=todayISO(),y=+h.slice(0,4);let best=null;
  for(const m of aktive()){const g=S.kontakte.personen[m.id]?.geburtstag;if(!g)continue;let d=y+g.slice(4);if(d<h)d=(y+1)+g.slice(4);if(!best||d<best.d)best={m,d,alter:+d.slice(0,4)-+g.slice(0,4)}}
  return best}
+const STIL_PV={auto:['background:linear-gradient(90deg,#F3F4F6 50%,#0E0F12 50%)',['#FFD400','#111827','#2A2E36']],vereinsheim:['background:#F3F4F6',['#FFD400','#fff','#111827']],flutlicht:['background:#0E0F12',['#FFD400','#17191E','#2A2E36']],anzeigetafel:['background:#ECECE7',['#0A0A0A','#FFD400','#fff']]};
 function vProfil(){const m=M(S.me);
  return`<div class="card"><div class="row"><div class="av">${ini(m?.spitzname)}</div><div class="f"><b>${esc(m?.vorname||'')} ${esc(m?.nachname||'')}</b><div class="muted small">„${esc(m?.spitzname||'')}“ ${(m?.rollen||[]).map(r=>`<span class="pill y">${r}</span>`).join(' ')}</div></div></div>
  <p class="muted small">${Store.isDemo()?'Demo-Modus – Daten nur in diesem Browser.':'Verbunden mit '+OWNER+' / '+REPO+'.'}</p>
  <div class="row wrap"><button class="btn f" onclick="act.wechsel()">Person wechseln</button><button class="btn f" onclick="act.abmelden()">Abmelden</button></div></div>
- <div class="card"><h3>🎨 Darstellung</h3><p class="muted small" style="margin-top:0">Gilt nur für dieses Handy – jeder wählt selbst.</p>
- <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px">${Object.entries(THEMES).map(([k,t])=>`<button class="tile" style="text-align:left;cursor:pointer;${themeWahl()===k?'box-shadow:0 0 0 2px var(--gelb3);':''}${k==='bvb'?'background:#000;color:#FDE100;':k==='fcb'?'background:#DC052D;color:#fff;':k==='dark'?'background:#1e1e1c;color:#EDEBE4;':''}" onclick="act.theme('${k}')"><div style="font-size:22px">${t.ic}</div><b>${t.name}</b><div class="small" style="opacity:.75">${t.sub}</div></button>`).join('')}</div></div>
+ <div class="card"><h3>🎨 Darstellung</h3><p class="muted small" style="margin-top:0">Gilt nur für dieses Gerät – jeder wählt selbst. Schnell umschalten: 🌙/☀️ oben rechts.</p>
+ <label>Stil</label><div class="stilwahl">${Object.entries(STILE).map(([k,t])=>`<button class="${stilWahl()===k?'on':''}" onclick="act.stil('${k}')"><div class="pv" style="${STIL_PV[k][0]}">${STIL_PV[k][1].map(c=>`<i style="background:${c};height:${c===STIL_PV[k][1][0]?40:24}px"></i>`).join('')}</div><div class="tx"><b>${t.name}</b><span>${t.sub}</span></div></button>`).join('')}</div>
+ <label style="margin-top:14px">Farbwelt</label><div class="stilwahl">${Object.entries(FARBEN).map(([k,t])=>`<button class="${farbeWahl()===k?'on':''}" onclick="act.farbe('${k}')"><div class="pv" style="background:${k==='rw'?'#DC052D':'#0A0A0A'}"><i style="background:${k==='rw'?'#fff':'#FFD400'};height:40px"></i><i style="background:${k==='rw'?'#0066B2':'#FFD400'};height:24px"></i><i style="background:${k==='rw'?'#fff':'#333'};height:24px"></i></div><div class="tx"><b>${t.name}</b><span>${t.sub}</span></div></button>`).join('')}</div></div>
  <div class="card"><h3>Meine Kontaktdaten</h3><p class="muted small" style="margin-top:0">Bitte aktuell halten – z. B. nach einem Umzug. Sehen können das nur du und die Admins.</p>${kontaktForm(S.me,'pk')}
  <button class="btn p w" style="margin-top:12px" onclick="act.meinKontakt()">Speichern</button>${S.kontakte.personen[S.me]?.geaendert?`<p class="muted small">Zuletzt geändert: ${fmtD(S.kontakte.personen[S.me].geaendert.slice(0,10))}</p>`:''}</div>
  <div class="card"><h3>Als App installieren</h3><p class="small" style="margin:0"><b>iPhone:</b> Safari → Teilen → „Zum Home-Bildschirm“<br><b>Android:</b> Chrome → ⋮ → „App installieren“</p></div>`}
 function vStrafen(){return`<div class="card"><table>${strafen().map((s,i)=>`<tr><td>${esc(s.name)}${s.art==='andere'?'<div class="muted small">zahlen alle anderen</div>':''}${s.schnapsJedesMal?`<div class="muted small">jedes ${s.schnapsJedesMal}. Mal zusätzlich eine Runde Schnaps</div>`:''}</td><td style="width:100px">${isAdmin()?`<input inputmode="decimal" value="${String(s.betrag).replace('.',',')}" onchange="act.strafe(${i},this.value)">`:eur(s.betrag)}</td></tr>`).join('')}
  <tr><td>Platzierung Einzelspiel (2. bis Letzter)</td><td>0,10 € je Platz</td></tr><tr><td>Mehr als 200 € Rückstand</td><td>Kostüm 🎭</td></tr></table></div>
  <div class="card"><h3>Beiträge (Satzung § 3)</h3><table><tr><td>Woche ohne Termin</td><td>${eur(S.verein.wochenbeitrag??5)}</td></tr><tr><td>Termin ausgefallen</td><td>${eur(S.verein.pauschaleAusfall??15)}</td></tr><tr><td>Abwesend beim Termin</td><td>höchste Strafe des Abends</td></tr><tr><td>Anwesend</td><td>Strafen + gleicher Anteil an Samos-Rechnung und Trinkgeld; teures Essen (über 20 €) zahlt jeder selbst</td></tr><tr><td>Gäste</td><td>wie Anwesende, keine Wochenbeiträge</td></tr></table></div>`}
+function vAdmin(){
+ if(!adminOffen()){
+  if(!adminCfg())return`<div class="card hero"><h2 style="margin-top:0">🔒 Admin-Bereich</h2><p>Es ist noch kein Admin-Passwort festgelegt.</p>${darfEinrichten()?`<button class="btn p w" onclick="act.adminSetzen()">Admin-Passwort jetzt festlegen</button>`:`<p class="muted small" style="margin-bottom:0">Das kann nur ein Mitglied mit der Rolle „admin“.</p>`}</div>`;
+  return`<div class="card hero"><h2 style="margin-top:0">🔒 Admin-Bereich</h2><p class="muted small">Kasse buchen, Kassenstand, Mitglieder, Termine, Strafenkatalog, Speisekarte und das Abschließen von Kegelabenden.</p><button class="btn p w" onclick="act.adminLogin()">Mit Passwort entsperren</button></div>`}
+ return`<div class="card hero"><div class="row"><div class="f"><h3 style="margin:0">🔓 Admin-Bereich ist offen</h3><div class="muted small">Sperrt sich nach ${ADMIN_MIN} Minuten ohne Tippen automatisch.</div></div></div>
+  <div class="row wrap" style="margin-top:12px"><button class="btn f" onclick="act.adminSperren()">🔒 Jetzt sperren</button><button class="btn f" onclick="act.adminSetzen()">🔑 Passwort ändern</button></div></div>
+  <div class="card"><ul class="l menu">${[['kasse','💶','Buchungen erfassen','Einzahlungen, Auszahlungen, Korrekturen'],['kassenstand','💰','Kassenstand pflegen','Konten, Sondertöpfe, Excel-Übernahme'],['strafen','📜','Strafenkatalog','Beträge ändern']].map(([k,i,l,d])=>`<li onclick="S.sub='${k}';render();scrollTo(0,0)"><span class="ic">${i}</span><div class="g"><b>${l}</b><div class="muted small">${d}</div></div><span class="muted">›</span></li>`).join('')}</ul></div>`+vVerwaltung()}
 function vVerwaltung(){if(!isAdmin())return'<div class="card">Nur für Admins.</div>';
  return`<div class="card"><details open><summary>📅 Termine</summary><div class="row" style="margin-top:6px"><div class="f"><label>Datum</label><input id="t-d" type="date"></div><div class="f"><label>Uhrzeit</label><input id="t-u" type="time" value="18:00"></div></div>
  <label>Bemerkung</label><input id="t-b"><div class="row wrap" style="margin-top:12px"><button class="btn p f" onclick="act.terminNeu()">+ Termin</button><button class="btn f" onclick="act.serie()">+ 5 im 5-Wochen-Takt</button></div>
@@ -1202,12 +1349,27 @@ function demoSeed(){if(lsGet('kt_demo:verein.json'))return;
 const THEMES={auto:{name:'Automatisch',ic:'📱',sub:'wie das Handy'},light:{name:'Hell',ic:'☀️',sub:'Kegeltreff-Gelb'},dark:{name:'Dunkel',ic:'🌙',sub:'schont die Augen'},
  bvb:{name:'Schwarz-Gelb',ic:'🖤💛',sub:'Dortmund-Modus',motto:'Echte Liebe',farbe:'#FDE100',sprueche:['Echte Liebe 🖤💛','Heja BVB!','Schwarz-Gelb bis in die letzte Gasse','Hier wackelt nicht nur der Kranz – hier bebt die Wand','Pudel? Nicht mit Borussia!','Alle Neune für Schwarz-Gelb']},
  fcb:{name:'Rot-Weiß',ic:'❤️🤍',sub:'Bayern-Modus',motto:'Mir san mir',farbe:'#fff',sprueche:['Mir san mir ❤️🤍','Rot-Weiß kegelt besser','Ein Kranz für den Rekordmeister','Pudel gibt’s nur in Giesing','Gewinnen ist bei uns Pflicht','Mia san da – und treffen alle Neune']}};
-const themeWahl=()=>lsGet('kt_theme')||'auto';
-const themeAktiv=()=>{const t=themeWahl();return t==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t};
-function applyTheme(){const t=themeAktiv();document.documentElement.dataset.theme=t;const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='fcb'?'#DC052D':t==='light'?'#1D1D1B':'#000000'}
+/* ---------- Darstellung: Stil × Farbwelt (pro Gerät) ---------- */
+const STILE={auto:{name:'Automatisch',sub:'hell oder dunkel wie das Handy'},vereinsheim:{name:'Vereinsheim',sub:'hell & ruhig'},flutlicht:{name:'Flutlicht',sub:'dunkel & sportlich'},anzeigetafel:{name:'Anzeigetafel',sub:'groß & plakativ'}};
+const FARBEN={sg:{name:'Vereinsfarben',sub:'Schwarz-Gelb'},bvb:{name:'Schwarz-Gelb',sub:'mit BVB-Sprüchen'},rw:{name:'Rot-Weiß',sub:'mit Bayern-Sprüchen'}};
+const SCHRIFT={vereinsheim:'Plus+Jakarta+Sans:wght@400;600;700;800',flutlicht:'Space+Grotesk:wght@500;700',anzeigetafel:'Barlow:wght@400;600;700&family=Barlow+Condensed:wght@700;800'};
+(()=>{const alt=lsGet('kt_theme');if(alt&&!lsGet('kt_stil')){const m={light:['vereinsheim','sg'],dark:['flutlicht','sg'],bvb:['vereinsheim','bvb'],fcb:['vereinsheim','rw'],auto:['auto','sg']}[alt]||['auto','sg'];lsSet('kt_stil',m[0]);lsSet('kt_farbe',m[1])}})();
+const stilWahl=()=>STILE[lsGet('kt_stil')]?lsGet('kt_stil'):'auto';
+const stilAktiv=()=>{const t=stilWahl();return t==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'flutlicht':'vereinsheim'):t};
+const farbeWahl=()=>FARBEN[lsGet('kt_farbe')]?lsGet('kt_farbe'):'sg';
+const themeWahl=stilWahl;
+const themeAktiv=()=>({bvb:'bvb',rw:'fcb'})[farbeWahl()]||'light';
+function applyTheme(){const st=stilAktiv(),fa=farbeWahl(),de=document.documentElement;de.dataset.stil=st;de.dataset.farbe=fa==='rw'?'rw':'sg';delete de.dataset.theme;
+ let l=document.getElementById('kt-font');if(!l){l=document.createElement('link');l.id='kt-font';l.rel='stylesheet';document.head.appendChild(l)}
+ const href=SCHRIFT[st]?'https://fonts.googleapis.com/css2?family='+SCHRIFT[st]+'&display=swap':'';if(href&&l.getAttribute('href')!==href)l.href=href;
+ const m=document.querySelector('meta[name=theme-color]');if(m)m.content=st==='vereinsheim'?'#F3F4F6':st==='flutlicht'?'#0E0F12':fa==='rw'?'#0E2240':'#0A0A0A'}
 function slogan(){const sp=THEMES[themeAktiv()]?.sprueche;if(!sp)return'';const d=new Date(),doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);return sp[doy%sp.length]}
-act.theme=k=>{lsSet('kt_theme',k);applyTheme();shell();render();toast(`${THEMES[k].ic} ${THEMES[k].name}`)};
-try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(themeWahl()==='auto')applyTheme()})}catch(_){}
+const neuZeichnen=()=>{applyTheme();if($('#app header')){shell();rerender()}};
+act.stil=k=>{lsSet('kt_stil',k);neuZeichnen();toast(STILE[k].name)};
+act.farbe=k=>{lsSet('kt_farbe',k);neuZeichnen();toast(FARBEN[k].name)};
+act.hellDunkel=()=>{lsSet('kt_stil',stilAktiv()==='flutlicht'?'vereinsheim':'flutlicht');neuZeichnen()};
+act.theme=act.stil;
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(stilWahl()==='auto')neuZeichnen()})}catch(_){}
 applyTheme();
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 
@@ -1225,6 +1387,9 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
  if(S.verein&&Date.now()-S.loadedAt>60000&&!saveTimer&&!OUT.list.length&&!OUT.busy&&!$('#sheet'))loadAll().then(rerender).catch(()=>{})});
 window.addEventListener('pagehide',()=>{flushTermine();if(saveTimer)speichereAbend()});
 window.addEventListener('beforeunload',e=>{if(saveTimer||OUT.list.length){flushTermine();if(saveTimer)speichereAbend();e.preventDefault()}});
+/* Sicherheitsnetz: diese Aktionen laufen nur mit entsperrtem Admin-Bereich */
+['abschliessen','abendReset','abendResetGo','wiederOeffnen','bLoeschen','buchen','ausgabe','excelStand','kAdd','kDel','kEdit','kSet','kStd','strafe','mEdit','mSave','terminNeu','serie','ausfall','tStatus','tLoeschen','karteImport','invite','sitzReset','fuerAndere']
+ .forEach(k=>{const f=act[k];if(f)act[k]=(...a)=>isAdmin()?f(...a):act.adminLogin(()=>act[k](...a))});
 boot();
 </script>
 </body>

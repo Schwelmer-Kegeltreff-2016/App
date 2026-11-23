@@ -1,7 +1,8 @@
 /* Schwelmer Kegeltreff – Service Worker: App startet auch ohne Netz.
    index.html: erst Netz (max. 3,5 s), sonst gespeicherte Version. Bilder & Co.: aus dem Speicher, im Hintergrund aktualisiert.
+   Schriften (Google Fonts): einmal geladen, danach aus dem Speicher – auch offline.
    Vereinsdaten (api.github.com) laufen NICHT hierüber – die verwaltet die App selbst. */
-const CACHE = 'kegeltreff-app-v1';
+const CACHE = 'kegeltreff-app-v2';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'logo.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -12,7 +13,16 @@ self.addEventListener('activate', e => {
 });
 self.addEventListener('fetch', e => {
   const req = e.request, url = new URL(req.url);
-  if (req.method !== 'GET' || url.origin !== location.origin) return;
+  if (req.method !== 'GET') return;
+  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+    e.respondWith((async () => {
+      const cache = await caches.open(CACHE), hit = await cache.match(req);
+      if (hit) return hit;
+      try { const r = await fetch(req); if (r.ok || r.type === 'opaque') cache.put(req, r.clone()); return r; } catch (_) { return Response.error(); }
+    })());
+    return;
+  }
+  if (url.origin !== location.origin) return;
   if (req.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('.html')) {
     e.respondWith((async () => {
       const cache = await caches.open(CACHE);
