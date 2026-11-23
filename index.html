@@ -126,11 +126,28 @@ details[open]>summary::after{transform:rotate(270deg)}
 .cols button i{display:block;width:100%;background:var(--barc);border-radius:4px 4px 0 0;min-height:2px}
 .cols button.on i{background:var(--gelb3)}
 .axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+
+.kopf2{margin-bottom:12px}.kopf2 .kopfsel{margin-bottom:12px}.kopf2>.card{margin-bottom:12px}
+.sitzk summary{gap:8px}.sitzk .sk{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:14px}
+.sitzk .hero{margin:0}.pill.warn{background:var(--gelb);color:#1a1a1a;border-radius:99px;padding:2px 8px;font-size:12px;font-weight:700;white-space:nowrap}
+.katnav{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px;padding:2px}.katnav::-webkit-scrollbar{display:none}
+.kat{flex:0 0 auto;display:flex;align-items:center;gap:8px;border:0;border-radius:14px;padding:8px 12px;background:var(--chip);color:inherit;font-weight:700;font-size:14px;text-align:left;cursor:pointer;line-height:1.15}
+.kat i{font-style:normal;font-size:20px}.kat small{display:block;font-weight:500;font-size:11px;opacity:.7}
+.kat.on{background:var(--dark);color:#fff;box-shadow:0 0 0 2px var(--gelb)}
+@media (min-width:640px){
+ .kopf2{display:grid;grid-template-columns:minmax(150px,auto) minmax(0,1fr) minmax(0,1.3fr);gap:10px;align-items:start;margin-bottom:12px}
+ .kopf2 .kopfsel,.kopf2>.card{margin:0}
+ .erf{display:grid;grid-template-columns:250px minmax(0,1fr);gap:12px;align-items:start}
+ .katnav{display:grid;grid-template-columns:1fr 1fr;overflow:visible;margin:0;position:sticky;top:calc(var(--hdr) + 10px)}
+ .kat{padding:8px 9px;min-height:48px}
+ .erf-main{margin-bottom:12px}}
+@media (min-width:1000px){.erf{grid-template-columns:300px minmax(0,1fr)}.grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
 @media (orientation:landscape) and (max-height:540px){:root{--hdr:44px}
  header{min-height:44px;padding-top:calc(4px + env(safe-area-inset-top));padding-bottom:4px}header img{height:32px}header .t b{font-size:15px}header small{display:none}
  nav{padding:2px 0 calc(2px + env(safe-area-inset-bottom))}nav button{font-size:0;gap:0}nav button i{line-height:28px}
  main{padding:10px calc(14px + env(safe-area-inset-right)) calc(60px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
- .tap{padding:8px 4px}.tap b{font-size:24px}.card{padding:12px;margin-bottom:10px}}
+ .tap{padding:8px 4px}.tap b{font-size:24px}.card{padding:12px;margin-bottom:10px}
+ .kat{min-height:40px;padding:5px 8px;font-size:13px}.kat i{font-size:17px}.kat small{font-size:10px}.katnav{gap:6px}.kopf2 select{padding:10px}}
 </style>
 </head>
 <body>
@@ -466,27 +483,28 @@ function vAbend(){
  if(a.gefuehrtVon!==S.me)return kopf+`<div class="banner">Die Tafel führt gerade <b>${esc(nameOf(a.gefuehrtVon))}</b>. Bitte nur auf einem Handy mitschreiben.</div>
   <div class="row"><button class="btn f" onclick="ladeAbend('${tid}')">↻ Aktualisieren</button><button class="btn d f" onclick="act.uebernehmen()">Tafel übernehmen</button></div><div style="margin-top:12px">${sitzKarte(tid,false)}${spieleHeute(tid,false)}</div><div id="abend-sum"></div>`+(afterHooks.push(()=>renderAbendSum(true)),'');
  const st=strafen(),pres=a.spieler.filter(p=>p.anwesend);
- const kats=[...st.map(s=>({id:s.id,name:s.name})),{id:'spiele',name:'Spiele €'},{id:'sonstiges',name:'Sonstiges €'}];
+ const kats=[...st.map(s=>({id:s.id,name:s.name,betrag:s.betrag})),{id:'spiele',name:'Spiele €'},{id:'sonstiges',name:'Sonstiges €'}];
  if(S.anwOpen==null)S.anwOpen=!pres.length;
- let h=kopf+`<div class="card"><details ${S.anwOpen?'open':''} ontoggle="S.anwOpen=this.open"><summary>👥 Anwesend: ${pres.length}${a.spieler.some(p=>p.gast&&p.anwesend)?' · Gäste: '+a.spieler.filter(p=>p.gast&&p.anwesend).length:''}</summary>
+ let h=`<div class="kopf2"><select class="kopfsel" onchange="S.selAbend=this.value;render()">${terminOpts(tid,x=>x.status!=='ausgefallen')}</select><div class="card"><details ${S.anwOpen?'open':''} ontoggle="S.anwOpen=this.open"><summary>👥 Anwesend: ${pres.length}${a.spieler.some(p=>p.gast&&p.anwesend)?' · Gäste: '+a.spieler.filter(p=>p.gast&&p.anwesend).length:''}</summary>
   <div class="chips wrap" style="margin-top:10px">${a.spieler.map((p,i)=>`<button class="chip ${p.anwesend?'an':''}" onclick="act.toggleAnw(${i})">${p.anwesend?'✓ ':''}${esc(p.name)}${p.gast?' (Gast)':''}</button>`).join('')}</div>
-  <div class="row" style="margin-top:10px"><input class="f" id="gastname" placeholder="Name des Gastes"><button class="btn" onclick="act.gast()">+ Gast</button></div></details></div>`+(sitzFest?'':sitzKarte(tid,true));
- h+=`<div class="abend-2"><div class="col-l"><div class="sticky"><div class="chips">${kats.map(k=>`<button class="chip ${S.kat===k.id?'on':''}" onclick="S.kat='${k.id}';rerender()">${esc(k.name)}</button>`).join('')}</div></div><div class="card">`;
- if(S.kat==='essen')S.kat='pudel';
+  <div class="row" style="margin-top:10px"><input class="f" id="gastname" placeholder="Name des Gastes"><button class="btn" onclick="act.gast()">+ Gast</button></div></details></div>${sitzFest?sitzKlapp(tid):''}</div>`+(sitzFest?'':sitzKarte(tid,true));
+ if(S.kat==='essen'||!kats.some(k=>k.id===S.kat))S.kat=kats[0].id;
+ h+=`<div class="erf"><div class="katnav">${kats.map(k=>{const sum=k.betrag==null?0:pres.reduce((n,p)=>n+(p.counts?.[k.id]||0),0);
+  return`<button class="kat ${S.kat===k.id?'on':''}" onclick="S.kat='${k.id}';S.minus=false;rerender()"><i>${KAT_EMO[k.id]||'•'}</i><span>${esc(k.name.replace(/\s*\(.*\)/,''))}<small>${k.betrag!=null?eur(k.betrag)+(sum?' · '+sum+'×':''):'Betrag'}</small></span></button>`}).join('')}</div><div class="card erf-main">`;
  if(['spiele','sonstiges'].includes(S.kat)){
   h+=`<p class="muted small" style="margin-top:0">${S.kat==='spiele'?'Strafen aus den Spielen als Betrag je Spieler. Tipp: Spiele weiter unten unter „🏆 Spiele heute“ eintragen – dann rechnet die Tafel Platzierungen und verlorene Teamspiele automatisch. Hier nur Zusätzliches eintragen.':'Sonstiges, z. B. Schnapsrunde oder Korrektur.'}</p>
   <table>${pres.map(p=>{const i=a.spieler.indexOf(p);return`<tr><td>${esc(p.name)}</td><td style="width:130px"><input inputmode="decimal" placeholder="0,00" value="${esc(String(p[S.kat]??'').replace('.',','))}" onchange="S.abend.spieler[${i}].${S.kat}=this.value.replace(',','.');abendChanged(false)"></td></tr>`}).join('')}</table>`;
  }else{
   const s=st.find(x=>x.id===S.kat);
-  h+=`<div class="row" style="margin-bottom:10px"><div class="f muted small">${esc(s.name)} · ${eur(s.betrag)}${s.art==='andere'?' – zahlen alle anderen':''}</div>
+  h+=`<div class="row" style="margin-bottom:10px"><div class="f"><b>${KAT_EMO[s.id]||''} ${esc(s.name)}</b> <span class="muted small">${eur(s.betrag)}</span><span class="muted small">${s.art==='andere'?' – zahlen alle anderen':''}</span></div>
    <button class="btn s ${S.minus?'d':''}" onclick="S.minus=!S.minus;rerender()">${S.minus?'− Korrektur an':'− Korrektur'}</button></div>
   <div class="grid">${pres.map(p=>{const i=a.spieler.indexOf(p);return`<button class="tap ${S.minus?'minus':''}" onclick="act.tap(${i})"><b>${p.counts?.[S.kat]||0}</b>${esc(p.name)}</button>`}).join('')}</div>`;
  }
- h+=`</div>${spieleHeute(tid,true)}</div><div class="col-r">${sitzFest?sitzKarte(tid,true):''}<div id="abend-sum"></div>
+ h+=`</div></div>${spieleHeute(tid,true)}<div id="abend-sum"></div>
  <div class="card"><details ${S.reOpen??!num(a.rechnung.gesamt??a.rechnung.getraenke)?'open':''} ontoggle="S.reOpen=this.open"><summary>🧾 Rechnung Samos</summary><div id="rechnung"></div></details></div>
  <div class="row"><button class="btn f" onclick="speichereAbend()">💾 Speichern</button>${isKasse()?`<button class="btn d f" onclick="act.abschliessen()">Abend abschließen</button>`:''}</div>
- ${isKasse()?`<button class="btn w" style="margin-top:18px;background:var(--rotbg);color:var(--rot)" onclick="act.abendReset('${tid}')">🗑 Abend zurücksetzen</button>`:''}</div></div>`;
- afterHooks.push(()=>{renderAbendSum();renderRechnung()});return h;
+ ${isKasse()?`<button class="btn w" style="margin-top:18px;background:var(--rotbg);color:var(--rot)" onclick="act.abendReset('${tid}')">🗑 Abend zurücksetzen</button>`:''}`;
+ afterHooks.push(()=>{renderAbendSum();renderRechnung();const n=$('.katnav'),k=$('.kat.on');if(n&&k&&getComputedStyle(n).display==='flex')n.scrollLeft=k.offsetLeft-n.clientWidth/2+k.offsetWidth/2});return h;
 }
 function renderAbendSum(open){const el=$('#abend-sum');if(!el||!S.abend)return;
  const a=S.abend,{res,max}=berechneAbend(a,S.verein),st=strafen().filter(s=>['pudel','glocke','neun','kranz','figur'].includes(s.id));
@@ -494,7 +512,7 @@ function renderAbendSum(open){const el=$('#abend-sum');if(!el||!S.abend)return;
  const abw=a.spieler.filter(p=>res[p.id]?.abwesend),top=a.spieler.filter(p=>res[p.id]&&!res[p.id].abwesend&&!p.gast&&max>0&&res[p.id].strafe===max);
  const rows=a.spieler.filter(p=>res[p.id]&&!res[p.id].abwesend).map(p=>{const r=res[p.id];sum+=r.gesamt;sumS+=r.strafe;
   return`<tr><td>${esc(p.name)}${p.gast?' <span class="muted">(G)</span>':''}${top.includes(p)?' ⬆️':''}</td>${st.map(s=>`<td>${p.counts?.[s.id]||''}</td>`).join('')+`<td>${num(p.spiele)+(r.spieleAuto||0)?fmtN(num(p.spiele)+(r.spieleAuto||0),2):''}</td>`}<td><b>${eur(r.strafe)}</b></td><td>${eur(r.gesamt)}</td></tr>`}).join('');
- const isOpen=open||lsGet('kt_tafel_open')==='1'||(innerWidth>=760&&lsGet('kt_tafel_open')!=='0');
+ const isOpen=open||lsGet('kt_tafel_open')==='1';
  el.innerHTML=`<div class="card"><details ${isOpen?'open':''} ontoggle="lsSet('kt_tafel_open',this.open?'1':'0')"><summary>📋 Tafel <span class="muted small" style="margin-left:auto;margin-right:8px">Strafen ${eur(sumS)}</span></summary>
  <div style="overflow-x:auto;margin-top:8px"><table><tr><th>Name</th>${st.map(s=>`<th title="${esc(s.name)}">${short[s.id]}</th>`).join('')}<th>Spiele</th><th>Strafe</th><th>Gesamt</th></tr>${rows}
  <tr class="sum"><td>Summe</td><td colspan="${st.length+1}"></td><td>${eur(sumS)}</td><td>${eur(sum)}</td></tr></table></div>
@@ -837,6 +855,10 @@ act.spielKatSave=()=>{const f=S.sf;if(!f.name.trim())return toast('Bitte einen N
  save('spielekatalog.json',d=>{d.spiele=d.spiele||[];const i=d.spiele.findIndex(x=>x.id===g.id);if(i>=0)d.spiele[i]={...d.spiele[i],...g,geaendert:new Date().toISOString()};else d.spiele.push({...g,von:S.me,erstellt:new Date().toISOString()});return d},`Spiel ${g.name}`,{spiele:[]})
  .then(d=>{S.katalog=d;S.spOpen=g.id;toast(f.id?'Gespeichert ✓':'⭐ Spiel angelegt');rerender()})};
 act.spielKatDel=id=>{closeSheet();ask('Dieses Spiel aus der Liste löschen?','Löschen',()=>save('spielekatalog.json',d=>{d.spiele=(d.spiele||[]).filter(x=>x.id!==id);return d},'Spiel gelöscht',{spiele:[]}).then(d=>{S.katalog=d;rerender()}),true)};
+const KAT_EMO={pudel:'🕳️',glocke:'🔔',neun:'9️⃣',kranz:'👑',figur:'🗿',rauchen:'🚬',team:'🤝',spiele:'🏆',sonstiges:'✏️'};
+function sitzKlapp(tid){const sz=S.spielCache[tid].sitz,pres=S.abend.spieler.filter(p=>p.anwesend);
+ const fehlt=pres.filter(p=>!sz.tafel.some(q=>q.id===p.id)&&!sz.tuer.some(q=>q.id===p.id)).length;
+ return`<div class="card sitzk"><details ${S.sitzOpen?'open':''} ontoggle="S.sitzOpen=this.open"><summary><span class="sk">🎲 🧾 ${sz.tafel.map(p=>esc(p.name)).join(', ')} <span class="muted">|</span> 🚪 ${sz.tuer.map(p=>esc(p.name)).join(', ')}</span>${fehlt?`<span class="pill warn">${fehlt} Nachzügler</span>`:''}</summary><div style="margin-top:10px">${sitzKarte(tid,true)}</div></details></div>`}
 function sitzKarte(tid,editable){const sz=S.spielCache[tid]?.sitz,ab=S.abend?.id===tid?S.abend:null,pres=ab?ab.spieler.filter(p=>p.anwesend):[];
  const fehlt=sz?pres.filter(p=>!sz.tafel.some(q=>q.id===p.id)&&!sz.tuer.some(q=>q.id===p.id)):[];
  let h=`<div class="card hero"><div class="row"><div class="f"><h3 style="margin:0">🎲 Sitzordnung</h3><div class="muted small" ${sz&&editable?'hidden':''}>${sz?'Steht für den ganzen Abend – Teamspiele: Tafelseite gegen Türseite':editable?'Einmal vor dem Kegeln auslosen, danach steht sie fest.':'Wird im Reiter „🎳 Abend“ einmal ausgelost.'}</div></div>
