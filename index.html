@@ -22,6 +22,10 @@
 [data-theme=fcb]{--gelb:#DC052D;--gelb2:#FDE3E8;--gelb3:#DC052D;--on-accent:#fff;--bg:#f3f4f7;--linie:#e3e5ea;--linie2:#c9ccd4;--chip:#eceef2;--tapbg:#f1f2f5;--dark:#DC052D;--hbar:#0066B2;--navtext:#4b4f5a;--navtext-on:#DC052D;--barc:#0066B2;--avtext:#fff;--hero-accent:#fff;--hero-accent-ink:#DC052D}
 [data-theme=fcb] .hero .seg .ja{background:#0066B2}
 .slogan{font-weight:800;letter-spacing:.3px}
+main.wide{max-width:1180px}
+@media (min-width:760px){.abend-2{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
+ .abend-2 .col-r{position:sticky;top:calc(var(--hdr) + 14px);max-height:calc(100vh - var(--hdr) - 96px);overflow:auto;border-radius:var(--r)}}
+
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit}
@@ -122,6 +126,11 @@ details[open]>summary::after{transform:rotate(270deg)}
 .cols button i{display:block;width:100%;background:var(--barc);border-radius:4px 4px 0 0;min-height:2px}
 .cols button.on i{background:var(--gelb3)}
 .axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+@media (orientation:landscape) and (max-height:540px){:root{--hdr:44px}
+ header{min-height:44px;padding-top:calc(4px + env(safe-area-inset-top));padding-bottom:4px}header img{height:32px}header .t b{font-size:15px}header small{display:none}
+ nav{padding:2px 0 calc(2px + env(safe-area-inset-bottom))}nav button{font-size:0;gap:0}nav button i{line-height:28px}
+ main{padding:10px calc(14px + env(safe-area-inset-right)) calc(60px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
+ .tap{padding:8px 4px}.tap b{font-size:24px}.card{padding:12px;margin-bottom:10px}}
 </style>
 </head>
 <body>
@@ -132,7 +141,7 @@ details[open]>summary::after{transform:rotate(270deg)}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='0.8.1';
+const APP_VERSION='0.9.0';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -173,9 +182,14 @@ const Store={
  isDemo(){return this.cfg?.mode==='demo'},
  url(p){return `https://api.github.com/repos/${OWNER}/${REPO}/contents/data/${p}`},
  hdr(){return{Authorization:'Bearer '+this.cfg.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}},
- async get(path){
-  if(this.isDemo()){const v=lsGet('kt_demo:'+path);return{data:v?JSON.parse(v):null,sha:null}}
-  const r=await fetch(this.url(path)+`?ref=${BRANCH}&_=${Date.now()}`,{headers:this.hdr(),cache:'no-store'});
+ /* get: Netz → Cache aktualisieren; ohne Netz → letzter Stand aus dem Cache. Offene Änderungen der Warteschlange werden darübergelegt. */
+ async get(path){let r;
+  try{r=await this.fetch(path);if(!this.isDemo())lsSet('kt_cache:'+path,JSON.stringify(r.data));netz(true)}
+  catch(e){if(!e.offline)throw e;netz(false);const c=lsGet('kt_cache:'+path);if(c===null)throw new Error('Offline – diese Daten wurden auf dem Gerät noch nie geladen');r={data:JSON.parse(c),sha:null,cached:true}}
+  return{...r,data:overlay(path,r.data)}},
+ async fetch(path){
+  if(this.isDemo()){if(window._offlineTest)throw offErr();const v=lsGet('kt_demo:'+path);return{data:v?JSON.parse(v):null,sha:null}}
+  let r;try{r=await fetch(this.url(path)+`?ref=${BRANCH}&_=${Date.now()}`,{headers:this.hdr(),cache:'no-store'})}catch(_){throw offErr()}
   if(r.status===404)return{data:null,sha:null};
   if(!r.ok)throw await apiErr(r);
   const j=await r.json();
@@ -183,22 +197,23 @@ const Store={
   return{data:JSON.parse(B64.dec(j.content)),sha:j.sha};
  },
  async put(path,data,sha,msg){
-  if(this.isDemo()){lsSet('kt_demo:'+path,JSON.stringify(data));return 'demo'}
+  if(this.isDemo()){if(window._offlineTest)throw offErr();lsSet('kt_demo:'+path,JSON.stringify(data));return 'demo'}
   const body={message:msg||('Update '+path),content:B64.enc(JSON.stringify(data,null,1)),branch:BRANCH};
   if(sha)body.sha=sha;
-  const r=await fetch(this.url(path),{method:'PUT',headers:{...this.hdr(),'Content-Type':'application/json'},body:JSON.stringify(body)});
+  let r;try{r=await fetch(this.url(path),{method:'PUT',headers:{...this.hdr(),'Content-Type':'application/json'},body:JSON.stringify(body)})}catch(_){throw offErr()}
+  lsSet('kt_cache:'+path,JSON.stringify(data));
   if(!r.ok)throw await apiErr(r);
   return (await r.json()).content.sha;
  },
  async del(path,msg){
   if(this.isDemo()){lsDel('kt_demo:'+path);return}
-  const {sha}=await this.get(path);if(!sha)return;
+  const {sha}=await this.fetch(path);if(!sha)return;
   const r=await fetch(this.url(path),{method:'DELETE',headers:{...this.hdr(),'Content-Type':'application/json'},body:JSON.stringify({message:msg||('Lösche '+path),sha,branch:BRANCH})});
   if(!r.ok&&r.status!==404)throw await apiErr(r);
  },
  async mutate(path,fn,msg,def){
   for(let i=0;i<5;i++){
-   const {data,sha}=await this.get(path);
+   const {data,sha}=await this.fetch(path);
    const nd=fn(data??clone(def??{}));
    try{await this.put(path,nd,sha,msg);return nd}
    catch(e){if(e.status===409||e.status===422){await sleep(300*(i+1));continue}throw e}
@@ -209,7 +224,51 @@ const Store={
 async function apiErr(r){let m='';try{m=(await r.json()).message}catch(_){}
  const e=new Error(r.status===401?'Zugangsschlüssel ungültig oder abgelaufen':r.status===403?'Keine Berechtigung: '+m:r.status===404?'Daten-Repository nicht gefunden – passt der Zugangsschlüssel?':('GitHub-Fehler '+r.status+': '+m));e.status=r.status;return e}
 function setSync(t){const s=$('#sync');if(s)s.textContent=t}
+/* ---------- Offline-Warteschlange ----------
+   Änderungen (Zusagen, Bestellungen, Spiele, Sitzordnung) wirken sofort auf dem Gerät, werden dauerhaft im Gerät
+   gemerkt und gesammelt hochgeladen: 4 s nach dem letzten Tipp, beim Reiterwechsel, beim Verlassen der App
+   und automatisch, sobald wieder Netz da ist. */
+const offErr=()=>{const e=new Error('Keine Internetverbindung');e.offline=true;return e};
+const OUT={list:(()=>{try{return JSON.parse(lsGet('kt_outbox')||'[]')}catch(_){return[]}})(),timer:null,busy:null};
+const OPS={
+ zusage:(d,o)=>{const t=d.termine?.find(x=>x.id===o.tid);if(!t)return;t.zusagen=t.zusagen||{};const z={...(t.zusagen[o.who]||{}),...o.patch,ts:o.ts,von:o.von};
+  if(z.status==='nein'){z.anreise='';z.mitBei='';z.plaetze=0}if(z.anreise!=='mitfahrt')z.mitBei='';t.zusagen[o.who]=z;
+  if(z.status==='nein'||z.anreise!=='selbst')for(const k in t.zusagen)if(t.zusagen[k].mitBei===o.who)t.zusagen[k].mitBei=''},
+ zusageDel:(d,o)=>{const t=d.termine?.find(x=>x.id===o.tid);if(!t?.zusagen)return;delete t.zusagen[o.who];for(const k in t.zusagen)if(t.zusagen[k].mitBei===o.who)t.zusagen[k].mitBei=''},
+ bestAdd:(d,o)=>{d.positionen=d.positionen||[];if(!d.positionen.some(p=>p.id===o.pos.id))d.positionen.push(o.pos)},
+ bestDel:(d,o)=>{d.positionen=(d.positionen||[]).filter(p=>p.id!==o.id)},
+ bhAdd:(d,o)=>{d.personen=d.personen||{};const l=d.personen[o.pid]=d.personen[o.pid]||[];if(!l.some(e=>e.pos===o.e.pos))l.push(o.e);d.personen[o.pid]=l.slice(-40)},
+ bhDel:(d,o)=>{for(const k in d.personen||{})d.personen[k]=d.personen[k].filter(e=>e.pos!==o.pos)},
+ spielAdd:(d,o)=>{d.spiele=d.spiele||[];if(!d.spiele.some(g=>g.id===o.g.id))d.spiele.push(o.g)},
+ spielDel:(d,o)=>{d.spiele=(d.spiele||[]).filter(g=>g.id!==o.id)},
+ sitz:(d,o)=>{d.spiele=d.spiele||[];if(!d.sitz)d.sitz=o.sitz},
+ nachz:(d,o)=>{const z=d.sitz;if(!z||z.tafel.some(q=>q.id===o.id)||z.tuer.some(q=>q.id===o.id))return;const k=z.tafel.length<z.tuer.length?'tafel':z.tuer.length<z.tafel.length?'tuer':o.seite;z[k].push({id:o.id,name:o.name})}};
+const defFor=p=>p.startsWith('bestellungen/')?{positionen:[]}:p.startsWith('spiele/')?{spiele:[]}:p==='bestellhistorie.json'?{personen:{}}:p==='termine.json'?{termine:[]}:{};
+function overlay(path,data){const ops=OUT.list.filter(x=>x.path===path);if(!ops.length)return data;const d=clone(data??defFor(path));ops.forEach(x=>{try{OPS[x.op.t](d,x.op)}catch(_){}});return d}
+function lokal(path){if(path==='termine.json')return S.termine;if(path==='bestellhistorie.json')return S.bh;
+ if(path.startsWith('bestellungen/'))return S.bestFor===path.slice(13,-5)?S.best:null;
+ if(path.startsWith('spiele/')){const tid=path.slice(7,-5);return S.spielCache[tid]=S.spielCache[tid]||{spiele:[]}}return null}
+function setLokal(path,d){if(path==='termine.json')S.termine=d;else if(path==='bestellhistorie.json')S.bh=d;else if(path.startsWith('bestellungen/')){if(S.bestFor===path.slice(13,-5))S.best=d}else if(path.startsWith('spiele/'))S.spielCache[path.slice(7,-5)]=d}
+function enqueue(path,op,msg,delay=4000){OUT.list.push({id:'o'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),path,op,msg});lsSet('kt_outbox',JSON.stringify(OUT.list));
+ const l=lokal(path);if(l)OPS[op.t](l,op);syncAnzeige();clearTimeout(OUT.timer);OUT.timer=setTimeout(flushOutbox,delay)}
+async function flushOutbox(){clearTimeout(OUT.timer);OUT.timer=null;if(OUT.busy)return OUT.busy;if(!OUT.list.length)return;
+ OUT.busy=(async()=>{let fehler=false;setSync('⏳');
+  for(const path of [...new Set(OUT.list.map(x=>x.path))]){const items=OUT.list.filter(x=>x.path===path);if(!items.length)continue;
+   try{const d=await Store.mutate(path,d=>{items.forEach(x=>{try{OPS[x.op.t](d,x.op)}catch(_){}});return d},`${meName()}: ${items.length>1?items.length+' Änderungen – ':''}${items.slice(-3).map(x=>x.msg).join(' · ')}`,defFor(path));
+    const ids=new Set(items.map(x=>x.id));OUT.list=OUT.list.filter(x=>!ids.has(x.id));lsSet('kt_outbox',JSON.stringify(OUT.list));setLokal(path,overlay(path,d));netz(true)}
+   catch(e){fehler=true;if(e.offline)netz(false);else toast('⚠ '+e.message,5000);break}}
+  if(fehler)OUT.timer=setTimeout(flushOutbox,20000);
+  syncAnzeige();const ae=document.activeElement;if(!fehler&&!$('#sheet')&&!(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)))rerender()})().finally(()=>{OUT.busy=null});
+ return OUT.busy}
+const flushTermine=flushOutbox;
+function netz(an){if(S.offline===!an)return;S.offline=!an;syncAnzeige();if(an){if(OUT.list.length)flushOutbox();if(lsGet('kt_abend_dirty')&&!saveTimer)speichereAbend()}}
+function syncAnzeige(){const n=OUT.list.length+(lsGet('kt_abend_dirty')?1:0),el=$('#sync');if(!el)return;
+ el.textContent=S.offline?`📴 Offline${n?' · '+n+' wartet':''}`:n?`● ${n} wartet`:'';el.title=S.offline?'Keine Verbindung – alles bleibt auf diesem Gerät gespeichert und wird später hochgeladen. Tippen zum erneuten Versuch.':''}
+window.addEventListener('online',()=>netz(true));window.addEventListener('offline',()=>netz(false));
+setInterval(()=>{if((OUT.list.length||lsGet('kt_abend_dirty'))&&!OUT.busy&&navigator.onLine){flushOutbox();if(lsGet('kt_abend_dirty')&&!saveTimer)speichereAbend()}},30000);
 async function save(path,fn,msg,def){
+ if(OUT.list.some(x=>x.path===path)||OUT.busy)await flushOutbox();
+ if(S.offline&&!Store.isDemo()&&!navigator.onLine){toast('📴 Dafür braucht es kurz Internet',4000);throw offErr()}
  setSync('⏳');
  try{const d=await Store.mutate(path,fn,`${meName()}: ${msg}`,def);setSync('✓');setTimeout(()=>setSync(''),1500);return d}
  catch(e){setSync('⚠');toast('⚠ '+e.message,5000);throw e}
@@ -266,7 +325,10 @@ function berechneAbend(abend,verein){
  return{res,max:r2(max),tot,anteil,gesamt,exSum,n};
 }
 function spieleAuto(tid,verein){const g=S.spielCache?.[tid]?.spiele||[],a={},pl=verein?.platzStrafe??0.10,tb=(verein?.strafen||DEFAULT_STRAFEN).find(x=>x.id==='team')?.betrag??1;
- for(const x of g){if(x.strafen===false)continue;
+ for(const x of g){if(x.strafen===false){const m=x.manuell;if(!m)continue;
+   if(m.modus==='je')for(const[id,v]of Object.entries(m.betraege||{}))a[id]=(a[id]||0)+num(v);
+   else{const l=m.verlierer||[],b=num(m.betrag);l.forEach(id=>{a[id]=(a[id]||0)+(m.modus==='gesamt'?(l.length?b/l.length:0):b)})}
+   continue}
   if(x.typ==='einzel')(x.rang||[]).forEach((id,i)=>{a[id]=(a[id]||0)+i*pl});
   else if(x.typ==='team'&&x.sieger){(x.teams?.[x.sieger==='tafel'?'tuer':'tafel']||[]).forEach(id=>{a[id]=(a[id]||0)+tb})}}
  return a}
@@ -291,19 +353,22 @@ function konto(mid){
 /* ---------------- Rahmen ---------------- */
 const TABS=[['start','🏠','Start'],['termine','📅','Termine'],['abend','🎳','Abend'],['essen','🍽️','Essen'],['spiele','🎲','Spiele'],['mehr','☰','Mehr']];
 function shell(){
- $('#app').innerHTML=`<header><img src="logo.png" alt=""><div class="t"><b id="htitle">Schwelmer Kegeltreff</b><small>${esc(meName())}${Store.isDemo()?' · Demo':''}${THEMES[themeAktiv()]?.motto?` · <span class="slogan" style="color:${THEMES[themeAktiv()].farbe}">${THEMES[themeAktiv()].motto}</span>`:''}</small></div><span id="sync"></span><button class="hb" title="Aktualisieren" onclick="act.reload()">↻</button></header>
+ $('#app').innerHTML=`<header><img src="logo.png" alt=""><div class="t"><b id="htitle">Schwelmer Kegeltreff</b><small>${esc(meName())}${Store.isDemo()?' · Demo':''}${THEMES[themeAktiv()]?.motto?` · <span class="slogan" style="color:${THEMES[themeAktiv()].farbe}">${THEMES[themeAktiv()].motto}</span>`:''}</small></div><span id="sync" onclick="act.syncJetzt()" style="cursor:pointer"></span><button class="hb" title="Aktualisieren" onclick="act.reload()">↻</button></header>
  <main id="main"></main>
  <nav><div class="in">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</div></nav>`;
+ syncAnzeige();
 }
-function go(tab){if(S.tab===tab&&tab==='mehr')S.sub=null;if(tab==='spiele')S.sp=null;S.tab=tab;lsSet('kt_tab',tab);shell();render();window.scrollTo(0,0)}
+function go(tab){flushTermine();if(saveTimer)speichereAbend();if(S.tab===tab&&tab==='mehr')S.sub=null;if(tab==='spiele')S.sp=null;S.tab=tab;lsSet('kt_tab',tab);shell();render();window.scrollTo(0,0)}
 function render(){const m=$('#main');if(!m)return;
  try{if(S.tab==='kasse'){S.tab='mehr';S.sub='kasse'}
+ m.className=S.tab==='abend'?'wide':'';
  m.innerHTML=({start:vStart,termine:vTermine,abend:vAbend,spiele:vSpiele,essen:vEssen,mehr:vMehr}[S.tab]||vStart)();after();foldSections()}
  catch(e){console.error(e);m.innerHTML=`<div class="card rot">Fehler: ${esc(e.message)}</div>`}}
 function rerender(){const y=scrollY;render();scrollTo(0,y)}
 let afterHooks=[];function after(){const h=afterHooks;afterHooks=[];h.forEach(f=>f())}
 const terminOpts=(sel,filter=()=>true)=>kegelTermine().filter(filter).map(t=>`<option value="${t.id}" ${t.id===sel?'selected':''}>${fmtD(t.datum)}${t.status==='ausgefallen'?' (ausgefallen)':t.status==='abgeschlossen'?' ✓':''}</option>`).join('');
 const act={};
+act.syncJetzt=async()=>{toast(S.offline?'Versuche zu verbinden…':'Speichere…');await flushOutbox();if(lsGet('kt_abend_dirty'))await speichereAbend();syncAnzeige();if(!OUT.list.length&&!lsGet('kt_abend_dirty'))toast('✓ Alles hochgeladen')};
 
 /* ---------------- TERMINE ---------------- */
 function vTermine(){
@@ -322,6 +387,7 @@ function vTermine(){
  ${t.bemerkung?`<div class="pill" style="margin-top:8px">${esc(t.bemerkung)}</div>`:''}`;
  if(t.status==='geplant'){
   h+=`<div class="seg" style="margin-top:14px">${['ja','vl','nein'].map(s=>`<button class="${my.status===s?s:''}" onclick="act.status('${t.id}','${s}')"><span>${s==='ja'?'✓':s==='vl'?'?':'✗'}</span>${ZST[s]}</button>`).join('')}</div>`;
+  if(my.status)h+=`<div class="muted small" style="margin-top:6px">Nochmal auf „${ZST[my.status]}“ tippen nimmt deine Rückmeldung zurück.</div>`;
   if(my.status==='ja'||my.status==='vl'){
    h+=`<div class="muted small" style="margin:14px 0 6px">Wie kommst du hin?</div><div class="chips wrap">${Object.entries(ANREISE).map(([k,[i,l]])=>`<button class="chip ${my.anreise===k?'on':''}" onclick="act.anreise('${t.id}','${k}')">${i} ${l}</button>`).join('')}</div>`;
    if(my.anreise==='selbst')h+=`<div class="row" style="margin-top:12px"><div class="f muted small">Freie Plätze für Mitfahrer</div><div class="stepper"><button onclick="act.plaetze('${t.id}',-1)">−</button><b>${my.plaetze??0}</b><button onclick="act.plaetze('${t.id}',1)">+</button></div></div>`;
@@ -353,23 +419,12 @@ function vTermine(){
 
  return h;
 }
-async function setZusage(tid,who,patch,msg,check){
- const apply=d=>{const t=d.termine.find(x=>x.id===tid);t.zusagen=t.zusagen||{};
-  if(check){const e=check(t);if(e)throw new Error(e)}
-  const z={...(t.zusagen[who]||{}),...patch,ts:new Date().toISOString(),von:S.me};
-  if(z.status==='nein'){z.anreise='';z.mitBei='';z.plaetze=0}
-  if(z.anreise!=='mitfahrt')z.mitBei='';
-  t.zusagen[who]=z;
-  if(z.status==='nein'||z.anreise!=='selbst')for(const k in t.zusagen)if(t.zusagen[k].mitBei===who)t.zusagen[k].mitBei='';
-  return d};
- const backup=clone(S.termine);
- try{apply(S.termine)}catch(e){return toast(e.message)}
- rerender();vib();
- try{S.termine=await save('termine.json',apply,msg)}catch(e){S.termine=backup}
- rerender();
-}
+function setZusage(tid,who,patch,msg,check){
+ if(check){const e=check(T(tid));if(e)return toast(e)}
+ enqueue('termine.json',{t:'zusage',tid,who,patch,ts:new Date().toISOString(),von:S.me},msg);rerender();vib()}
 const myZ=tid=>T(tid)?.zusagen?.[S.me]||{};
-act.status=(tid,s)=>setZusage(tid,S.me,{status:s},`${meName()} ${ZST[s]} am ${tid}`);
+function zusageLoeschen(tid,who,msg){enqueue('termine.json',{t:'zusageDel',tid,who},msg);rerender();vib();toast('Rückmeldung zurückgenommen')}
+act.status=(tid,s)=>myZ(tid).status===s?zusageLoeschen(tid,S.me,`${meName()} nimmt Rückmeldung zurück (${tid})`):setZusage(tid,S.me,{status:s},`${meName()} ${ZST[s]} am ${tid}`);
 act.anreise=(tid,a)=>setZusage(tid,S.me,{anreise:a,plaetze:a==='selbst'?(myZ(tid).plaetze||3):0},`${meName()} Anreise ${a}`);
 act.plaetze=(tid,d)=>{const t=T(tid),n=Math.max(0,Math.min(8,(+myZ(tid).plaetze||0)+d)),belegt=Object.values(t.zusagen||{}).filter(z=>z.mitBei===S.me&&z.anreise==='mitfahrt').length;
  if(n<belegt)return toast(`Es fahren schon ${belegt} bei dir mit`);setZusage(tid,S.me,{plaetze:n},`${meName()} bietet ${n} Plätze`)};
@@ -378,7 +433,7 @@ act.mitfahren=(tid,drv)=>setZusage(tid,S.me,{status:myZ(tid).status==='ja'||myZ(
  t=>{const d=t.zusagen[drv];if(!d||d.anreise!=='selbst')return'Fahrer bietet keine Plätze mehr an';const n=Object.entries(t.zusagen).filter(([k,z])=>k!==S.me&&z.mitBei===drv&&z.anreise==='mitfahrt').length;return n>=(+d.plaetze||0)?'Leider schon voll':null});
 act.aussteigen=tid=>setZusage(tid,S.me,{anreise:'mitfahrt',mitBei:''},`${meName()} sucht neue Mitfahrt`);
 act.fuerAndere=(tid,who)=>{const z=T(tid).zusagen?.[who]||{};
- sheet(`<h3>${esc(nameOf(who))} – ${fmtD(tid)}</h3><div class="chips wrap">${['ja','vl','nein'].map(s=>`<button class="chip ${z.status===s?'on':''}" onclick="closeSheet();setZusage('${tid}','${who}',{status:'${s}'},'Admin: ${esc(nameOf(who))} ${ZST[s]}')">${ZST[s]}</button>`).join('')}</div>
+ sheet(`<h3>${esc(nameOf(who))} – ${fmtD(tid)}</h3><div class="chips wrap">${['ja','vl','nein'].map(s=>`<button class="chip ${z.status===s?'on':''}" onclick="closeSheet();${z.status===s?`zusageLoeschen('${tid}','${who}','Admin: Rückmeldung ${esc(nameOf(who))} zurückgenommen')`:`setZusage('${tid}','${who}',{status:'${s}'},'Admin: ${esc(nameOf(who))} ${ZST[s]}')`}">${ZST[s]}</button>`).join('')}</div>${z.status?'<p class="muted small">Gewählte Antwort nochmal antippen = Rückmeldung zurücknehmen.</p>':''}
  <label>Anreise</label><div class="chips wrap">${Object.entries(ANREISE).filter(([k])=>k!=='mitfahrt').map(([k,[i,l]])=>`<button class="chip ${z.anreise===k?'on':''}" onclick="closeSheet();setZusage('${tid}','${who}',{status:'${z.status==='nein'||!z.status?'ja':z.status}',anreise:'${k}',plaetze:${k==='selbst'?3:0}},'Admin: Anreise ${esc(nameOf(who))}')">${i} ${l}</button>`).join('')}</div>
  <button class="btn w" style="margin-top:14px" onclick="closeSheet()">Schließen</button>`)};
 
@@ -386,20 +441,21 @@ act.fuerAndere=(tid,who)=>{const z=T(tid).zusagen?.[who]||{};
 function neuerAbend(t){const z=t.zusagen||{};
  return{id:t.id,gefuehrtVon:S.me,gestartet:new Date().toISOString(),rechnung:{gesamt:'',trinkgeld:'',extras:[]},
   spieler:aktive().map(m=>({id:m.id,name:m.spitzname,anwesend:z[m.id]?.status==='ja',counts:{},spiele:'',essen:'',sonstiges:''}))}}
-async function ladeAbend(tid){S.abendFor=tid;S.abend=null;S.abendLoading=true;try{const [r,g]=await Promise.all([Store.get(`abende/${tid}.json`),Store.get(`spiele/${tid}.json`)]);S.abend=r.data;S.abendSha=r.sha;S.spielCache[tid]=g.data||{spiele:[]}}finally{S.abendLoading=false}rerender()}
+async function ladeAbend(tid){S.abendFor=tid;S.abend=null;S.abendLoading=true;try{const [r,g]=await Promise.all([Store.get(`abende/${tid}.json`),Store.get(`spiele/${tid}.json`)]);S.abend=r.data;S.abendSha=r.sha;
+  if(lsGet('kt_abend_dirty')===tid){try{const bk=JSON.parse(lsGet('kt_abend_backup'));if(bk?.id===tid)S.abend=bk}catch(_){}}S.spielCache[tid]=g.data||{spiele:[]}}finally{S.abendLoading=false}rerender()}
 let saveTimer=null;
 function abendChanged(full=true){
- lsSet('kt_abend_backup',JSON.stringify(S.abend));setSync('● ungespeichert');
+ lsSet('kt_abend_backup',JSON.stringify(S.abend));lsSet('kt_abend_dirty',S.abend.id);syncAnzeige();
  clearTimeout(saveTimer);saveTimer=setTimeout(speichereAbend,2500);
  if(full)rerender();else renderAbendSum();
 }
 async function speichereAbend(){clearTimeout(saveTimer);saveTimer=null;if(!S.abend)return;setSync('⏳');
- for(let i=0;i<3;i++){try{S.abendSha=await Store.put(`abende/${S.abend.id}.json`,S.abend,S.abendSha,`${meName()}: Strichliste ${S.abend.id}`);setSync('✓');setTimeout(()=>setSync(''),1500);return}
-  catch(e){if(e.status===409||e.status===422){S.abendSha=(await Store.get(`abende/${S.abend.id}.json`)).sha;continue}setSync('⚠');toast('⚠ '+e.message,5000);return}}}
+ for(let i=0;i<3;i++){try{S.abendSha=await Store.put(`abende/${S.abend.id}.json`,S.abend,S.abendSha,`${meName()}: Strichliste ${S.abend.id}`);lsDel('kt_abend_dirty');netz(true);syncAnzeige();return}
+  catch(e){if(e.offline){netz(false);syncAnzeige();return}if(e.status===409||e.status===422){S.abendSha=(await Store.fetch(`abende/${S.abend.id}.json`)).sha;continue}setSync('⚠');toast('⚠ '+e.message,5000);return}}}
 function vAbend(){
  const tid=S.selAbend&&T(S.selAbend)?S.selAbend:abendTermin()?.id;
  if(!tid)return`<div class="card">Kein Termin vorhanden.</div>`;
- const t=T(tid);
+ const t=T(tid),sitzFest=!!S.spielCache[tid]?.sitz;
  const kopf=`<div class="row" style="margin-bottom:12px"><select onchange="S.selAbend=this.value;render()">${terminOpts(tid,x=>x.status!=='ausgefallen')}</select></div>`;
  if(t.status==='abgeschlossen')return kopf+abgeschlossenAnsicht(t);
  if(S.abendFor!==tid){afterHooks.push(()=>ladeAbend(tid).catch(e=>toast('⚠ '+e.message,5000)));return kopf+`<div class="card muted">Lade Strichliste…</div>`}
@@ -414,8 +470,8 @@ function vAbend(){
  if(S.anwOpen==null)S.anwOpen=!pres.length;
  let h=kopf+`<div class="card"><details ${S.anwOpen?'open':''} ontoggle="S.anwOpen=this.open"><summary>👥 Anwesend: ${pres.length}${a.spieler.some(p=>p.gast&&p.anwesend)?' · Gäste: '+a.spieler.filter(p=>p.gast&&p.anwesend).length:''}</summary>
   <div class="chips wrap" style="margin-top:10px">${a.spieler.map((p,i)=>`<button class="chip ${p.anwesend?'an':''}" onclick="act.toggleAnw(${i})">${p.anwesend?'✓ ':''}${esc(p.name)}${p.gast?' (Gast)':''}</button>`).join('')}</div>
-  <div class="row" style="margin-top:10px"><input class="f" id="gastname" placeholder="Name des Gastes"><button class="btn" onclick="act.gast()">+ Gast</button></div></details></div>`+sitzKarte(tid,true);
- h+=`<div class="sticky"><div class="chips">${kats.map(k=>`<button class="chip ${S.kat===k.id?'on':''}" onclick="S.kat='${k.id}';rerender()">${esc(k.name)}</button>`).join('')}</div></div><div class="card">`;
+  <div class="row" style="margin-top:10px"><input class="f" id="gastname" placeholder="Name des Gastes"><button class="btn" onclick="act.gast()">+ Gast</button></div></details></div>`+(sitzFest?'':sitzKarte(tid,true));
+ h+=`<div class="abend-2"><div class="col-l"><div class="sticky"><div class="chips">${kats.map(k=>`<button class="chip ${S.kat===k.id?'on':''}" onclick="S.kat='${k.id}';rerender()">${esc(k.name)}</button>`).join('')}</div></div><div class="card">`;
  if(S.kat==='essen')S.kat='pudel';
  if(['spiele','sonstiges'].includes(S.kat)){
   h+=`<p class="muted small" style="margin-top:0">${S.kat==='spiele'?'Strafen aus den Spielen als Betrag je Spieler. Tipp: Spiele weiter unten unter „🏆 Spiele heute“ eintragen – dann rechnet die Tafel Platzierungen und verlorene Teamspiele automatisch. Hier nur Zusätzliches eintragen.':'Sonstiges, z. B. Schnapsrunde oder Korrektur.'}</p>
@@ -426,10 +482,10 @@ function vAbend(){
    <button class="btn s ${S.minus?'d':''}" onclick="S.minus=!S.minus;rerender()">${S.minus?'− Korrektur an':'− Korrektur'}</button></div>
   <div class="grid">${pres.map(p=>{const i=a.spieler.indexOf(p);return`<button class="tap ${S.minus?'minus':''}" onclick="act.tap(${i})"><b>${p.counts?.[S.kat]||0}</b>${esc(p.name)}</button>`}).join('')}</div>`;
  }
- h+=`</div>${spieleHeute(tid,true)}<div id="abend-sum"></div>
+ h+=`</div>${spieleHeute(tid,true)}</div><div class="col-r">${sitzFest?sitzKarte(tid,true):''}<div id="abend-sum"></div>
  <div class="card"><details ${S.reOpen??!num(a.rechnung.gesamt??a.rechnung.getraenke)?'open':''} ontoggle="S.reOpen=this.open"><summary>🧾 Rechnung Samos</summary><div id="rechnung"></div></details></div>
  <div class="row"><button class="btn f" onclick="speichereAbend()">💾 Speichern</button>${isKasse()?`<button class="btn d f" onclick="act.abschliessen()">Abend abschließen</button>`:''}</div>
- ${isKasse()?`<button class="btn w" style="margin-top:18px;background:var(--rotbg);color:var(--rot)" onclick="act.abendReset('${tid}')">🗑 Abend zurücksetzen</button>`:''}`;
+ ${isKasse()?`<button class="btn w" style="margin-top:18px;background:var(--rotbg);color:var(--rot)" onclick="act.abendReset('${tid}')">🗑 Abend zurücksetzen</button>`:''}</div></div>`;
  afterHooks.push(()=>{renderAbendSum();renderRechnung()});return h;
 }
 function renderAbendSum(open){const el=$('#abend-sum');if(!el||!S.abend)return;
@@ -438,7 +494,7 @@ function renderAbendSum(open){const el=$('#abend-sum');if(!el||!S.abend)return;
  const abw=a.spieler.filter(p=>res[p.id]?.abwesend),top=a.spieler.filter(p=>res[p.id]&&!res[p.id].abwesend&&!p.gast&&max>0&&res[p.id].strafe===max);
  const rows=a.spieler.filter(p=>res[p.id]&&!res[p.id].abwesend).map(p=>{const r=res[p.id];sum+=r.gesamt;sumS+=r.strafe;
   return`<tr><td>${esc(p.name)}${p.gast?' <span class="muted">(G)</span>':''}${top.includes(p)?' ⬆️':''}</td>${st.map(s=>`<td>${p.counts?.[s.id]||''}</td>`).join('')+`<td>${num(p.spiele)+(r.spieleAuto||0)?fmtN(num(p.spiele)+(r.spieleAuto||0),2):''}</td>`}<td><b>${eur(r.strafe)}</b></td><td>${eur(r.gesamt)}</td></tr>`}).join('');
- const isOpen=open||lsGet('kt_tafel_open')==='1';
+ const isOpen=open||lsGet('kt_tafel_open')==='1'||(innerWidth>=760&&lsGet('kt_tafel_open')!=='0');
  el.innerHTML=`<div class="card"><details ${isOpen?'open':''} ontoggle="lsSet('kt_tafel_open',this.open?'1':'0')"><summary>📋 Tafel <span class="muted small" style="margin-left:auto;margin-right:8px">Strafen ${eur(sumS)}</span></summary>
  <div style="overflow-x:auto;margin-top:8px"><table><tr><th>Name</th>${st.map(s=>`<th title="${esc(s.name)}">${short[s.id]}</th>`).join('')}<th>Spiele</th><th>Strafe</th><th>Gesamt</th></tr>${rows}
  <tr class="sum"><td>Summe</td><td colspan="${st.length+1}"></td><td>${eur(sumS)}</td><td>${eur(sum)}</td></tr></table></div>
@@ -464,7 +520,8 @@ act.teuerAusBestellung=async()=>{await loadKarte();const b=(await Store.get(`bes
  if(!neu.length)return toast(`Keine Gerichte über ${eur(schw)} in der Bestellung (Preise nötig)`);
  const R=S.abend.rechnung;R.extras=(R.extras||[]).filter(e=>e.pid||num(e.betrag));for(const e of neu)if(!R.extras.some(x=>x.pid===e.pid&&num(x.betrag)===num(e.betrag)))R.extras.push(e);
  toast(`${neu.length} teure${neu.length===1?'s':''} Essen übernommen`);abendChanged(false);renderRechnung()};
-act.abschliessen=()=>{const c=berechneAbend(S.abend,S.verein),ab=S.abend.spieler.filter(p=>c.res[p.id]?.abwesend),tp=S.abend.spieler.filter(p=>!p.gast&&c.res[p.id]&&!c.res[p.id].abwesend&&c.max>0&&c.res[p.id].strafe===c.max);ask(`Abend ${fmtD(S.abend.id)} abschließen? Höchste Strafe: ${eur(c.max)}${tp.length?' ('+tp.map(p=>p.name).join(', ')+')':''}.${ab.length?` ${ab.length} Abwesende bekommen je ${eur(c.max)}: ${ab.map(p=>p.name).join(', ')}.`:''} Danach wird auf die Konten gebucht.`,'Abschließen',async()=>{
+act.abschliessen=async()=>{if(lsGet('kt_abend_dirty')){await speichereAbend();if(lsGet('kt_abend_dirty'))return toast('📴 Zum Abschließen braucht es kurz Internet – die Strichliste ist sicher auf diesem Gerät gespeichert.',5000)}
+ await flushOutbox();const c=berechneAbend(S.abend,S.verein),ab=S.abend.spieler.filter(p=>c.res[p.id]?.abwesend),tp=S.abend.spieler.filter(p=>!p.gast&&c.res[p.id]&&!c.res[p.id].abwesend&&c.max>0&&c.res[p.id].strafe===c.max);ask(`Abend ${fmtD(S.abend.id)} abschließen? Höchste Strafe: ${eur(c.max)}${tp.length?' ('+tp.map(p=>p.name).join(', ')+')':''}.${ab.length?` ${ab.length} Abwesende bekommen je ${eur(c.max)}: ${ab.map(p=>p.name).join(', ')}.`:''} Danach wird auf die Konten gebucht.`,'Abschließen',async()=>{
  const a=S.abend,{res}=berechneAbend(a,S.verein);
  await speichereAbend();
  const abr={},fig={},gaeste=[],abw=[],stats={},str={};for(const p of a.spieler){const r=res[p.id];if(!r)continue;
@@ -541,10 +598,9 @@ act.bestellen=async tid=>{const ef=S.ef;if(!ef.name?.trim())return toast('Bitte 
  S.ef={fuer:S.ef.fuer}};
 async function addPos(tid,o){
  const p={id:'p'+Date.now().toString(36),...o,von:S.me,ts:new Date().toISOString()};
- S.best=await save(`bestellungen/${tid}.json`,d=>{d.positionen=d.positionen||[];d.positionen.push(p);return d},`Bestellung ${p.fuerName}: ${p.nr} ${p.gericht}`,{positionen:[]});
- vib();toast('Hinzugefügt ✓');rerender();
- if(M(p.fuer))save('bestellhistorie.json',d=>{d.personen=d.personen||{};const l=d.personen[p.fuer]=d.personen[p.fuer]||[];l.push({pos:p.id,datum:tid,nr:p.nr,gericht:p.gericht,wunsch:p.wunsch});d.personen[p.fuer]=l.slice(-40);return d},`Bestellhistorie ${p.fuerName}`,{personen:{}}).then(d=>{S.bh=d;if(S.tab==='essen')rerender()}).catch(()=>{});
-}
+ enqueue(`bestellungen/${tid}.json`,{t:'bestAdd',pos:p},`Bestellung ${p.fuerName}: ${p.nr} ${p.gericht}`,1500);
+ if(M(p.fuer))enqueue('bestellhistorie.json',{t:'bhAdd',pid:p.fuer,e:{pos:p.id,datum:tid,nr:p.nr,gericht:p.gericht,wunsch:p.wunsch}},`Bestellhistorie ${p.fuerName}`,1500);
+ vib();toast(S.offline?'Hinzugefügt – wird hochgeladen, sobald Netz da ist':'Hinzugefügt ✓');rerender()}
 /* Top 3 je Person: häufigste Kombination aus Gericht + Sonderwunsch, bei Gleichstand die zuletzt bestellte */
 function topBestellungen(pid){const l=S.bh?.personen?.[pid]||[],m={};
  l.forEach((e,i)=>{const k=(e.nr||'')+'|'+e.gericht+'|'+(e.wunsch||'');const x=m[k]=m[k]||{...e,n:0,last:0};x.n++;x.last=i;x.datum=e.datum});
@@ -552,8 +608,7 @@ function topBestellungen(pid){const l=S.bh?.personen?.[pid]||[],m={};
 act.schnell=(tid,i)=>{const fuer=S.ef.fuer||S.me,e=topBestellungen(fuer)[i];if(!e)return;
  const x=(S.karte.gerichte||[]).find(g=>(e.nr&&String(g.nr)===String(e.nr))||g.name===e.gericht);
  addPos(tid,{fuer,fuerName:nameOf(fuer),nr:e.nr||x?.nr||'',gericht:x?.name||e.gericht,wunsch:e.wunsch||'',preis:x?.preis??null})};
-act.posLoeschen=async(tid,id)=>{S.best=await save(`bestellungen/${tid}.json`,d=>{d.positionen=d.positionen.filter(p=>p.id!==id);return d},'Bestellposition gelöscht',{positionen:[]});rerender();
- save('bestellhistorie.json',d=>{for(const k in d.personen||{})d.personen[k]=d.personen[k].filter(e=>e.pos!==id);return d},'Bestellhistorie bereinigt',{personen:{}}).then(d=>{S.bh=d;rerender()}).catch(()=>{})};
+act.posLoeschen=(tid,id)=>{enqueue(`bestellungen/${tid}.json`,{t:'bestDel',id},'Bestellposition gelöscht',1500);enqueue('bestellhistorie.json',{t:'bhDel',pos:id},'Bestellhistorie bereinigt',1500);rerender()};
 act.kopieren=async()=>{const t=$('pre.order').textContent;try{await navigator.clipboard.writeText(t);toast('Kopiert ✓')}catch(_){toast('Kopieren nicht möglich')}};
 act.teilen=()=>{const t=$('pre.order').textContent;if(navigator.share)navigator.share({text:t}).catch(()=>{});else location.href='https://wa.me/?text='+encodeURIComponent(t)};
 
@@ -751,7 +806,7 @@ const spName=id=>S.abend?.spieler.find(p=>p.id===id)?.name||S.sp?.spieler.find(p
 /* Spiele des Abends – im Reiter Abend */
 function spieleHeute(tid,editable){const sp=S.spielCache[tid]?.spiele||[],n=recSpieler(tid).length;
  let h=`<div class="sec">🏆 Spiele heute (${sp.length})</div><div class="card">`;
- h+=sp.length?`<ul class="l">${sp.map(g=>{const auto=g.strafen===false?'':g.typ==='einzel'?'Platz 2+: je 0,10 € pro Platz':'Verlierer je 1 €';
+ h+=sp.length?`<ul class="l">${sp.map(g=>{const auto=strafText(g);
   return`<li><div class="g"><b>${esc(g.name)}</b> <span class="pill">${g.typ==='team'?'Team':'Einzel'}</span>
   <div class="small" style="margin-top:2px">${g.typ==='einzel'?(g.rang||[]).map((id,i)=>`${i===0?'🥇 ':i===1?'🥈 ':i===2?'🥉 ':i+1+'. '}${esc(spName(id))}`).join(' · '):g.sieger?`🏆 ${g.sieger==='tafel'?'🧾 Tafelseite':'🚪 Türseite'}: ${(g.teams[g.sieger]||[]).map(id=>esc(spName(id))).join(', ')}`:''}</div>
   <div class="small muted">${g.notiz?esc(g.notiz)+' · ':''}${auto||'ohne Strafen'}</div></div>${editable?`<button class="x" onclick="act.spielDel('${tid}','${g.id}')">✕</button>`:''}</li>`}).join('')}</ul>`:'<p class="muted" style="margin:0">Noch kein Spiel eingetragen.</p>';
@@ -784,10 +839,10 @@ act.spielKatSave=()=>{const f=S.sf;if(!f.name.trim())return toast('Bitte einen N
 act.spielKatDel=id=>{closeSheet();ask('Dieses Spiel aus der Liste löschen?','Löschen',()=>save('spielekatalog.json',d=>{d.spiele=(d.spiele||[]).filter(x=>x.id!==id);return d},'Spiel gelöscht',{spiele:[]}).then(d=>{S.katalog=d;rerender()}),true)};
 function sitzKarte(tid,editable){const sz=S.spielCache[tid]?.sitz,ab=S.abend?.id===tid?S.abend:null,pres=ab?ab.spieler.filter(p=>p.anwesend):[];
  const fehlt=sz?pres.filter(p=>!sz.tafel.some(q=>q.id===p.id)&&!sz.tuer.some(q=>q.id===p.id)):[];
- let h=`<div class="card hero"><div class="row"><div class="f"><h3 style="margin:0">🎲 Sitzordnung</h3><div class="muted small">${sz?'Steht für den ganzen Abend – Teamspiele: Tafelseite gegen Türseite':editable?'Einmal vor dem Kegeln auslosen, danach steht sie fest.':'Wird im Reiter „🎳 Abend“ einmal ausgelost.'}</div></div>
+ let h=`<div class="card hero"><div class="row"><div class="f"><h3 style="margin:0">🎲 Sitzordnung</h3><div class="muted small" ${sz&&editable?'hidden':''}>${sz?'Steht für den ganzen Abend – Teamspiele: Tafelseite gegen Türseite':editable?'Einmal vor dem Kegeln auslosen, danach steht sie fest.':'Wird im Reiter „🎳 Abend“ einmal ausgelost.'}</div></div>
  ${!sz&&editable?`<button class="btn s p" ${pres.length<2?'disabled':''} onclick="act.auslosen('${tid}')">Auslosen</button>`:''}</div>`;
- if(sz){h+=`<div class="row" style="align-items:flex-start;margin-top:12px;gap:10px">${[['tafel','🧾 Tafelseite'],['tuer','🚪 Türseite']].map(([k,l])=>`<div class="f" style="background:rgba(255,255,255,.08);border-radius:14px;padding:10px"><b>${l}</b> <span class="muted small">(${sz[k].length})</span><div class="small" style="margin-top:6px;line-height:1.7">${sz[k].map(p=>esc(p.name)).join('<br>')}</div></div>`).join('')}</div>
-  <div class="muted small" style="margin-top:8px">Ausgelost um ${new Date(sz.ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr von ${esc(nameOf(sz.von))}</div>
+ if(sz){h+=`<div class="row" style="align-items:flex-start;margin-top:${editable?8:12}px;gap:10px">${[['tafel','🧾 Tafelseite'],['tuer','🚪 Türseite']].map(([k,l])=>`<div class="f" style="background:rgba(255,255,255,.08);border-radius:14px;padding:${editable?'6px 10px':'10px'}"><b>${l}</b> <span class="muted small">(${sz[k].length})</span><div class="small" style="margin-top:${editable?2:6}px;line-height:${editable?1.4:1.7}">${sz[k].map(p=>esc(p.name)).join(editable?', ':'<br>')}</div></div>`).join('')}</div>
+  <div class="muted small" style="margin-top:${editable?4:8}px">Ausgelost um ${new Date(sz.ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr von ${esc(nameOf(sz.von))}</div>
   ${editable&&fehlt.length?`<div class="row wrap" style="margin-top:10px;gap:6px"><span class="small">Nachzügler:</span>${fehlt.map(p=>`<button class="btn s p" onclick="act.nachzuegler('${tid}','${p.id}')">${esc(p.name)} zuordnen</button>`).join('')}</div>`:''}
   ${editable&&isAdmin()?`<button class="btn s" style="margin-top:10px;background:rgba(255,255,255,.12);color:#fff" onclick="act.sitzReset('${tid}')">Zurücksetzen (Admin)</button>`:''}`}
  else if(editable)h+=`<p class="muted small" style="margin-bottom:0">${pres.length<2?'Erst die Anwesenden abhaken, dann auslosen.':pres.length+' Anwesende werden zufällig auf Tafel- und Türseite verteilt.'}</p>`;
@@ -798,15 +853,21 @@ act.auslosen=tid=>{if(S.spielCache[tid]?.sitz)return toast('Die Sitzordnung steh
  ask(`Sitzordnung für ${pres.length} Anwesende auslosen? Danach steht sie für den Abend fest.`,'🎲 Auslosen',()=>{
   const m=mischen(pres),half=Math.ceil(m.length/2),extraTafel=crypto.getRandomValues(new Uint8Array(1))[0]%2===0;
   const a=m.slice(0,m.length%2&&!extraTafel?half-1:half),b=m.slice(a.length),sitz={tafel:a,tuer:b,ts:new Date().toISOString(),von:S.me};
-  save(`spiele/${tid}.json`,d=>{d.spiele=d.spiele||[];if(d.sitz)return d;d.sitz=sitz;return d},'Sitzordnung ausgelost',{spiele:[]}).then(d=>{S.spielCache[tid]=d;vib();toast('🎲 Ausgelost!');rerender()})})};
-act.nachzuegler=(tid,id)=>{const p=S.abend.spieler.find(x=>x.id===id);if(!p)return;
- save(`spiele/${tid}.json`,d=>{const z=d.sitz;if(!z||z.tafel.some(q=>q.id===id)||z.tuer.some(q=>q.id===id))return d;
-  const k=z.tafel.length<z.tuer.length?'tafel':z.tuer.length<z.tafel.length?'tuer':(crypto.getRandomValues(new Uint8Array(1))[0]%2?'tafel':'tuer');z[k].push({id,name:p.name});d.nachzuegler=(d.nachzuegler||[]).concat({id,seite:k});return d},'Nachzügler '+p.name,{spiele:[]})
- .then(d=>{S.spielCache[tid]=d;const k=d.sitz.tafel.some(q=>q.id===id)?'Tafelseite':'Türseite';toast(`${p.name} sitzt an der ${k}`);rerender()})};
+  enqueue(`spiele/${tid}.json`,{t:'sitz',sitz},'Sitzordnung ausgelost',1000);vib();toast('🎲 Ausgelost!');rerender()})};
+act.nachzuegler=(tid,id)=>{const p=S.abend.spieler.find(x=>x.id===id);if(!p)return;const seite=crypto.getRandomValues(new Uint8Array(1))[0]%2?'tafel':'tuer';
+ enqueue(`spiele/${tid}.json`,{t:'nachz',id,name:p.name,seite},'Nachzügler '+p.name,1000);
+ const z=S.spielCache[tid]?.sitz;toast(`${p.name} sitzt an der ${z?.tafel.some(q=>q.id===id)?'Tafelseite':'Türseite'}`);rerender()};
 act.sitzReset=tid=>ask('Sitzordnung wirklich zurücksetzen? Danach kann neu ausgelost werden.','Zurücksetzen',()=>save(`spiele/${tid}.json`,d=>{delete d.sitz;return d},'Sitzordnung zurückgesetzt',{spiele:[]}).then(d=>{S.spielCache[tid]=d;rerender()}),true);
 act.recStart=(tid,spielId)=>{const g=alleSpiele().find(x=>x.id===spielId),sz=S.spielCache[tid]?.sitz;
  S.rec={tid,spielId:g?.id||'',name:g?.name||'',typ:g?.typ||'einzel',rang:[],teams:{tafel:(sz?.tafel||[]).map(p=>p.id),tuer:(sz?.tuer||[]).map(p=>p.id)},sieger:'',strafen:true,notiz:''};
  const rest=S.spielCache[tid]?.sitz?[]:recSpieler(tid).map(p=>p.id).filter(id=>!S.rec.teams.tafel.includes(id)&&!S.rec.teams.tuer.includes(id));rest.forEach((id,i)=>S.rec.teams[i%2?'tuer':'tafel'].push(id));recSheet()};
+function verliererVon(R,tid){if(R.typ==='team')return R.sieger?(R.teams?.[R.sieger==='tafel'?'tuer':'tafel']||[]):[];
+ const r=R.rang||[];return r.length>1?r.slice(1):recSpieler(tid).map(p=>p.id).filter(id=>id!==r[0])}
+function teilnehmerVon(R,tid){if(R.typ==='team'){const l=verliererVon(R,tid);return[...l,...[...(R.teams?.tafel||[]),...(R.teams?.tuer||[])].filter(id=>!l.includes(id))]}
+ const r=R.rang||[];return r.length>1?[...r,...recSpieler(tid).map(p=>p.id).filter(id=>!r.includes(id))]:[...r,...recSpieler(tid).map(p=>p.id).filter(id=>!r.includes(id))]}
+function strafText(g){if(g.strafen!==false)return g.typ==='einzel'?'Platz 2+: je 0,10 € pro Platz':'Verlierer je 1 €';const m=g.manuell;if(!m)return'ohne Strafen';
+ if(m.modus==='je'){const e=Object.entries(m.betraege||{}).filter(([,v])=>num(v)>0);return e.length?'Eigene Strafen: '+e.map(([id,v])=>`${spName(id)} ${eur(num(v))}`).join(' · '):'ohne Strafen'}
+ return m.modus==='pro'?`${eur(num(m.betrag))} je Verlierer`:`${eur(num(m.betrag))} für die Verlierer, aufgeteilt`}
 function recSheet(){const R=S.rec,sp=recSpieler(R.tid);
  let h=`<h3>Spiel hinzufügen</h3><label>Welches Spiel?</label><select onchange="const g=alleSpiele().find(x=>x.id===this.value);S.rec.spielId=this.value;S.rec.name=g?g.name:'';if(g)S.rec.typ=g.typ;recSheet()"><option value="">– anderes Spiel (Name eingeben) –</option>${alleSpiele().map(g=>`<option value="${g.id}" ${R.spielId===g.id?'selected':''}>${g.eigen?'⭐ ':''}${esc(g.name)} (${g.typ==='team'?'Team':'Einzel'})</option>`).join('')}</select>
  ${R.spielId?'':`<label>Name</label><input value="${esc(R.name)}" placeholder="Name des Spiels" onchange="S.rec.name=this.value">`}
@@ -820,15 +881,25 @@ function recSheet(){const R=S.rec,sp=recSpieler(R.tid);
   h+=`<label>${fix?'Teams = Sitzordnung des Abends':'Teams – Name antippen, um die Seite zu wechseln (noch keine Sitzordnung ausgelost)'}</label><div class="row" style="align-items:flex-start;gap:10px">${[['tafel','🧾 Tafelseite'],['tuer','🚪 Türseite']].map(([k,l])=>`<div class="f" style="background:${R.sieger===k?'var(--gruenbg)':'var(--tapbg)'};border-radius:14px;padding:10px"><b>${l}</b><div class="chips wrap" style="margin-top:6px">${R.teams[k].map(id=>fix?`<span class="chip" style="background:var(--card);cursor:default">${esc(spName(id))}</span>`:`<button class="chip" style="background:var(--card)" onclick="S.rec.teams['${k}']=S.rec.teams['${k}'].filter(x=>x!=='${id}');S.rec.teams['${k==='tafel'?'tuer':'tafel'}'].push('${id}');recSheet()">${esc(spName(id))}</button>`).join('')}</div></div>`).join('')}</div>
   <label>Gewonnen hat</label><div class="seg" style="grid-template-columns:1fr 1fr">${[['tafel','🧾 Tafelseite'],['tuer','🚪 Türseite']].map(([k,l])=>`<button style="background:${R.sieger===k?'#2e9e4d':'var(--chip)'};color:${R.sieger===k?'#fff':'var(--ink)'}" onclick="S.rec.sieger='${k}';recSheet()">${l}</button>`).join('')}</div>`;
  }
- h+=`<label class="row" style="margin-top:12px;font-weight:600;color:var(--ink)"><input type="checkbox" ${R.strafen?'checked':''} onchange="S.rec.strafen=this.checked" style="width:auto;min-height:0"> Strafen laut Katalog berechnen ${R.typ==='einzel'?'(0,10 € je Platz ab 2.)':'(1 € je Verlierer)'}</label>
+ h+=`<label class="row" style="margin-top:12px;font-weight:600;color:var(--ink)"><input type="checkbox" ${R.strafen?'checked':''} onchange="S.rec.strafen=this.checked;recSheet()" style="width:auto;min-height:0"> Strafen laut Katalog berechnen ${R.typ==='einzel'?'(0,10 € je Platz ab 2.)':'(1 € je Verlierer)'}</label>`;
+ if(!R.strafen){R.man=R.man||{modus:'je',betraege:{},betrag:''};const M_=R.man,ver=verliererVon(R,R.tid),eu=v=>esc(String(v??'').replace('.',','));
+  h+=`<div style="background:var(--tapbg);border-radius:14px;padding:12px;margin-top:8px"><b class="small">Eigene Strafen für dieses Spiel</b>
+  <div class="chips wrap" style="margin-top:8px">${[['je','✍️ Je Spieler'],['pro','Betrag je Verlierer'],['gesamt','Gesamtbetrag, aufgeteilt']].map(([k,l])=>`<button class="chip ${M_.modus===k?'on':''}" onclick="S.rec.man.modus='${k}';recSheet()">${l}</button>`).join('')}</div>`;
+  if(M_.modus==='je')h+=`<p class="muted small" style="margin:8px 0 4px">Betrag je Spieler eintragen, leer = 0 €.</p>${teilnehmerVon(R,R.tid).map(id=>`<div class="row" style="margin-bottom:6px"><span class="f">${esc(spName(id))}${ver.includes(id)?'':' <span class="muted small">🏆</span>'}</span><input style="width:120px" inputmode="decimal" placeholder="0,00 €" value="${eu(M_.betraege[id])}" onchange="S.rec.man.betraege['${id}']=this.value.replace(',','.')"></div>`).join('')}`;
+  else h+=`<div class="row" style="margin-top:8px"><input style="width:140px" inputmode="decimal" placeholder="z. B. 5,00 €" value="${eu(M_.betrag)}" onchange="S.rec.man.betrag=this.value.replace(',','.')"><span class="small f">${M_.modus==='pro'?'zahlt jeder Verlierer':'zahlen die Verlierer zusammen'}</span></div>
+   <p class="muted small" style="margin:6px 0 0">Betrifft ${ver.length?ver.map(id=>esc(spName(id))).join(', '):(R.typ==='team'?'– erst Siegerseite wählen':'– erst Sieger antippen')}${M_.modus==='gesamt'&&ver.length?` (je ${ver.length} Teile)`:''}.</p>`;
+  h+=`</div>`}
+ h+=`
  <label>Notiz (optional)</label><input value="${esc(R.notiz)}" placeholder="z. B. Endstand 312:287" onchange="S.rec.notiz=this.value">
  <div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn p f" onclick="act.recSave()">Speichern</button></div>`;
  sheet(h)}
 act.recSave=()=>{const R=S.rec;if(!R.name.trim())return toast('Bitte Spiel wählen oder benennen');
  if(R.typ==='einzel'&&!R.rang.length)return toast('Mindestens den Sieger antippen');if(R.typ==='team'&&!R.sieger)return toast('Bitte Siegerteam wählen');
  const g={id:'g'+Date.now().toString(36),spielId:R.spielId,name:R.name.trim(),typ:R.typ,strafen:R.strafen,notiz:(R.notiz||'').trim(),von:S.me,ts:new Date().toISOString(),...(R.typ==='einzel'?{rang:R.rang}:{teams:R.teams,sieger:R.sieger})};
- closeSheet();save(`spiele/${R.tid}.json`,d=>{(d.spiele=d.spiele||[]).push(g);return d},'Spiel '+g.name,{spiele:[]}).then(d=>{S.spielCache[R.tid]=d;toast('Gespeichert ✓');rerender()})};
-act.spielDel=(tid,id)=>ask('Spiel-Ergebnis löschen?','Löschen',()=>save(`spiele/${tid}.json`,d=>{d.spiele=(d.spiele||[]).filter(g=>g.id!==id);return d},'Spiel gelöscht',{spiele:[]}).then(d=>{S.spielCache[tid]=d;rerender()}),true);
+ if(!R.strafen&&R.man){const m=R.man;if(m.modus==='je'){const b={};for(const[id,v]of Object.entries(m.betraege))if(num(v)>0)b[id]=r2(num(v));g.manuell={modus:'je',betraege:b}}
+  else{if(!(num(m.betrag)>0))return toast('Bitte einen Betrag eintragen – oder Haken „laut Katalog“ wieder setzen');const v=verliererVon(R,R.tid);if(!v.length)return toast(R.typ==='team'?'Bitte Siegerseite wählen':'Bitte den Sieger antippen');g.manuell={modus:m.modus,betrag:r2(num(m.betrag)),verlierer:v}}}
+ closeSheet();enqueue(`spiele/${R.tid}.json`,{t:'spielAdd',g},'Spiel '+g.name,1500);toast('Gespeichert ✓');rerender()};
+act.spielDel=(tid,id)=>ask('Spiel-Ergebnis löschen?','Löschen',()=>{enqueue(`spiele/${tid}.json`,{t:'spielDel',id},'Spiel gelöscht',1500);rerender()},true);
 
 /* ---------------- KASSENSTAND ---------------- */
 function gastKonto(){const items=[{datum:S.verein.startSaldoStichtag,text:'Übertrag Gäste aus Excel',betrag:num(S.kasse.gaesteStart)}];
@@ -836,19 +907,22 @@ function gastKonto(){const items=[{datum:S.verein.startSaldoStichtag,text:'Über
  for(const b of S.kasse.buchungen.filter(b=>b.mitglied==='gast'))items.push({datum:b.datum,text:(b.art==='einzahlung'?'Einzahlung':b.art==='gutschrift'?'Gutschrift':'Belastung')+(b.text?': '+b.text:''),betrag:(b.art==='belastung'?1:-1)*num(b.betrag),bid:b.id});
  items.sort((a,b)=>a.datum.localeCompare(b.datum));return{saldo:r2(items.reduce((a,i)=>a+i.betrag,0)),items}}
 function samstage(von,bis){const r=[];let d=von;while(new Date(d+'T12:00:00Z').getUTCDay()!==6)d=addDays(d,1);for(;d<=bis;d=addDays(d,7))r.push(d);return r}
-function terminSummen(){const m={...(S.hist?.terminBetraege||{})},h=todayISO();
+function terminSummen(){const m={...(S.hist?.terminBetraege||Object.fromEntries((S.hist?.abende||[]).filter(a=>a.strafen).map(a=>[a.datum,{...a.strafen}])))},h=todayISO();
  for(const t of kegelTermine()){if(m[t.datum])continue;
   if(t.status==='abgeschlossen'&&t.strafen){const x={...t.strafen};(t.gaeste||[]).forEach(g=>x.gast=r2((x.gast||0)+(g.strafe||0)));m[t.datum]=x}
   else if(t.status==='ausgefallen'&&t.datum<=h){const x={};aktive().filter(q=>(q.eintritt||'')<=t.datum).forEach(q=>x[q.id]=S.verein.pauschaleAusfall??15);m[t.datum]=x}}
  return m}
 function vKassenstand(){
  if(!S.hist){afterHooks.push(()=>loadHist().then(rerender).catch(e=>toast('⚠ '+e.message,5000)));return`<div class="card muted">Lade…</div>`}
+ if(S.excelStand===undefined&&!S.exLoading){S.exLoading=true;afterHooks.push(()=>Store.get('excel-stand.json').then(r=>{S.excelStand=r.data||null;S.exLoading=false;rerender()}).catch(()=>{S.excelStand=null;S.exLoading=false}))}
  const K=S.kasse,ed=isKasse(),kon=K.konten||[],ks=r2(kon.reduce((a,k)=>a+num(k.betrag),0));
+ let warn=S.hist&&!S.hist.terminBetraege?`<div class="banner rot">⚠ Im Daten-Repo liegt noch eine ältere <b>historie.json</b> ohne Termin-Beträge. Durchschnitte und Wertung sind dadurch unvollständig – bitte die aktuelle Datei hochladen.</div>`:'';
+ const EX=S.excelStand;if(EX&&!K.excelUebernommen)warn+=ed?`<div class="banner">📥 Kontostände aus der Excel vom ${fmtD(EX.stand)} gefunden: ${EX.konten.map(k=>`${esc(k.name)} ${eur(k.betrag)}`).join(', ')}${EX.gaesteStart!=null?`, Gäste offen ${eur(EX.gaesteStart)}`:''}.<br><button class="btn s p" style="margin-top:8px" onclick="act.excelStand()">Übernehmen</button></div>`:'';
  const sal=aktive().map(m=>konto(m.id).saldo),g=gastKonto().saldo,all=[...sal,g];
  const offen=r2(all.filter(x=>x>0).reduce((a,b)=>a+b,0)),zuviel=r2(all.filter(x=>x<0).reduce((a,b)=>a+b,0)),soll=r2(ks+offen+zuviel);
  const tp=K.toepfe||[],tsum=r2(tp.reduce((a,x)=>a+num(x.betrag),0));
  const inp=(path,i,f,v,ph='',w='')=>ed?`<input ${w?`style="width:${w}"`:''} ${f==='betrag'?'inputmode="decimal"':''} placeholder="${ph}" value="${esc(f==='betrag'?String(v??'').replace('.',','):v??'')}" onchange="act.kEdit('${path}',${i},'${f}',this.value)">`:esc(f==='betrag'?eur(v):v);
- let h=`<div class="card hero"><div class="muted small">Soll-Kontostand (wenn alle ausgeglichen hätten)</div><div class="big">${eur(soll)}</div>
+ let h=warn+`<div class="card hero"><div class="muted small">Soll-Kontostand (wenn alle ausgeglichen hätten)</div><div class="big">${eur(soll)}</div>
  <div class="muted small">Konten ${eur(ks)} · offen +${eur(offen)} · zu viel −${eur(-zuviel)}</div></div>`;
  // Konten
  h+=`<div class="sec">Konten${K.kontenStand?' · Stand '+fmtD(K.kontenStand,{day:'2-digit',month:'2-digit',year:'numeric'}):''}</div><div class="card">
@@ -900,6 +974,10 @@ act.kEdit=(path,i,f,v)=>saveKasse(d=>{d[path]=d[path]||[];if(!d[path][i])return;
 act.kAdd=(path,o)=>saveKasse(d=>{(d[path]=d[path]||[]).push({id:path[0]+Date.now().toString(36),...o})},`Kassenstand: ${path} hinzugefügt`);
 act.kDel=(path,i)=>ask('Eintrag löschen?','Löschen',()=>saveKasse(d=>{(d[path]||[]).splice(i,1)},`Kassenstand: ${path} gelöscht`),true);
 act.kSet=(k,v)=>saveKasse(d=>{d[k]=r2(num(v))},`Kassenstand: ${k}`);
+act.excelStand=()=>{const EX=S.excelStand,K=S.kasse,go=()=>saveKasse(d=>{d.konten=EX.konten.map((k,i)=>({id:'k'+i,name:k.name,betrag:r2(k.betrag)}));d.kontenStand=EX.stand;
+  d.toepfe=d.toepfe||[];for(const t of EX.toepfe||[])if(!d.toepfe.some(x=>x.name===t.name))d.toepfe.push({id:'t'+Date.now().toString(36)+d.toepfe.length,name:t.name,betrag:r2(t.betrag)});
+  if(EX.gaesteStart!=null&&d.gaesteStart==null)d.gaesteStart=r2(EX.gaesteStart);d.excelUebernommen=new Date().toISOString()},'Kassenstand aus Excel übernommen').then(()=>toast('📥 Excel-Stand übernommen'));
+ (K.konten||[]).length?ask('Es sind schon Konten eingetragen. Durch den Excel-Stand ersetzen?','Ersetzen',go,true):go()};
 act.kStd=()=>saveKasse(d=>{d.konten=[['Girokonto'],['VISA-Karte'],['Tagesgeld']].map(([n],i)=>({id:'k'+i,name:n,betrag:0}));d.kontenStand=todayISO()},'Konten angelegt');
 act.ausgabe=()=>{const x={id:'a'+Date.now().toString(36),datum:$('#a-d').value,betrag:r2(num($('#a-b').value)),text:$('#a-t').value.trim(),kategorie:$('#a-k').value.trim(),von:S.me};
  if(!x.betrag||!x.text)return toast('Betrag und Zweck angeben');saveKasse(d=>{(d.ausgaben=d.ausgaben||[]).push(x)},'Ausgabe '+x.text)};
@@ -1041,7 +1119,7 @@ function vVerwaltung(){if(!isAdmin())return'<div class="card">Nur für Admins.</
  <div class="card"><details><summary>🍽️ Speisekarte pflegen</summary><p class="muted small">Eine Zeile pro Gericht: <code>Nr;Gericht;Preis;Kategorie;Beschreibung</code>. Ersetzt die komplette Karte.</p>
  <textarea id="k-csv" rows="8" placeholder="60;Gyros;14,90;Grill;Pommes, Reis, Salat"></textarea><div class="row" style="margin-top:8px"><button class="btn f" onclick="act.karteExport()">Aktuelle Karte laden</button><button class="btn p f" onclick="act.karteImport()">Speichern</button></div></details></div>
  ${Store.isDemo()?'':`<div class="card"><h3>🔗 Einladungslink</h3><p class="muted small">Enthält den Zugangsschlüssel – nur privat in der WhatsApp-Gruppe teilen. Wer ihn öffnet, ist sofort verbunden.</p><button class="btn p w" onclick="act.invite()">Link erzeugen & kopieren</button></div>`}`}
-act.reload=async()=>{setSync('⏳');try{await loadAll();S.karte=null;S.hist=null;S.katalog=null;S.abendFor=null;S.bestFor=null;S.sp=null;setSync('');toast('Aktualisiert ✓');rerender()}catch(e){setSync('⚠');toast('⚠ '+e.message,5000)}};
+act.reload=async()=>{await flushOutbox();if(saveTimer)await speichereAbend();setSync('⏳');try{await loadAll();S.karte=null;S.hist=null;S.katalog=null;S.abendFor=null;S.bestFor=null;S.sp=null;setSync('');toast('Aktualisiert ✓');rerender()}catch(e){setSync('⚠');toast('⚠ '+e.message,5000)}};
 act.wechsel=()=>{lsDel('kt_me');S.me=null;boot()};
 act.abmelden=()=>ask('Abmelden? Der Zugang wird auf diesem Gerät gelöscht.','Abmelden',()=>{lsDel('kt_cfg');lsDel('kt_me');location.hash='';location.reload()},true);
 const saveVerein=(fn,msg)=>save('verein.json',d=>{fn(d);return d},msg).then(d=>{S.verein=d;rerender()});
@@ -1109,6 +1187,7 @@ function slogan(){const sp=THEMES[themeAktiv()]?.sprueche;if(!sp)return'';const 
 act.theme=k=>{lsSet('kt_theme',k);applyTheme();shell();render();toast(`${THEMES[k].ic} ${THEMES[k].name}`)};
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(themeWahl()==='auto')applyTheme()})}catch(_){}
 applyTheme();
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 
 async function boot(){
  const h=location.hash;
@@ -1120,8 +1199,10 @@ async function boot(){
  if(!S.me||!M(S.me))return vWer();
  shell();render();
 }
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.verein&&Date.now()-S.loadedAt>60000&&!saveTimer&&!$('#sheet'))loadAll().then(rerender).catch(()=>{})});
-window.addEventListener('beforeunload',e=>{if(saveTimer){speichereAbend();e.preventDefault()}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){flushTermine();if(saveTimer)speichereAbend();return}
+ if(S.verein&&Date.now()-S.loadedAt>60000&&!saveTimer&&!OUT.list.length&&!OUT.busy&&!$('#sheet'))loadAll().then(rerender).catch(()=>{})});
+window.addEventListener('pagehide',()=>{flushTermine();if(saveTimer)speichereAbend()});
+window.addEventListener('beforeunload',e=>{if(saveTimer||OUT.list.length){flushTermine();if(saveTimer)speichereAbend();e.preventDefault()}});
 boot();
 </script>
 </body>
