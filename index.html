@@ -218,7 +218,7 @@ h2,h3,.big,header .t b,.tile .v,.tap b{font-family:var(--font-d)}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='1.0.2';
+const APP_VERSION='1.0.3';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1274,7 +1274,18 @@ function vAdmin(){
   return`<div class="card hero"><h2 style="margin-top:0">🔒 Admin-Bereich</h2><p class="muted small">Kasse buchen, Kassenstand, Mitglieder, Termine, Strafenkatalog, Speisekarte und das Abschließen von Kegelabenden.</p><button class="btn p w" onclick="act.adminLogin()">Mit Passwort entsperren</button></div>`}
  return`<div class="card hero"><div class="row"><div class="f"><h3 style="margin:0">🔓 Admin-Bereich ist offen</h3><div class="muted small">Sperrt sich nach ${ADMIN_MIN} Minuten ohne Tippen automatisch.</div></div></div>
   <div class="row wrap" style="margin-top:12px"><button class="btn f" onclick="act.adminSperren()">🔒 Jetzt sperren</button><button class="btn f" onclick="act.adminSetzen()">🔑 Passwort ändern</button></div></div>
+  ${kontakteImportBanner()}
   <div class="card"><ul class="l menu">${[['kasse','💶','Buchungen erfassen','Einzahlungen, Auszahlungen, Korrekturen'],['kassenstand','💰','Kassenstand pflegen','Konten, Sondertöpfe, Excel-Übernahme'],['strafen','📜','Strafenkatalog','Beträge ändern']].map(([k,i,l,d])=>`<li onclick="S.sub='${k}';render();scrollTo(0,0)"><span class="ic">${i}</span><div class="g"><b>${l}</b><div class="muted small">${d}</div></div><span class="muted">›</span></li>`).join('')}</ul></div>`+vVerwaltung()}
+/* Kontaktdaten aus der Excel (excel-kontakte.json) – füllt nur leere Felder, eigene Änderungen bleiben */
+function kontakteOffen(){const EX=S.exK?.personen||{},K=S.kontakte?.personen||{};let n=0,p=0;
+ for(const[id,e]of Object.entries(EX)){if(!M(id))continue;const f=Object.keys(e).filter(k=>e[k]&&!K[id]?.[k]).length;if(f){n+=f;p++}}return{n,p}}
+function kontakteImportBanner(){
+ if(S.exK===undefined&&!S.exKLaden){S.exKLaden=true;afterHooks.push(()=>Store.get('excel-kontakte.json').then(r=>{S.exK=r.data||null}).catch(()=>{S.exK=null}).finally(()=>{S.exKLaden=false;rerender()}))}
+ if(!S.exK)return'';const o=kontakteOffen();if(!o.n)return'';
+ return`<div class="banner">📥 Kontaktdaten aus der Excel gefunden: <b>${o.p} Personen</b> mit ${o.n} noch leeren Feldern (Telefon, E-Mail, Adresse, Geburtstag).<br><span class="small">Es werden nur leere Felder gefüllt – was jemand selbst eingetragen hat, bleibt.</span><button class="btn p w" style="margin-top:8px" onclick="act.kontakteImport()">Kontaktdaten übernehmen</button></div>`}
+act.kontakteImport=()=>{const o=kontakteOffen();ask(`${o.n} Felder bei ${o.p} Personen aus der Excel übernehmen?`,'Übernehmen',async()=>{
+ const EX=S.exK.personen;try{S.kontakte=await save('kontakte.json',d=>{d.personen=d.personen||{};for(const[id,e]of Object.entries(EX)){if(!M(id))continue;const k=d.personen[id]=d.personen[id]||{};for(const[f,v]of Object.entries(e))if(v&&!k[f])k[f]=v}return d},'Kontaktdaten aus Excel übernommen',{personen:{}})}catch(e){return toast('⚠ '+e.message,5000)}
+ rerender();toast('✓ Kontaktdaten übernommen')})};
 function vVerwaltung(){if(!isAdmin())return'<div class="card">Nur für Admins.</div>';
  return`<div class="card"><details open><summary>📅 Termine</summary><div class="row" style="margin-top:6px"><div class="f"><label>Datum</label><input id="t-d" type="date"></div><div class="f"><label>Uhrzeit</label><input id="t-u" type="time" value="18:00"></div></div>
  <label>Bemerkung</label><input id="t-b"><div class="row wrap" style="margin-top:12px"><button class="btn p f" onclick="act.terminNeu()">+ Termin</button><button class="btn f" onclick="act.serie()">+ 5 im 5-Wochen-Takt</button></div>
@@ -1388,7 +1399,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 window.addEventListener('pagehide',()=>{flushTermine();if(saveTimer)speichereAbend()});
 window.addEventListener('beforeunload',e=>{if(saveTimer||OUT.list.length){flushTermine();if(saveTimer)speichereAbend();e.preventDefault()}});
 /* Sicherheitsnetz: diese Aktionen laufen nur mit entsperrtem Admin-Bereich */
-['abendReset','abendResetGo','bLoeschen','buchen','ausgabe','excelStand','kAdd','kDel','kEdit','kSet','kStd','strafe','mEdit','mSave','terminNeu','serie','ausfall','tStatus','tLoeschen','karteImport','invite','sitzReset','fuerAndere']
+['abendReset','abendResetGo','bLoeschen','buchen','ausgabe','excelStand','kAdd','kDel','kEdit','kSet','kStd','strafe','mEdit','mSave','terminNeu','serie','ausfall','tStatus','tLoeschen','karteImport','invite','kontakteImport','sitzReset','fuerAndere']
  .forEach(k=>{const f=act[k];if(f)act[k]=(...a)=>isAdmin()?f(...a):act.adminLogin(()=>act[k](...a))});
 boot();
 </script>
