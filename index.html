@@ -12,62 +12,72 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Schwelmer Kegeltreff</title>
 <style>
-:root{--gelb:#FDD615;--gelb2:#FFF6C7;--gelb3:#F3C800;--ink:#1D1D1B;--ink2:#55544f;--muted:#86847c;--linie:#ebe8de;--bg:#f5f4ef;--card:#fff;--rot:#b3261e;--rotbg:#fdeceb;--gruen:#1e7b34;--gruenbg:#e6f4ea;--r:18px;--hdr:58px}
+:root{--gelb:#FDD615;--gelb2:#FFF6C7;--gelb3:#F3C800;--ink:#1D1D1B;--ink2:#55544f;--muted:#86847c;--linie:#ebe8de;--linie2:#cfccc2;--bg:#f5f4ef;--card:#fff;--input:#fff;--chip:#efede5;--tapbg:#f3f1ea;--rot:#b3261e;--rotbg:#fdeceb;--gruen:#1e7b34;--gruenbg:#e6f4ea;--r:18px;--hdr:58px;
+ --dark:#1D1D1B;--on-accent:#1D1D1B;--hbar:#FDD615;--navbg:rgba(255,255,255,.96);--navtext:#55544f;--navtext-on:#1D1D1B;--barc:#4a4943;--avtext:#FDD615;--hero-accent:#FDD615;--hero-accent-ink:#1D1D1B;color-scheme:light}
+[data-theme=dark]{--gelb2:#3a3314;--ink:#EDEBE4;--ink2:#c9c6bc;--muted:#9c998f;--linie:#33322e;--linie2:#4a4843;--bg:#121211;--card:#1e1e1c;--input:#181816;--chip:#2b2a27;--tapbg:#252421;--rot:#ff8a80;--rotbg:#3f1c1a;--gruen:#7bd88f;--gruenbg:#173823;
+ --dark:#000;--navbg:rgba(22,22,20,.96);--navtext:#a9a69c;--navtext-on:#EDEBE4;--barc:#b9b6ab;color-scheme:dark}
+[data-theme=dark] .card.hero{box-shadow:0 0 0 1px #3a3934}
+[data-theme=bvb]{--gelb:#FDE100;--gelb2:#FFF4A3;--gelb3:#E9CF00;--bg:#FDE100;--linie:#ece08a;--linie2:#d9c94a;--muted:#5f5600;--ink2:#2b2800;--chip:#f6f0c4;--tapbg:#fbf7dc;--dark:#000;--hbar:#FDE100;--navbg:#000;--navtext:#FDE100;--navtext-on:#FDE100;--barc:#111;--avtext:#FDE100}
+[data-theme=bvb] .sec{color:#000}
+[data-theme=fcb]{--gelb:#DC052D;--gelb2:#FDE3E8;--gelb3:#DC052D;--on-accent:#fff;--bg:#f3f4f7;--linie:#e3e5ea;--linie2:#c9ccd4;--chip:#eceef2;--tapbg:#f1f2f5;--dark:#DC052D;--hbar:#0066B2;--navtext:#4b4f5a;--navtext-on:#DC052D;--barc:#0066B2;--avtext:#fff;--hero-accent:#fff;--hero-accent-ink:#DC052D}
+[data-theme=fcb] .hero .seg .ja{background:#0066B2}
+.slogan{font-weight:800;letter-spacing:.3px}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit}
-header{position:sticky;top:0;z-index:6;background:var(--ink);color:#fff;display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 16px 8px;min-height:var(--hdr)}
-header::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:var(--gelb)}
-header img{height:36px;background:#fff;border-radius:8px;padding:2px}
+header{position:sticky;top:0;z-index:6;background:var(--dark);color:#fff;display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 16px 8px;min-height:var(--hdr)}
+header::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:var(--hbar)}
+header img{height:36px;background:var(--card);border-radius:8px;padding:2px}
 header .t{flex:1;min-width:0}header .t b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-header .t small{color:#cfcbbd;font-size:12px}
+header .t small{color:rgba(255,255,255,.72);font-size:12px}
 header .hb{background:none;border:0;color:#fff;font-size:20px;padding:6px;border-radius:10px}
 #sync{font-size:12px;color:var(--gelb);white-space:nowrap}
 main{padding:16px 14px calc(100px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
-nav{position:fixed;bottom:0;left:0;right:0;z-index:6;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--linie);padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:6;background:var(--navbg);backdrop-filter:blur(10px);border-top:1px solid var(--linie);padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
 nav .in{max-width:720px;margin:0 auto;display:flex}
-nav button{flex:1;border:0;background:none;padding:2px 0;font-size:11.5px;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button{flex:1;border:0;background:none;padding:2px 0;font-size:11.5px;color:var(--navtext);display:flex;flex-direction:column;align-items:center;gap:3px}
 nav button i{font-style:normal;font-size:20px;line-height:30px;width:52px;border-radius:99px;transition:background .15s}
-nav button.on{color:var(--ink);font-weight:700}nav button.on i{background:var(--gelb)}
+nav button.on{color:var(--navtext-on);font-weight:700}nav button.on i{background:var(--gelb);color:var(--on-accent)}
 .card{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px var(--linie)}
-.card.hero{background:var(--ink);color:#fff;box-shadow:none}
-.card.hero .muted{color:#cfcbbd}
+.card.hero{background:var(--dark);color:#fff;box-shadow:none}
+.card.hero .muted{color:rgba(255,255,255,.72)}
 h2{font-size:22px;margin:0 0 2px;line-height:1.2}h3{font-size:16px;margin:0 0 10px}
 .sec{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 4px 8px}
 .muted{color:var(--muted);font-size:14px}.small{font-size:13px}
 .row{display:flex;gap:8px;align-items:center}.row>.f{flex:1;min-width:0}.wrap{flex-wrap:wrap}
-.btn{border:0;background:#f0eee6;border-radius:14px;padding:12px 14px;font-weight:600;cursor:pointer;min-height:46px}
-.btn.p{background:var(--gelb)}.btn.d{background:var(--ink);color:#fff}.btn.w{width:100%}
+.btn{border:0;background:var(--chip);border-radius:14px;padding:12px 14px;font-weight:600;cursor:pointer;min-height:46px}
+.btn.p{background:var(--gelb);color:var(--on-accent)}.btn.d{background:var(--dark);color:#fff}.btn.w{width:100%}
 .btn.s{min-height:36px;padding:7px 12px;font-size:14px;border-radius:11px}
 .btn:disabled{opacity:.4}
 .x{border:0;background:none;color:var(--rot);padding:6px 8px;font-size:16px;cursor:pointer}
-input,select,textarea{font:inherit;width:100%;padding:12px;border:1px solid var(--linie);border-radius:12px;background:#fff;color:var(--ink);min-height:46px}
+input,select,textarea{font:inherit;width:100%;padding:12px;border:1px solid var(--linie);border-radius:12px;background:var(--input);color:var(--ink);min-height:46px}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--gelb3);border-color:transparent}
 label{display:block;font-size:13px;color:var(--ink2);margin:10px 0 4px;font-weight:600}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .seg button{border:0;border-radius:14px;padding:12px 4px;background:rgba(255,255,255,.1);color:#fff;font-weight:600;min-height:54px;cursor:pointer}
 .seg button span{display:block;font-size:18px}
-.seg .ja{background:#2e9e4d}.seg .vl{background:var(--gelb);color:var(--ink)}.seg .nein{background:#c4413a}
+.seg .ja{background:#2e9e4d}.seg .vl{background:var(--gelb);color:var(--on-accent)}.seg .nein{background:#c4413a}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
 .chips.wrap{flex-wrap:wrap;overflow:visible}
-.chip{flex:0 0 auto;border:0;border-radius:99px;padding:9px 14px;background:#efede5;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
-.chip.on{background:var(--ink);color:#fff}.chip.an{background:var(--gruenbg);color:var(--gruen)}
-.hero .chip{background:rgba(255,255,255,.12);color:#fff}.hero .chip.on{background:var(--gelb);color:var(--ink)}
-.dchip{flex:0 0 auto;border:0;border-radius:16px;padding:8px 12px;background:#fff;box-shadow:0 0 0 1px var(--linie);text-align:center;cursor:pointer;min-width:74px}
+.chip{flex:0 0 auto;border:0;border-radius:99px;padding:9px 14px;background:var(--chip);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--dark);color:#fff}.chip.an{background:var(--gruenbg);color:var(--gruen)}
+.hero .chip{background:rgba(255,255,255,.12);color:#fff}.hero .chip.on{background:var(--hero-accent);color:var(--hero-accent-ink)}
+.hero .btn.p,.hero .seg .vl{background:var(--hero-accent);color:var(--hero-accent-ink)}
+.dchip{flex:0 0 auto;border:0;border-radius:16px;padding:8px 12px;background:var(--card);box-shadow:0 0 0 1px var(--linie);text-align:center;cursor:pointer;min-width:74px}
 .dchip b{display:block;font-size:15px}.dchip small{font-size:11px;color:var(--muted)}
-.dchip.on{background:var(--ink);color:#fff;box-shadow:none}.dchip.on small{color:#cfcbbd}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle;background:#cfccc2}
+.dchip.on{background:var(--dark);color:#fff;box-shadow:none}.dchip.on small{color:rgba(255,255,255,.72)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle;background:var(--linie2)}
 .dot.ja{background:#2e9e4d}.dot.vl{background:var(--gelb3)}.dot.nein{background:#c4413a}
-.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;background:#efede5}
-.pill.ja{background:var(--gruenbg);color:var(--gruen)}.pill.nein{background:var(--rotbg);color:var(--rot)}.pill.vl{background:var(--gelb2)}.pill.y{background:var(--gelb)}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;background:var(--chip)}
+.pill.ja{background:var(--gruenbg);color:var(--gruen)}.pill.nein{background:var(--rotbg);color:var(--rot)}.pill.vl{background:var(--gelb2)}.pill.y{background:var(--gelb);color:var(--on-accent)}
 .hero .pill{background:rgba(255,255,255,.14);color:#fff}
-.av{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--gelb);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.av{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--dark);color:var(--avtext);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
 .av.s{width:30px;height:30px;font-size:12px}.av.ja{box-shadow:0 0 0 3px #2e9e4d}.av.vl{box-shadow:0 0 0 3px var(--gelb3)}.av.nein{opacity:.35}
 ul.l{list-style:none;margin:0;padding:0}ul.l li{padding:10px 0;border-bottom:1px solid var(--linie);display:flex;gap:10px;align-items:center}
 ul.l li:last-child{border-bottom:0}ul.l li .g{flex:1;min-width:0}
 .menu li{cursor:pointer}.menu li .ic{font-size:22px;width:38px;text-align:center}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
-.tap{padding:12px 6px;border-radius:16px;border:0;background:#f3f1ea;text-align:center;user-select:none;cursor:pointer;font-weight:600}
+.tap{padding:12px 6px;border-radius:16px;border:0;background:var(--tapbg);text-align:center;user-select:none;cursor:pointer;font-weight:600}
 .tap b{display:block;font-size:28px;line-height:1.1}
 .tap.minus{background:var(--rotbg)}.tap:active{transform:scale(.95);background:var(--gelb)}
 .sticky{position:sticky;top:calc(var(--hdr) + env(safe-area-inset-top) + 3px);z-index:4;background:var(--bg);padding:8px 0;margin:-8px 0 4px}
@@ -77,7 +87,7 @@ th:first-child,td:first-child{text-align:left}th{font-size:12px;color:var(--mute
 tr.sum td{font-weight:800;border-top:2px solid var(--ink);border-bottom:0}
 .big{font-size:34px;font-weight:800;letter-spacing:-.5px}
 .rot{color:var(--rot)}.gruen{color:var(--gruen)}
-.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:14px;z-index:30;max-width:90%;box-shadow:0 6px 24px rgba(0,0,0,.25);font-weight:600;font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--dark);color:#fff;padding:11px 18px;border-radius:14px;z-index:30;max-width:90%;box-shadow:0 6px 24px rgba(0,0,0,.25);font-weight:600;font-size:14px}
 .setup{max-width:420px;margin:24px auto;padding:0 16px;text-align:center}.setup img{width:150px;margin:10px 0}
 .setup .card{text-align:left}
 pre.order{white-space:pre-wrap;background:var(--bg);padding:12px;border-radius:12px;font-size:14px;margin:8px 0}
@@ -89,27 +99,27 @@ details[open]>summary::after{transform:rotate(270deg)}
 .dish{display:flex;gap:10px;padding:10px 2px;border-bottom:1px solid var(--linie);cursor:pointer;align-items:flex-start}
 .dish .nr{min-width:38px;font-weight:800;background:var(--gelb2);border-radius:8px;text-align:center;padding:2px 0}.dish .pr{white-space:nowrap;font-weight:700}
 .banner{background:var(--gelb2);border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:10px}
-.drv{border-radius:16px;background:#f6f4ee;padding:12px;margin-bottom:8px}
-.seats{display:flex;gap:4px;margin:6px 0}.seats span{width:22px;height:22px;border-radius:6px;background:#fff;box-shadow:0 0 0 1px var(--linie);font-size:12px;display:flex;align-items:center;justify-content:center}
-.seats span.b{background:var(--ink);color:var(--gelb)}
+.drv{border-radius:16px;background:var(--tapbg);padding:12px;margin-bottom:8px}
+.seats{display:flex;gap:4px;margin:6px 0}.seats span{width:22px;height:22px;border-radius:6px;background:var(--card);box-shadow:0 0 0 1px var(--linie);font-size:12px;display:flex;align-items:center;justify-content:center}
+.seats span.b{background:var(--dark);color:var(--avtext)}
 .stepper{display:flex;align-items:center;gap:10px}.stepper button{width:40px;height:40px;border-radius:12px;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:20px;cursor:pointer}
 .stepper b{min-width:22px;text-align:center;font-size:18px}
 #sheet .bg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20}
-#sheet .sh{position:fixed;left:0;right:0;bottom:0;z-index:21;background:#fff;border-radius:22px 22px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto;max-width:720px;margin:0 auto;animation:up .18s ease-out}
+#sheet .sh{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--card);border-radius:22px 22px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto;max-width:720px;margin:0 auto;animation:up .18s ease-out}
 #sheet .grip{width:40px;height:5px;border-radius:9px;background:#d8d5cb;margin:0 auto 10px}
 @keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
 .sec.fold{cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}.sec.fold::after{content:'▾';font-size:14px;color:var(--muted)}.sec.zu::after{content:'▸'}.sec.zu{margin-bottom:14px}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tile{background:#fff;border-radius:16px;padding:12px;box-shadow:0 0 0 1px var(--linie)}
+.tile{background:var(--card);border-radius:16px;padding:12px;box-shadow:0 0 0 1px var(--linie)}
 .tile .k{font-size:12px;color:var(--muted);font-weight:600}.tile .v{font-size:18px;font-weight:800;margin-top:2px}.tile .s{font-size:12px;color:var(--ink2)}
 .bars .br{display:grid;grid-template-columns:26px 82px 1fr 58px;gap:6px;align-items:center;padding:4px 0;font-size:14px}
 .bars .rk{color:var(--muted);font-size:12px;text-align:right}.bars .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
-.bars .tr{height:18px;display:flex;align-items:center}.bars .bar{height:14px;border-radius:0 4px 4px 0;background:#4a4943;min-width:2px}
+.bars .tr{height:18px;display:flex;align-items:center}.bars .bar{height:14px;border-radius:0 4px 4px 0;background:var(--barc);min-width:2px}
 .bars .me .bar{background:var(--gelb3)}.bars .me .nm{color:var(--ink)}
 .bars .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-.cols{display:flex;align-items:flex-end;gap:3px;height:140px;border-bottom:1px solid #cfccc2;padding-top:6px}
+.cols{display:flex;align-items:flex-end;gap:3px;height:140px;border-bottom:1px solid var(--linie2);padding-top:6px}
 .cols button{flex:1;border:0;background:none;padding:0;height:100%;display:flex;align-items:flex-end;cursor:pointer}
-.cols button i{display:block;width:100%;background:#4a4943;border-radius:4px 4px 0 0;min-height:2px}
+.cols button i{display:block;width:100%;background:var(--barc);border-radius:4px 4px 0 0;min-height:2px}
 .cols button.on i{background:var(--gelb3)}
 .axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
 </style>
@@ -122,7 +132,7 @@ details[open]>summary::after{transform:rotate(270deg)}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='0.6.1';
+const APP_VERSION='0.8.0';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -179,6 +189,12 @@ const Store={
   const r=await fetch(this.url(path),{method:'PUT',headers:{...this.hdr(),'Content-Type':'application/json'},body:JSON.stringify(body)});
   if(!r.ok)throw await apiErr(r);
   return (await r.json()).content.sha;
+ },
+ async del(path,msg){
+  if(this.isDemo()){lsDel('kt_demo:'+path);return}
+  const {sha}=await this.get(path);if(!sha)return;
+  const r=await fetch(this.url(path),{method:'DELETE',headers:{...this.hdr(),'Content-Type':'application/json'},body:JSON.stringify({message:msg||('Lösche '+path),sha,branch:BRANCH})});
+  if(!r.ok&&r.status!==404)throw await apiErr(r);
  },
  async mutate(path,fn,msg,def){
   for(let i=0;i<5;i++){
@@ -275,7 +291,7 @@ function konto(mid){
 /* ---------------- Rahmen ---------------- */
 const TABS=[['start','🏠','Start'],['termine','📅','Termine'],['abend','🎳','Abend'],['essen','🍽️','Essen'],['spiele','🎲','Spiele'],['mehr','☰','Mehr']];
 function shell(){
- $('#app').innerHTML=`<header><img src="logo.png" alt=""><div class="t"><b id="htitle">Schwelmer Kegeltreff</b><small>${esc(meName())}${Store.isDemo()?' · Demo':''}</small></div><span id="sync"></span><button class="hb" title="Aktualisieren" onclick="act.reload()">↻</button></header>
+ $('#app').innerHTML=`<header><img src="logo.png" alt=""><div class="t"><b id="htitle">Schwelmer Kegeltreff</b><small>${esc(meName())}${Store.isDemo()?' · Demo':''}${THEMES[themeAktiv()]?.motto?` · <span class="slogan" style="color:${THEMES[themeAktiv()].farbe}">${THEMES[themeAktiv()].motto}</span>`:''}</small></div><span id="sync"></span><button class="hb" title="Aktualisieren" onclick="act.reload()">↻</button></header>
  <main id="main"></main>
  <nav><div class="in">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</div></nav>`;
 }
@@ -392,7 +408,7 @@ function vAbend(){
  if(!a)return kopf+`<div class="card hero"><h2>Strichliste</h2><p class="muted">Anwesend sind zunächst alle, die zugesagt haben – das passt du gleich an.</p>
   <button class="btn p w" onclick="act.startAbend('${tid}')">🎳 Strichliste starten</button></div>`;
  if(a.gefuehrtVon!==S.me)return kopf+`<div class="banner">Die Tafel führt gerade <b>${esc(nameOf(a.gefuehrtVon))}</b>. Bitte nur auf einem Handy mitschreiben.</div>
-  <div class="row"><button class="btn f" onclick="ladeAbend('${tid}')">↻ Aktualisieren</button><button class="btn d f" onclick="act.uebernehmen()">Tafel übernehmen</button></div><div id="abend-sum" style="margin-top:12px"></div>`+(afterHooks.push(()=>renderAbendSum(true)),'');
+  <div class="row"><button class="btn f" onclick="ladeAbend('${tid}')">↻ Aktualisieren</button><button class="btn d f" onclick="act.uebernehmen()">Tafel übernehmen</button></div><div style="margin-top:12px">${sitzKarte(tid,false)}${spieleHeute(tid,false)}</div><div id="abend-sum"></div>`+(afterHooks.push(()=>renderAbendSum(true)),'');
  const st=strafen(),pres=a.spieler.filter(p=>p.anwesend);
  const kats=[...st.map(s=>({id:s.id,name:s.name})),{id:'spiele',name:'Spiele €'},{id:'sonstiges',name:'Sonstiges €'}];
  if(S.anwOpen==null)S.anwOpen=!pres.length;
@@ -402,7 +418,7 @@ function vAbend(){
  h+=`<div class="sticky"><div class="chips">${kats.map(k=>`<button class="chip ${S.kat===k.id?'on':''}" onclick="S.kat='${k.id}';rerender()">${esc(k.name)}</button>`).join('')}</div></div><div class="card">`;
  if(S.kat==='essen')S.kat='pudel';
  if(['spiele','sonstiges'].includes(S.kat)){
-  h+=`<p class="muted small" style="margin-top:0">${S.kat==='spiele'?'Strafen aus den Spielen als Betrag je Spieler. Tipp: Ergebnisse im Reiter „🎲 Spiele“ erfassen – dann rechnet die App Platzierungen und verlorene Teamspiele automatisch. Hier nur Zusätzliches eintragen.':'Sonstiges, z. B. Schnapsrunde oder Korrektur.'}</p>
+  h+=`<p class="muted small" style="margin-top:0">${S.kat==='spiele'?'Strafen aus den Spielen als Betrag je Spieler. Tipp: Spiele weiter unten unter „🏆 Spiele heute“ eintragen – dann rechnet die Tafel Platzierungen und verlorene Teamspiele automatisch. Hier nur Zusätzliches eintragen.':'Sonstiges, z. B. Schnapsrunde oder Korrektur.'}</p>
   <table>${pres.map(p=>{const i=a.spieler.indexOf(p);return`<tr><td>${esc(p.name)}</td><td style="width:130px"><input inputmode="decimal" placeholder="0,00" value="${esc(String(p[S.kat]??'').replace('.',','))}" onchange="S.abend.spieler[${i}].${S.kat}=this.value.replace(',','.');abendChanged(false)"></td></tr>`}).join('')}</table>`;
  }else{
   const s=st.find(x=>x.id===S.kat);
@@ -410,9 +426,10 @@ function vAbend(){
    <button class="btn s ${S.minus?'d':''}" onclick="S.minus=!S.minus;rerender()">${S.minus?'− Korrektur an':'− Korrektur'}</button></div>
   <div class="grid">${pres.map(p=>{const i=a.spieler.indexOf(p);return`<button class="tap ${S.minus?'minus':''}" onclick="act.tap(${i})"><b>${p.counts?.[S.kat]||0}</b>${esc(p.name)}</button>`}).join('')}</div>`;
  }
- h+=`</div><div id="abend-sum"></div>
+ h+=`</div>${spieleHeute(tid,true)}<div id="abend-sum"></div>
  <div class="card"><details ${S.reOpen??!num(a.rechnung.gesamt??a.rechnung.getraenke)?'open':''} ontoggle="S.reOpen=this.open"><summary>🧾 Rechnung Samos</summary><div id="rechnung"></div></details></div>
- <div class="row"><button class="btn f" onclick="speichereAbend()">💾 Speichern</button>${isKasse()?`<button class="btn d f" onclick="act.abschliessen()">Abend abschließen</button>`:''}</div>`;
+ <div class="row"><button class="btn f" onclick="speichereAbend()">💾 Speichern</button>${isKasse()?`<button class="btn d f" onclick="act.abschliessen()">Abend abschließen</button>`:''}</div>
+ ${isKasse()?`<button class="btn w" style="margin-top:18px;background:var(--rotbg);color:var(--rot)" onclick="act.abendReset('${tid}')">🗑 Abend zurücksetzen</button>`:''}`;
  afterHooks.push(()=>{renderAbendSum();renderRechnung()});return h;
 }
 function renderAbendSum(open){const el=$('#abend-sum');if(!el||!S.abend)return;
@@ -456,12 +473,29 @@ act.abschliessen=()=>{const c=berechneAbend(S.abend,S.verein),ab=S.abend.spieler
   if(p.counts?.figur)fig[p.id]=p.counts.figur;
   stats[p.id]={pudel:p.counts?.pudel||0,glocke:p.counts?.glocke||0,neun:p.counts?.neun||0,kranz:p.counts?.kranz||0,figur:p.counts?.figur||0,spiele:r2(num(p.spiele)+(r.spieleAuto||0)),strafe:r.strafe}}
  S.termine=await save('termine.json',d=>{const t=d.termine.find(x=>x.id===a.id);Object.assign(t,{status:'abgeschlossen',spieleErg:(S.spielCache[a.id]?.spiele||[]).map(g=>({name:g.name,typ:g.typ,sieger:g.typ==='einzel'?(g.rang||[]).slice(0,1):(g.teams?.[g.sieger]||[])})),abrechnung:abr,figur:fig,gaeste,abwesend:abw,stats,strafen:str,abgeschlossenVon:S.me,abgeschlossenAm:new Date().toISOString()});return d},`Abend ${a.id} abgeschlossen`);
- toast('Abend abgerechnet ✓');rerender();setTimeout(()=>act.bericht(a.id),400)})};
+ toast('Abend abgerechnet ✓');S.selAbend=a.id;rerender();setTimeout(()=>act.bericht(a.id),400)})};
 function abgeschlossenAnsicht(t){const ab=t.abrechnung||{};let s=0;
  const rows=Object.entries(ab).sort((a,b)=>nameOf(a[0]).localeCompare(nameOf(b[0]),'de')).map(([id,b])=>{s+=b;return`<tr><td>${esc(nameOf(id))}${t.abwesend?.includes(id)?' <span class="muted small">(abwesend)</span>':''}</td><td>${eur(b)}</td></tr>`}).join('');
  const g=(t.gaeste||[]).map(x=>{s+=x.betrag;return`<tr><td>${esc(x.name)} <span class="muted small">(Gast)</span></td><td>${eur(x.betrag)}</td></tr>`}).join('');
  return`<div class="card"><h3>Abgerechnet ✓</h3>${rows||g?`<table><tr><th>Name</th><th>Betrag</th></tr>${rows}${g}<tr class="sum"><td>Summe</td><td>${eur(s)}</td></tr></table>`:'<p class="muted">Abend aus dem Excel-Kassenbuch – die Beträge stecken im Übertrag, die Zahlen in den Statistiken.</p>'}
- <div class="row wrap" style="margin-top:10px">${t.stats?`<button class="btn f" style="background:#25D366;color:#fff" onclick="act.bericht('${t.id}')">📲 WhatsApp-Bericht</button>`:''}${isKasse()&&!t.inStartSaldo?`<button class="btn f" onclick="act.wiederOeffnen('${t.id}')">Wieder öffnen</button>`:''}</div></div>`}
+ <div class="row wrap" style="margin-top:10px">${t.stats?`<button class="btn f" style="background:#25D366;color:#fff" onclick="act.bericht('${t.id}')">📲 WhatsApp-Bericht</button>`:''}${isKasse()&&!t.inStartSaldo?`<button class="btn f" onclick="act.wiederOeffnen('${t.id}')">Wieder öffnen</button>`:''}</div>
+ ${isKasse()&&!t.inStartSaldo?`<button class="btn w" style="margin-top:10px;background:var(--rotbg);color:var(--rot)" onclick="act.abendReset('${t.id}')">🗑 Abend komplett zurücksetzen</button>`:''}</div>`}
+act.abendReset=tid=>{const t=T(tid),abg=t?.status==='abgeschlossen';
+ sheet(`<h3 style="color:var(--rot)">🗑 Abend ${fmtD(tid)} zurücksetzen?</h3>
+ <p class="small" style="margin-top:0">Löscht <b>unwiderruflich</b> alle Daten dieses Abends:</p>
+ <ul class="small" style="margin:0 0 8px;padding-left:20px;line-height:1.6"><li>Strichliste, Anwesenheit und Samos-Rechnung</li><li>Sitzordnung und Spiel-Ergebnisse</li>${abg?'<li>die Abrechnung auf den Konten – der Termin ist danach wieder offen</li>':''}</ul>
+ <label class="row" style="font-weight:600;color:var(--ink)"><input type="checkbox" id="rs-best" style="width:auto;min-height:0"> Auch die Essensbestellungen löschen</label>
+ <label>Zur Sicherheit <b>LÖSCHEN</b> eintippen</label><input id="rs-ok" autocomplete="off" autocapitalize="characters" placeholder="LÖSCHEN">
+ <div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn f" style="background:var(--rot);color:#fff" onclick="act.abendResetGo('${tid}')">Endgültig löschen</button></div>`)};
+act.abendResetGo=async tid=>{if(($('#rs-ok').value||'').trim().toUpperCase()!=='LÖSCHEN')return toast('Bitte LÖSCHEN eintippen');
+ const best=$('#rs-best').checked;closeSheet();clearTimeout(saveTimer);saveTimer=null;setSync('⏳');
+ try{const files=[`abende/${tid}.json`,`spiele/${tid}.json`].concat(best?[`bestellungen/${tid}.json`]:[]);
+  for(const f of files)await Store.del(f,`${meName()}: Abend ${tid} zurückgesetzt (${f})`);
+  if(best)await save('bestellhistorie.json',d=>{for(const k in d.personen||{})d.personen[k]=d.personen[k].filter(e=>e.datum!==tid);return d},`Bestellhistorie ${tid} bereinigt`,{personen:{}}).then(d=>{S.bh=d}).catch(()=>{});
+  if(T(tid)?.status==='abgeschlossen')S.termine=await save('termine.json',d=>{const x=d.termine.find(y=>y.id===tid);x.status='geplant';['abrechnung','figur','gaeste','abwesend','stats','strafen','spieleErg','abgeschlossenVon','abgeschlossenAm'].forEach(k=>delete x[k]);return d},`Abend ${tid} zurückgesetzt`);
+  S.abend=null;S.abendSha=null;S.abendFor=null;delete S.spielCache[tid];S.sp=null;if(best){S.best=null;S.bestFor=null}lsDel('kt_abend_backup');
+  setSync('✓');setTimeout(()=>setSync(''),1500);toast('🗑 Abend zurückgesetzt');rerender()}
+ catch(e){setSync('⚠');toast('⚠ '+e.message,5000)}};
 act.wiederOeffnen=id=>ask('Abrechnung zurücknehmen und Strichliste wieder öffnen?','Wieder öffnen',async()=>{
  S.termine=await save('termine.json',d=>{const t=d.termine.find(x=>x.id===id);t.status='geplant';['abrechnung','figur','gaeste','abwesend','stats','strafen'].forEach(k=>delete t[k]);return d},`Abend ${id} wieder geöffnet`);S.abendFor=null;rerender()},true);
 
@@ -576,7 +610,7 @@ act.terminLoeschen=id=>{closeSheet();ask('Diesen Termin löschen?','Löschen',()
 function vStart(){
  const m=M(S.me),t=naechsterTermin(),sd=naechsterSonder(),k=konto(S.me),Y=todayISO().slice(0,4),hh=new Date().getHours();
  if(!S.hist&&!S.histLoading){S.histLoading=true;afterHooks.push(()=>loadHist().then(()=>{S.histLoading=false;if(S.tab==='start')rerender()}).catch(()=>{S.histLoading=false}))}
- let h=`<div style="margin:2px 4px 14px"><div class="muted">${hh<11?'Guten Morgen':hh<18?'Hallo':'Guten Abend'},</div><h2 style="font-size:26px">${esc(m?.vorname||m?.spitzname||'')} 👋</h2></div>`;
+ let h=`<div style="margin:2px 4px 14px"><div class="muted">${hh<11?'Guten Morgen':hh<18?'Hallo':'Guten Abend'},</div><h2 style="font-size:26px">${esc(m?.vorname||m?.spitzname||'')} ${themeAktiv()==='bvb'?'🖤💛':themeAktiv()==='fcb'?'❤️🤍':'👋'}</h2>${slogan()?`<div class="slogan" style="margin-top:2px;font-size:18px;color:${themeAktiv()==='fcb'?'#DC052D':'#000'}">${esc(slogan())}</div>`:''}</div>`;
  // Nächster Kegelabend
  if(t){const z=t.zusagen||{},my=z[S.me]||{},ja=aktive().filter(x=>z[x.id]?.status==='ja'),offen=aktive().filter(x=>!z[x.id]?.status).length;
   const pass=Object.entries(z).filter(([,v])=>v.mitBei===S.me&&v.anreise==='mitfahrt').map(([id])=>nameOf(id));
@@ -711,13 +745,43 @@ const SPIELE=[
  {id:'6tage',name:'6-Tage-Rennen',typ:'team',dauer:'lang',kurz:'Sechs „Tage“ mit je zwei Würfen pro Spieler – Tagessieger bekommt Extrapunkte.',
   regeln:['Sechs Durchgänge (Tage), jeder wirft pro Tag zweimal in die Vollen.','Die Holz eines Teams werden pro Tag addiert.','Das bessere Team bekommt pro Tag 2 Extrapunkte.','Nach sechs Tagen gewinnt die höchste Gesamtpunktzahl.']},
 ];
-async function ladeSpielTermin(tid){S.sp={tid,loading:true};
- const [a,g]=await Promise.all([Store.get(`abende/${tid}.json`),Store.get(`spiele/${tid}.json`)]);
- const t=T(tid),z=t?.zusagen||{};
- const ab=S.abend?.id===tid?S.abend:a.data;
- const spieler=ab?ab.spieler.filter(p=>p.anwesend).map(p=>({id:p.id,name:p.name})):aktive().filter(m=>z[m.id]?.status==='ja').map(m=>({id:m.id,name:m.spitzname}));
- S.spielCache[tid]=g.data||{spiele:[]};S.sp={tid,spieler,ausAbend:!!ab};rerender()}
-const spName=id=>S.sp?.spieler.find(p=>p.id===id)?.name||nameOf(id);
+const alleSpiele=()=>[...SPIELE,...(S.katalog?.spiele||[])];
+const recSpieler=tid=>(S.abend?.id===tid?S.abend.spieler.filter(p=>p.anwesend):(S.sp?.spieler||[])).map(p=>({id:p.id,name:p.name}));
+const spName=id=>S.abend?.spieler.find(p=>p.id===id)?.name||S.sp?.spieler.find(p=>p.id===id)?.name||nameOf(id);
+/* Spiele des Abends – im Reiter Abend */
+function spieleHeute(tid,editable){const sp=S.spielCache[tid]?.spiele||[],n=recSpieler(tid).length;
+ let h=`<div class="sec">🏆 Spiele heute (${sp.length})</div><div class="card">`;
+ h+=sp.length?`<ul class="l">${sp.map(g=>{const auto=g.strafen===false?'':g.typ==='einzel'?'Platz 2+: je 0,10 € pro Platz':'Verlierer je 1 €';
+  return`<li><div class="g"><b>${esc(g.name)}</b> <span class="pill">${g.typ==='team'?'Team':'Einzel'}</span>
+  <div class="small" style="margin-top:2px">${g.typ==='einzel'?(g.rang||[]).map((id,i)=>`${i===0?'🥇 ':i===1?'🥈 ':i===2?'🥉 ':i+1+'. '}${esc(spName(id))}`).join(' · '):g.sieger?`🏆 ${g.sieger==='tafel'?'🧾 Tafelseite':'🚪 Türseite'}: ${(g.teams[g.sieger]||[]).map(id=>esc(spName(id))).join(', ')}`:''}</div>
+  <div class="small muted">${g.notiz?esc(g.notiz)+' · ':''}${auto||'ohne Strafen'}</div></div>${editable?`<button class="x" onclick="act.spielDel('${tid}','${g.id}')">✕</button>`:''}</li>`}).join('')}</ul>`:'<p class="muted" style="margin:0">Noch kein Spiel eingetragen.</p>';
+ if(editable)h+=`<button class="btn p w" style="margin-top:10px" ${n<2?'disabled':''} onclick="act.recStart('${tid}')">+ Spiel hinzufügen</button><p class="muted small" style="margin-bottom:0">Nach dem Speichern rechnet die Tafel Platzierungen (0,10 € je Platz ab Platz 2) und verlorene Teamspiele (1 €) automatisch ein. Ideen und Regeln: Reiter 🎲 Spiele.</p>`;
+ return h+`</div>`}
+/* Reiter Spiele: nur Katalog + eigene Spiele */
+function vSpiele(){
+ if(!S.katalog&&!S.katLoading){S.katLoading=true;afterHooks.push(()=>Store.get('spielekatalog.json').then(r=>{S.katalog=r.data||{spiele:[]};S.katLoading=false;rerender()}).catch(e=>{S.katLoading=false;toast('⚠ '+e.message,5000)}))}
+ const f=S.spFilter,eig=S.katalog?.spiele||[],list=alleSpiele().filter(g=>f==='alle'||(f==='eigene'?g.eigen:g.typ===f||g.dauer===f));
+ let h=`<div class="card hero"><div class="row"><div class="f"><h3 style="margin:0">🎲 Spiele-Ideen</h3><div class="muted small">${SPIELE.length} Klassiker${eig.length?' + '+eig.length+' eigene':''} – Regeln antippen. Ergebnisse trägst du am Abend im Reiter 🎳 Abend ein.</div></div></div>
+ <button class="btn p w" style="margin-top:12px" onclick="act.spielForm()">+ Eigenes Spiel anlegen</button></div>
+ <div class="chips" style="margin-bottom:10px">${[['alle','Alle'],['schnell','⚡ Schnell'],['einzel','👤 Einzel'],['team','👥 Team'],...(eig.length?[['eigene','⭐ Eigene']]:[])].map(([k,l])=>`<button class="chip ${f===k?'on':''}" onclick="S.spFilter='${k}';rerender()">${l}</button>`).join('')}</div>`;
+ h+=list.map(g=>`<div class="card" style="padding:14px"><div class="row" style="cursor:pointer;align-items:flex-start" onclick="S.spOpen=S.spOpen==='${g.id}'?null:'${g.id}';rerender()"><div class="f"><b>${g.eigen?'⭐ ':''}${esc(g.name)}</b> <span class="pill">${g.typ==='team'?'👥 Team':'👤 Einzel'}</span> <span class="pill">${g.dauer==='schnell'?'⚡ schnell':g.dauer==='lang'?'⏳ lang':'⏱ mittel'}</span>${g.kurz?`<div class="small muted" style="margin-top:4px">${esc(g.kurz)}</div>`:''}</div><span class="muted" style="font-size:20px">${S.spOpen===g.id?'−':'+'}</span></div>
+  ${S.spOpen===g.id?`${(g.regeln||[]).length?`<ol class="small" style="padding-left:20px;margin:10px 0 0;line-height:1.55">${g.regeln.map(r=>`<li>${esc(r)}</li>`).join('')}</ol>`:'<p class="muted small">Keine Regeln hinterlegt.</p>'}
+  ${g.eigen?`<div class="row wrap" style="margin-top:10px;gap:8px"><span class="muted small f">eingetragen von ${esc(nameOf(g.von))}</span>${g.von===S.me||isAdmin()?`<button class="btn s" onclick="act.spielForm('${g.id}')">✎ Bearbeiten</button>`:''}</div>`:''}`:''}</div>`).join('')||'<div class="card muted">Keine Spiele in dieser Auswahl.</div>';
+ h+=`<p class="muted small" style="margin:4px">Klassiker nach gängigen Kegelclub-Varianten – bei euch gelten natürlich eure Hausregeln.</p>`;
+ return h}
+act.spielForm=id=>{const g=id?(S.katalog?.spiele||[]).find(x=>x.id===id):null;S.sf={id:g?.id||'',name:g?.name||'',typ:g?.typ||'einzel',dauer:g?.dauer||'mittel',kurz:g?.kurz||'',regeln:(g?.regeln||[]).join('\n')};spielFormSheet()};
+function spielFormSheet(){const f=S.sf;
+ sheet(`<h3>${f.id?'Spiel bearbeiten':'Eigenes Spiel anlegen'}</h3><label>Name</label><input value="${esc(f.name)}" placeholder="z. B. Samos-Roulette" oninput="S.sf.name=this.value">
+ <label>Art</label><div class="chips">${[['einzel','👤 Einzelspiel'],['team','👥 Teamspiel (Tafel gegen Tür)']].map(([k,l])=>`<button class="chip ${f.typ===k?'on':''}" onclick="S.sf.typ='${k}';spielFormSheet()">${l}</button>`).join('')}</div>
+ <label>Dauer</label><div class="chips">${[['schnell','⚡ schnell'],['mittel','⏱ mittel'],['lang','⏳ lang']].map(([k,l])=>`<button class="chip ${f.dauer===k?'on':''}" onclick="S.sf.dauer='${k}';spielFormSheet()">${l}</button>`).join('')}</div>
+ <label>Kurzbeschreibung</label><input value="${esc(f.kurz)}" placeholder="Worum geht's in einem Satz?" oninput="S.sf.kurz=this.value">
+ <label>Regeln (eine Regel pro Zeile)</label><textarea rows="6" placeholder="Jeder hat drei Würfe …&#10;Wer … gewinnt." oninput="S.sf.regeln=this.value">${esc(f.regeln)}</textarea>
+ <div class="row" style="margin-top:14px">${f.id?`<button class="btn" style="color:var(--rot)" onclick="act.spielKatDel('${f.id}')">Löschen</button>`:''}<button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn p f" onclick="act.spielKatSave()">Speichern</button></div>`)}
+act.spielKatSave=()=>{const f=S.sf;if(!f.name.trim())return toast('Bitte einen Namen eingeben');
+ const g={id:f.id||'c'+Date.now().toString(36),eigen:true,name:f.name.trim(),typ:f.typ,dauer:f.dauer,kurz:f.kurz.trim(),regeln:f.regeln.split('\n').map(x=>x.trim()).filter(Boolean)};closeSheet();
+ save('spielekatalog.json',d=>{d.spiele=d.spiele||[];const i=d.spiele.findIndex(x=>x.id===g.id);if(i>=0)d.spiele[i]={...d.spiele[i],...g,geaendert:new Date().toISOString()};else d.spiele.push({...g,von:S.me,erstellt:new Date().toISOString()});return d},`Spiel ${g.name}`,{spiele:[]})
+ .then(d=>{S.katalog=d;S.spOpen=g.id;toast(f.id?'Gespeichert ✓':'⭐ Spiel angelegt');rerender()})};
+act.spielKatDel=id=>{closeSheet();ask('Dieses Spiel aus der Liste löschen?','Löschen',()=>save('spielekatalog.json',d=>{d.spiele=(d.spiele||[]).filter(x=>x.id!==id);return d},'Spiel gelöscht',{spiele:[]}).then(d=>{S.katalog=d;rerender()}),true)};
 function sitzKarte(tid,editable){const sz=S.spielCache[tid]?.sitz,ab=S.abend?.id===tid?S.abend:null,pres=ab?ab.spieler.filter(p=>p.anwesend):[];
  const fehlt=sz?pres.filter(p=>!sz.tafel.some(q=>q.id===p.id)&&!sz.tuer.some(q=>q.id===p.id)):[];
  let h=`<div class="card hero"><div class="row"><div class="f"><h3 style="margin:0">🎲 Sitzordnung</h3><div class="muted small">${sz?'Steht für den ganzen Abend – Teamspiele: Tafelseite gegen Türseite':editable?'Einmal vor dem Kegeln auslosen, danach steht sie fest.':'Wird im Reiter „🎳 Abend“ einmal ausgelost.'}</div></div>
@@ -728,33 +792,6 @@ function sitzKarte(tid,editable){const sz=S.spielCache[tid]?.sitz,ab=S.abend?.id
   ${editable&&isAdmin()?`<button class="btn s" style="margin-top:10px;background:rgba(255,255,255,.12);color:#fff" onclick="act.sitzReset('${tid}')">Zurücksetzen (Admin)</button>`:''}`}
  else if(editable)h+=`<p class="muted small" style="margin-bottom:0">${pres.length<2?'Erst die Anwesenden abhaken, dann auslosen.':pres.length+' Anwesende werden zufällig auf Tafel- und Türseite verteilt.'}</p>`;
  return h+`</div>`}
-function vSpiele(){
- const tid=S.selSpiel&&T(S.selSpiel)?S.selSpiel:abendTermin()?.id;
- let h=tid?`<div style="margin-bottom:12px"><select onchange="S.selSpiel=this.value;S.sp=null;render()">${terminOpts(tid,x=>x.status!=='ausgefallen')}</select></div>`:'';
- if(tid){
-  if(S.sp?.tid!==tid){afterHooks.push(()=>ladeSpielTermin(tid).catch(e=>toast('⚠ '+e.message,5000)));h+=`<div class="card muted">Lade…</div>`}
-  else if(!S.sp.loading){const D=S.spielCache[tid]||{spiele:[]},sz=D.sitz,n=S.sp.spieler.length,abg=T(tid)?.status==='abgeschlossen';
-   h+=sitzKarte(tid,false);
-   const sp=D.spiele||[];
-   h+=`<div class="sec">Gespielt an diesem Abend (${sp.length})</div><div class="card">${sp.length?`<ul class="l">${sp.map(g=>`<li><div class="g"><b>${esc(g.name)}</b> <span class="pill">${g.typ==='team'?'Team':'Einzel'}</span>
-    <div class="small" style="margin-top:2px">${g.typ==='einzel'?(g.rang||[]).map((id,i)=>`${i===0?'🏆 ':i+1+'. '}${esc(spName(id))}`).join(' · '):g.sieger?`🏆 ${g.sieger==='tafel'?'Tafelseite':'Türseite'}: ${(g.teams[g.sieger]||[]).map(id=>esc(spName(id))).join(', ')}`:''}</div>
-    ${g.notiz?`<div class="small muted">${esc(g.notiz)}</div>`:''}${g.strafen===false?'<div class="small muted">ohne Strafen</div>':''}</div>${abg?'':`<button class="x" onclick="act.spielDel('${tid}','${g.id}')">✕</button>`}</li>`).join('')}</ul>`:'<p class="muted" style="margin:0">Noch kein Spiel eingetragen.</p>'}
-   ${abg?'':`<button class="btn p w" style="margin-top:10px" ${n<2?'disabled':''} onclick="act.recStart('${tid}')">+ Ergebnis eintragen</button>`}
-   ${sp.some(g=>g.strafen!==false)?'<p class="muted small" style="margin-bottom:0">Platzierungen (0,10 € je Platz ab Platz 2) und verlorene Teamspiele (1 €) fließen automatisch in die Strafen des Abends.</p>':''}</div>`}}
- // Siege im Jahr
- const Y=todayISO().slice(0,4),siege={};
- for(const t of termineSorted().filter(t=>t.datum.startsWith(Y)))for(const g of (t.spieleErg||[]))for(const id of g.sieger||[])siege[id]=(siege[id]||0)+1;
- if(tid&&T(tid)?.status!=='abgeschlossen')for(const g of S.spielCache[tid]?.spiele||[])for(const id of (g.typ==='einzel'?(g.rang||[]).slice(0,1):(g.teams?.[g.sieger]||[])))siege[id]=(siege[id]||0)+1;
- const sr=Object.entries(siege).map(([pid,v])=>({pid,v})).sort((a,b)=>b.v-a.v);
- if(sr.length)h+=`<div class="sec">🏆 Meiste Siege ${Y}</div><div class="card">${bars(sr.slice(0,10),v=>fmtN(v,0),S.me)}</div>`;
- // Katalog
- const f=S.spFilter,list=SPIELE.filter(g=>f==='alle'||g.typ===f||g.dauer===f);
- h+=`<div class="sec">Spiele-Ideen</div><div class="chips" style="margin-bottom:10px">${[['alle','Alle'],['schnell','⚡ Schnell'],['einzel','Einzel'],['team','Team']].map(([k,l])=>`<button class="chip ${f===k?'on':''}" onclick="S.spFilter='${k}';rerender()">${l}</button>`).join('')}</div>
- ${list.map(g=>`<div class="card" style="padding:14px"><div class="row" style="cursor:pointer;align-items:flex-start" onclick="S.spOpen=S.spOpen==='${g.id}'?null:'${g.id}';rerender()"><div class="f"><b>${esc(g.name)}</b> <span class="pill">${g.typ==='team'?'👥 Team':'👤 Einzel'}</span> <span class="pill">${g.dauer==='schnell'?'⚡ schnell':g.dauer==='lang'?'⏳ lang':'⏱ mittel'}</span><div class="small muted" style="margin-top:4px">${esc(g.kurz)}</div></div><span class="muted" style="font-size:20px">${S.spOpen===g.id?'−':'+'}</span></div>
-  ${S.spOpen===g.id?`<ol class="small" style="padding-left:20px;margin:10px 0 0;line-height:1.55">${g.regeln.map(r=>`<li>${esc(r)}</li>`).join('')}</ol>${tid&&S.sp?.tid===tid&&T(tid)?.status!=='abgeschlossen'?`<button class="btn s p" style="margin-top:10px" onclick="act.recStart('${tid}','${g.id}')">Ergebnis eintragen</button>`:''}`:''}</div>`).join('')}
- <p class="muted small" style="margin:4px">Regeln nach gängigen Kegelclub-Varianten – bei euch gelten natürlich eure Hausregeln.</p>`;
- return h;
-}
 function mischen(a){a=[...a];for(let i=a.length-1;i>0;i--){const r=new Uint32Array(1);crypto.getRandomValues(r);const j=r[0]%(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
 act.auslosen=tid=>{if(S.spielCache[tid]?.sitz)return toast('Die Sitzordnung steht schon fest');
  const pres=(S.abend?.id===tid?S.abend.spieler:[]).filter(p=>p.anwesend).map(p=>({id:p.id,name:p.name}));if(pres.length<2)return toast('Erst die Anwesenden abhaken');
@@ -767,11 +804,11 @@ act.nachzuegler=(tid,id)=>{const p=S.abend.spieler.find(x=>x.id===id);if(!p)retu
   const k=z.tafel.length<z.tuer.length?'tafel':z.tuer.length<z.tafel.length?'tuer':(crypto.getRandomValues(new Uint8Array(1))[0]%2?'tafel':'tuer');z[k].push({id,name:p.name});d.nachzuegler=(d.nachzuegler||[]).concat({id,seite:k});return d},'Nachzügler '+p.name,{spiele:[]})
  .then(d=>{S.spielCache[tid]=d;const k=d.sitz.tafel.some(q=>q.id===id)?'Tafelseite':'Türseite';toast(`${p.name} sitzt an der ${k}`);rerender()})};
 act.sitzReset=tid=>ask('Sitzordnung wirklich zurücksetzen? Danach kann neu ausgelost werden.','Zurücksetzen',()=>save(`spiele/${tid}.json`,d=>{delete d.sitz;return d},'Sitzordnung zurückgesetzt',{spiele:[]}).then(d=>{S.spielCache[tid]=d;rerender()}),true);
-act.recStart=(tid,spielId)=>{const g=SPIELE.find(x=>x.id===spielId),sz=S.spielCache[tid]?.sitz;
+act.recStart=(tid,spielId)=>{const g=alleSpiele().find(x=>x.id===spielId),sz=S.spielCache[tid]?.sitz;
  S.rec={tid,spielId:g?.id||'',name:g?.name||'',typ:g?.typ||'einzel',rang:[],teams:{tafel:(sz?.tafel||[]).map(p=>p.id),tuer:(sz?.tuer||[]).map(p=>p.id)},sieger:'',strafen:true,notiz:''};
- const rest=S.spielCache[tid]?.sitz?[]:S.sp.spieler.map(p=>p.id).filter(id=>!S.rec.teams.tafel.includes(id)&&!S.rec.teams.tuer.includes(id));rest.forEach((id,i)=>S.rec.teams[i%2?'tuer':'tafel'].push(id));recSheet()};
-function recSheet(){const R=S.rec,sp=S.sp.spieler;
- let h=`<h3>Ergebnis eintragen</h3><label>Spiel</label><select onchange="const g=SPIELE.find(x=>x.id===this.value);S.rec.spielId=this.value;S.rec.name=g?g.name:'';if(g)S.rec.typ=g.typ;recSheet()"><option value="">– eigenes Spiel –</option>${SPIELE.map(g=>`<option value="${g.id}" ${R.spielId===g.id?'selected':''}>${esc(g.name)}</option>`).join('')}</select>
+ const rest=S.spielCache[tid]?.sitz?[]:recSpieler(tid).map(p=>p.id).filter(id=>!S.rec.teams.tafel.includes(id)&&!S.rec.teams.tuer.includes(id));rest.forEach((id,i)=>S.rec.teams[i%2?'tuer':'tafel'].push(id));recSheet()};
+function recSheet(){const R=S.rec,sp=recSpieler(R.tid);
+ let h=`<h3>Spiel hinzufügen</h3><label>Welches Spiel?</label><select onchange="const g=alleSpiele().find(x=>x.id===this.value);S.rec.spielId=this.value;S.rec.name=g?g.name:'';if(g)S.rec.typ=g.typ;recSheet()"><option value="">– anderes Spiel (Name eingeben) –</option>${alleSpiele().map(g=>`<option value="${g.id}" ${R.spielId===g.id?'selected':''}>${g.eigen?'⭐ ':''}${esc(g.name)} (${g.typ==='team'?'Team':'Einzel'})</option>`).join('')}</select>
  ${R.spielId?'':`<label>Name</label><input value="${esc(R.name)}" placeholder="Name des Spiels" onchange="S.rec.name=this.value">`}
  <div class="chips" style="margin-top:10px">${[['einzel','👤 Einzelspiel'],['team','👥 Teamspiel']].map(([k,l])=>`<button class="chip ${R.typ===k?'on':''}" onclick="S.rec.typ='${k}';recSheet()">${l}</button>`).join('')}</div>`;
  if(R.typ==='einzel'){
@@ -780,8 +817,8 @@ function recSheet(){const R=S.rec,sp=S.sp.spieler;
   <p class="muted small">Ihr kennt nur den Sieger? Dann nur ihn antippen – Strafen gibt es nur für eingetragene Plätze.</p>`;
  }else{
   const fix=!!S.spielCache[R.tid]?.sitz;
-  h+=`<label>${fix?'Teams = Sitzordnung des Abends':'Teams – Name antippen, um die Seite zu wechseln (noch keine Sitzordnung ausgelost)'}</label><div class="row" style="align-items:flex-start;gap:10px">${[['tafel','🧾 Tafelseite'],['tuer','🚪 Türseite']].map(([k,l])=>`<div class="f" style="background:${R.sieger===k?'var(--gruenbg)':'#f3f1ea'};border-radius:14px;padding:10px"><b>${l}</b><div class="chips wrap" style="margin-top:6px">${R.teams[k].map(id=>fix?`<span class="chip" style="background:#fff;cursor:default">${esc(spName(id))}</span>`:`<button class="chip" style="background:#fff" onclick="S.rec.teams['${k}']=S.rec.teams['${k}'].filter(x=>x!=='${id}');S.rec.teams['${k==='tafel'?'tuer':'tafel'}'].push('${id}');recSheet()">${esc(spName(id))}</button>`).join('')}</div></div>`).join('')}</div>
-  <label>Gewonnen hat</label><div class="seg" style="grid-template-columns:1fr 1fr">${[['tafel','🧾 Tafelseite'],['tuer','🚪 Türseite']].map(([k,l])=>`<button style="background:${R.sieger===k?'#2e9e4d':'#efede5'};color:${R.sieger===k?'#fff':'var(--ink)'}" onclick="S.rec.sieger='${k}';recSheet()">${l}</button>`).join('')}</div>`;
+  h+=`<label>${fix?'Teams = Sitzordnung des Abends':'Teams – Name antippen, um die Seite zu wechseln (noch keine Sitzordnung ausgelost)'}</label><div class="row" style="align-items:flex-start;gap:10px">${[['tafel','🧾 Tafelseite'],['tuer','🚪 Türseite']].map(([k,l])=>`<div class="f" style="background:${R.sieger===k?'var(--gruenbg)':'var(--tapbg)'};border-radius:14px;padding:10px"><b>${l}</b><div class="chips wrap" style="margin-top:6px">${R.teams[k].map(id=>fix?`<span class="chip" style="background:var(--card);cursor:default">${esc(spName(id))}</span>`:`<button class="chip" style="background:var(--card)" onclick="S.rec.teams['${k}']=S.rec.teams['${k}'].filter(x=>x!=='${id}');S.rec.teams['${k==='tafel'?'tuer':'tafel'}'].push('${id}');recSheet()">${esc(spName(id))}</button>`).join('')}</div></div>`).join('')}</div>
+  <label>Gewonnen hat</label><div class="seg" style="grid-template-columns:1fr 1fr">${[['tafel','🧾 Tafelseite'],['tuer','🚪 Türseite']].map(([k,l])=>`<button style="background:${R.sieger===k?'#2e9e4d':'var(--chip)'};color:${R.sieger===k?'#fff':'var(--ink)'}" onclick="S.rec.sieger='${k}';recSheet()">${l}</button>`).join('')}</div>`;
  }
  h+=`<label class="row" style="margin-top:12px;font-weight:600;color:var(--ink)"><input type="checkbox" ${R.strafen?'checked':''} onchange="S.rec.strafen=this.checked" style="width:auto;min-height:0"> Strafen laut Katalog berechnen ${R.typ==='einzel'?'(0,10 € je Platz ab 2.)':'(1 € je Verlierer)'}</label>
  <label>Notiz (optional)</label><input value="${esc(R.notiz)}" placeholder="z. B. Endstand 312:287" onchange="S.rec.notiz=this.value">
@@ -934,6 +971,11 @@ function vStatistik(){
   const strafRec=()=>{let b=null;for(const a of ab)for(const[pid,s]of Object.entries(a.strafen||{}))if(a.spieler[pid]&&s>(b?.w||0))b={w:s,pid,d:a.datum};return b?`<tr><td>Höchste Strafe</td><td><b>${eur(b.w)}</b> · ${esc(nameOf(b.pid))}</td><td class="muted small">${fmtD(b.d,{day:'2-digit',month:'2-digit',year:'2-digit'})}</td></tr>`:''};
   h+=`<div class="sec">Rekorde${st.zeit==='alle'?'':' im Zeitraum'}</div><div class="card"><table><tr><th>Ein Spieler an einem Abend</th><th></th><th></th></tr>${rec('pudel','Meiste Pudel')}${rec('glocke','Meiste Glöckchen')}${rec('neun','Meiste Alle Neune')}${rec('kranz','Meiste Kränze')}${strafRec()}
   <tr><th>Alle zusammen an einem Abend</th><th></th><th></th></tr>${club('spieler','Spieler')}${club('pudel','Pudel')}${club('glocke','Glöckchen')}${club('neun','Alle Neune')}${club('kranz','Kränze')}</table></div>`}
+ // Spiele-Siege
+ {const siege={},tl=termineSorted().filter(t=>t.spieleErg?.length&&(st.zeit==='alle'||(st.zeit==='letzter'?t.datum===ab[0]?.datum:t.datum.startsWith(st.zeit))));
+  for(const t of tl)for(const g of t.spieleErg)for(const id of g.sieger||[])siege[id]=(siege[id]||0)+1;
+  const sr=Object.entries(siege).map(([pid,v])=>({pid,v})).sort((a,b)=>b.v-a.v);
+  if(sr.length)h+=`<div class="sec">🏆 Spiele-Siege</div><div class="card">${bars(sr,v=>fmtN(v,0),S.me)}<p class="muted small" style="margin-bottom:0">Gezählt werden in der App erfasste Spiele; bei Teamspielen bekommt jeder der Siegerseite einen Sieg.</p></div>`}
  // Spielerprofil
  const pid=st.spieler&&ag[st.spieler]?st.spieler:(ag[S.me]?S.me:list[0]?.pid),x=ag[pid];
  if(x){const won=[];for(const[y,a]of alleSaisons()){const p=pokaleFuer(a);[['pudelkoenig','👑 Pudelkönig'],['pudeltrottel','🐩 Pudeltrottel'],['glocke','🔔 Glöckner'],['neun','9️⃣ Alle Neune'],['kranz','🎯 Kranz'],['platz1','🥇'],['platz2','🥈'],['platz3','🥉']].forEach(([k,l])=>{if(p[k]===pid)won.push(`${l} ${y}`)})}
@@ -978,6 +1020,8 @@ function vProfil(){const m=M(S.me);
  return`<div class="card"><div class="row"><div class="av">${ini(m?.spitzname)}</div><div class="f"><b>${esc(m?.vorname||'')} ${esc(m?.nachname||'')}</b><div class="muted small">„${esc(m?.spitzname||'')}“ ${(m?.rollen||[]).map(r=>`<span class="pill y">${r}</span>`).join(' ')}</div></div></div>
  <p class="muted small">${Store.isDemo()?'Demo-Modus – Daten nur in diesem Browser.':'Verbunden mit '+OWNER+' / '+REPO+'.'}</p>
  <div class="row wrap"><button class="btn f" onclick="act.wechsel()">Person wechseln</button><button class="btn f" onclick="act.abmelden()">Abmelden</button></div></div>
+ <div class="card"><h3>🎨 Darstellung</h3><p class="muted small" style="margin-top:0">Gilt nur für dieses Handy – jeder wählt selbst.</p>
+ <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px">${Object.entries(THEMES).map(([k,t])=>`<button class="tile" style="text-align:left;cursor:pointer;${themeWahl()===k?'box-shadow:0 0 0 2px var(--gelb3);':''}${k==='bvb'?'background:#000;color:#FDE100;':k==='fcb'?'background:#DC052D;color:#fff;':k==='dark'?'background:#1e1e1c;color:#EDEBE4;':''}" onclick="act.theme('${k}')"><div style="font-size:22px">${t.ic}</div><b>${t.name}</b><div class="small" style="opacity:.75">${t.sub}</div></button>`).join('')}</div></div>
  <div class="card"><h3>Meine Kontaktdaten</h3><p class="muted small" style="margin-top:0">Bitte aktuell halten – z. B. nach einem Umzug. Sehen können das nur du und die Admins.</p>${kontaktForm(S.me,'pk')}
  <button class="btn p w" style="margin-top:12px" onclick="act.meinKontakt()">Speichern</button>${S.kontakte.personen[S.me]?.geaendert?`<p class="muted small">Zuletzt geändert: ${fmtD(S.kontakte.personen[S.me].geaendert.slice(0,10))}</p>`:''}</div>
  <div class="card"><h3>Als App installieren</h3><p class="small" style="margin:0"><b>iPhone:</b> Safari → Teilen → „Zum Home-Bildschirm“<br><b>Android:</b> Chrome → ⋮ → „App installieren“</p></div>`}
@@ -997,7 +1041,7 @@ function vVerwaltung(){if(!isAdmin())return'<div class="card">Nur für Admins.</
  <div class="card"><details><summary>🍽️ Speisekarte pflegen</summary><p class="muted small">Eine Zeile pro Gericht: <code>Nr;Gericht;Preis;Kategorie;Beschreibung</code>. Ersetzt die komplette Karte.</p>
  <textarea id="k-csv" rows="8" placeholder="60;Gyros;14,90;Grill;Pommes, Reis, Salat"></textarea><div class="row" style="margin-top:8px"><button class="btn f" onclick="act.karteExport()">Aktuelle Karte laden</button><button class="btn p f" onclick="act.karteImport()">Speichern</button></div></details></div>
  ${Store.isDemo()?'':`<div class="card"><h3>🔗 Einladungslink</h3><p class="muted small">Enthält den Zugangsschlüssel – nur privat in der WhatsApp-Gruppe teilen. Wer ihn öffnet, ist sofort verbunden.</p><button class="btn p w" onclick="act.invite()">Link erzeugen & kopieren</button></div>`}`}
-act.reload=async()=>{setSync('⏳');try{await loadAll();S.karte=null;S.hist=null;S.abendFor=null;S.bestFor=null;S.sp=null;setSync('');toast('Aktualisiert ✓');rerender()}catch(e){setSync('⚠');toast('⚠ '+e.message,5000)}};
+act.reload=async()=>{setSync('⏳');try{await loadAll();S.karte=null;S.hist=null;S.katalog=null;S.abendFor=null;S.bestFor=null;S.sp=null;setSync('');toast('Aktualisiert ✓');rerender()}catch(e){setSync('⚠');toast('⚠ '+e.message,5000)}};
 act.wechsel=()=>{lsDel('kt_me');S.me=null;boot()};
 act.abmelden=()=>ask('Abmelden? Der Zugang wird auf diesem Gerät gelöscht.','Abmelden',()=>{lsDel('kt_cfg');lsDel('kt_me');location.hash='';location.reload()},true);
 const saveVerein=(fn,msg)=>save('verein.json',d=>{fn(d);return d},msg).then(d=>{S.verein=d;rerender()});
@@ -1053,6 +1097,18 @@ function demoSeed(){if(lsGet('kt_demo:verein.json'))return;
  const rnd=s=>{let x=s;return()=>(x=(x*9301+49297)%233280)/233280};const R=rnd(7);
  const hist={abende:[0,1,2,3,4,5].map(i=>({datum:addDays(sat,-35*(i+2)),quelle:'excel',spieler:Object.fromEntries(n.filter(()=>R()>.25).map(x=>[x.toLowerCase(),{pudel:Math.round(R()*16),glocke:Math.round(R()*2),neun:Math.round(R()*2),kranz:Math.round(R()*1.4),spiele:r2(R()*8),figur:R()>.9?1:0}]))})),pokale:[],rekorde:null,legacy:null,namen:{}};
  lsSet('kt_demo:verein.json',JSON.stringify(v));lsSet('kt_demo:termine.json',JSON.stringify(t));lsSet('kt_demo:kasse.json',JSON.stringify({buchungen:[]}));lsSet('kt_demo:speisekarte.json',JSON.stringify(k));lsSet('kt_demo:historie.json',JSON.stringify(hist))}
+
+/* ---------------- DARSTELLUNG ---------------- */
+const THEMES={auto:{name:'Automatisch',ic:'📱',sub:'wie das Handy'},light:{name:'Hell',ic:'☀️',sub:'Kegeltreff-Gelb'},dark:{name:'Dunkel',ic:'🌙',sub:'schont die Augen'},
+ bvb:{name:'Schwarz-Gelb',ic:'🖤💛',sub:'Dortmund-Modus',motto:'Echte Liebe',farbe:'#FDE100',sprueche:['Echte Liebe 🖤💛','Heja BVB!','Schwarz-Gelb bis in die letzte Gasse','Hier wackelt nicht nur der Kranz – hier bebt die Wand','Pudel? Nicht mit Borussia!','Alle Neune für Schwarz-Gelb']},
+ fcb:{name:'Rot-Weiß',ic:'❤️🤍',sub:'Bayern-Modus',motto:'Mir san mir',farbe:'#fff',sprueche:['Mir san mir ❤️🤍','Rot-Weiß kegelt besser','Ein Kranz für den Rekordmeister','Pudel gibt’s nur in Giesing','Gewinnen ist bei uns Pflicht','Mia san da – und treffen alle Neune']}};
+const themeWahl=()=>lsGet('kt_theme')||'auto';
+const themeAktiv=()=>{const t=themeWahl();return t==='auto'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t};
+function applyTheme(){const t=themeAktiv();document.documentElement.dataset.theme=t;const m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='fcb'?'#DC052D':t==='light'?'#1D1D1B':'#000000'}
+function slogan(){const sp=THEMES[themeAktiv()]?.sprueche;if(!sp)return'';const d=new Date(),doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);return sp[doy%sp.length]}
+act.theme=k=>{lsSet('kt_theme',k);applyTheme();shell();render();toast(`${THEMES[k].ic} ${THEMES[k].name}`)};
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(themeWahl()==='auto')applyTheme()})}catch(_){}
+applyTheme();
 
 async function boot(){
  const h=location.hash;
