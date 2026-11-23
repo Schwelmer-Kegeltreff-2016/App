@@ -13,13 +13,13 @@
 <title>Schwelmer Kegeltreff</title>
 <style>
 :root{--gelb:#FFD400;--gelb2:#FFF3B0;--gelb3:#F2C500;--ink:#111827;--ink2:#374151;--muted:#5B6270;--linie:#E5E7EB;--linie2:#CBD0D8;--bg:#F3F4F6;--card:#fff;--input:#fff;--chip:#EEF0F3;--tapbg:#F1F3F6;--rot:#b3261e;--rotbg:#fdeceb;--gruen:#1e7b34;--gruenbg:#e6f4ea;--r:20px;--hdr:58px;
- --dark:#111827;--on-accent:#111827;--hbar:var(--gelb);--navbg:rgba(255,255,255,.97);--navtext:#5B6270;--navtext-on:#111827;--navon:var(--gelb);--navon-ink:var(--on-accent);--barc:#4B5563;--avtext:var(--gelb);
+ --dark:#111827;--on-accent:#111827;--hbar:var(--gelb);--navbg:#fff;--navtext:#5B6270;--navtext-on:#111827;--navon:var(--gelb);--navon-ink:var(--on-accent);--barc:#4B5563;--avtext:var(--gelb);
  --hero-accent:var(--gelb);--hero-accent-ink:var(--on-accent);--hero-bg:var(--dark);--slogan:var(--gelb);--glow:transparent;--font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-d:var(--font);color-scheme:light}
 /* ===== Stil: Vereinsheim (hell, ruhig) ===== */
 [data-stil=vereinsheim]{--font:'Plus Jakarta Sans',system-ui,sans-serif;--font-d:var(--font);--r:22px;--navon:var(--dark);--navon-ink:#fff;--navtext-on:var(--ink);--slogan:var(--ink)}
 /* ===== Stil: Flutlicht (dunkel, sportlich) ===== */
 [data-stil=flutlicht]{--bg:#0E0F12;--card:#17191E;--input:#121418;--ink:#F2F2F0;--ink2:#C9CCD1;--muted:#A3A7AF;--linie:#2A2E36;--linie2:#3A3F49;--chip:#23262D;--tapbg:#1F2228;
- --dark:#2A2E36;--hero-bg:#17191E;--rot:#FF8A80;--rotbg:#3A1E1E;--gruen:#6EE7A0;--gruenbg:#14301F;--barc:#7A808B;--navbg:rgba(23,25,30,.96);--navtext:#A3A7AF;--navtext-on:#F2F2F0;
+ --dark:#2A2E36;--hero-bg:#17191E;--rot:#FF8A80;--rotbg:#3A1E1E;--gruen:#6EE7A0;--gruenbg:#14301F;--barc:#7A808B;--navbg:#17191E;--navtext:#A3A7AF;--navtext-on:#F2F2F0;
  --gelb2:#3A3314;--glow:rgba(255,212,0,.35);--font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-d:'Space Grotesk',system-ui,sans-serif;color-scheme:dark}
 /* ===== Stil: Anzeigetafel (plakativ, große Zahlen) ===== */
 [data-stil=anzeigetafel]{--bg:#ECECE7;--ink:#0A0A0A;--ink2:#2E2E2B;--muted:#4A4A45;--linie:#D4D4CC;--linie2:#9C9C94;--chip:#E2E2DA;--tapbg:#fff;--dark:#0A0A0A;--r:6px;--barc:#0A0A0A;
@@ -164,6 +164,14 @@ h2,h3,.big,header .t b,.tile .v,.tap b{font-family:var(--font-d)}
 [data-stil=vereinsheim] .tap{background:var(--tapbg)}
 [data-stil=vereinsheim] nav,[data-stil=flutlicht] nav{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto;border-radius:24px;border:0;padding:6px 4px;box-shadow:0 10px 30px -12px rgba(17,24,39,.35)}
 [data-stil=flutlicht] nav{box-shadow:0 0 0 1px var(--linie),0 10px 30px -12px rgba(0,0,0,.6)}
+/* Leiste: oben schwebend, beim Scrollen dockt sie unten am Rand an – immer deckend, nichts scheint durch */
+nav{backdrop-filter:none;transition:left .22s ease,right .22s ease,bottom .22s ease,border-radius .22s ease,padding .22s ease}
+body.unten nav{box-shadow:0 -6px 20px -10px rgba(0,0,0,.25)}
+[data-stil=vereinsheim] body.unten nav,[data-stil=flutlicht] body.unten nav{left:0;right:0;bottom:0;max-width:none;border-radius:20px 20px 0 0;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+[data-stil=flutlicht] body.unten nav{box-shadow:0 -1px 0 var(--linie),0 -8px 24px -12px rgba(0,0,0,.7)}
+@media (prefers-reduced-motion:reduce){nav{transition:none}}
+[data-stil=vereinsheim] body::after,[data-stil=flutlicht] body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(34px + env(safe-area-inset-bottom));background:linear-gradient(to bottom,transparent,var(--bg) 55%);z-index:5;pointer-events:none;transition:opacity .2s}
+body.unten::after{opacity:0}
 [data-stil=vereinsheim] main,[data-stil=flutlicht] main{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
 [data-stil=flutlicht] header{background:var(--bg);border-bottom:1px solid var(--linie)}
 [data-stil=flutlicht] header::after{display:none}
@@ -218,7 +226,7 @@ h2,h3,.big,header .t b,.tile .v,.tap b{font-family:var(--font-d)}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='1.0.3';
+const APP_VERSION='1.0.4';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -456,6 +464,8 @@ function render(){const m=$('#main');if(!m)return;
  m.className=S.tab==='abend'?'wide':'';
  m.innerHTML=({start:vStart,termine:vTermine,abend:vAbend,spiele:vSpiele,essen:vEssen,mehr:vMehr}[S.tab]||vStart)();after();foldSections()}
  catch(e){console.error(e);m.innerHTML=`<div class="card rot">Fehler: ${esc(e.message)}</div>`}}
+function navZustand(){document.body.classList.toggle('unten',scrollY>12)}
+addEventListener('scroll',()=>{if(!navZustand._r){navZustand._r=requestAnimationFrame(()=>{navZustand._r=0;navZustand()})}},{passive:true});
 function rerender(){const y=scrollY;render();scrollTo(0,y)}
 let afterHooks=[];function after(){const h=afterHooks;afterHooks=[];h.forEach(f=>f())}
 const terminOpts=(sel,filter=()=>true)=>kegelTermine().filter(filter).map(t=>`<option value="${t.id}" ${t.id===sel?'selected':''}>${fmtD(t.datum)}${t.status==='ausgefallen'?' (ausgefallen)':t.status==='abgeschlossen'?' ✓':''}</option>`).join('');
