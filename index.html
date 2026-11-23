@@ -3,73 +3,114 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#FDD615">
+<meta name="theme-color" content="#1D1D1B">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Kegeltreff">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Schwelmer Kegeltreff</title>
 <style>
-:root{--gelb:#FDD615;--gelb2:#FFF4B8;--schwarz:#1D1D1B;--grau:#6b6a64;--linie:#e7e4da;--bg:#f6f5f0;--rot:#c0392b;--gruen:#2e7d32;--r:14px}
+:root{--gelb:#FDD615;--gelb2:#FFF6C7;--gelb3:#F3C800;--ink:#1D1D1B;--ink2:#55544f;--muted:#86847c;--linie:#ebe8de;--bg:#f5f4ef;--card:#fff;--rot:#b3261e;--rotbg:#fdeceb;--gruen:#1e7b34;--gruenbg:#e6f4ea;--r:18px;--hdr:58px}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--schwarz);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-header{position:sticky;top:0;z-index:5;background:var(--schwarz);color:#fff;display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 14px 8px;border-bottom:4px solid var(--gelb)}
-header img{height:38px;background:#fff;border-radius:6px;padding:2px}
-header .t{flex:1;font-weight:700;letter-spacing:.3px;line-height:1.1}
-header .t small{display:block;font-weight:400;color:#cfcbbd;font-size:12px}
-#sync{font-size:12px;color:var(--gelb)}
-main{padding:14px 14px 96px;max-width:760px;margin:0 auto}
-nav{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#fff;border-top:1px solid var(--linie);display:flex;padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;border:0;background:none;padding:8px 0 10px;font-size:11px;color:var(--grau);display:flex;flex-direction:column;align-items:center;gap:2px}
-nav button span{font-size:22px;line-height:1}
-nav button.on{color:var(--schwarz);font-weight:700;box-shadow:inset 0 3px 0 var(--gelb)}
-.card{background:#fff;border:1px solid var(--linie);border-radius:var(--r);padding:14px;margin-bottom:12px}
-.card.hl{border:2px solid var(--gelb);box-shadow:0 2px 10px rgba(0,0,0,.05)}
-h2{font-size:19px;margin:0 0 6px}h3{font-size:16px;margin:0 0 8px}
-.muted{color:var(--grau);font-size:14px}.small{font-size:13px}
-.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:1 1 auto}
-.sp{justify-content:space-between}
-button,.btn{font:inherit;border:1px solid var(--linie);background:#fff;border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--schwarz)}
-.btn-p{background:var(--gelb);border-color:#e9c400;font-weight:700}
-.btn-d{background:var(--schwarz);color:#fff;border-color:var(--schwarz);font-weight:700}
-.btn-s{padding:6px 10px;font-size:14px}
-.btn-x{border:0;background:none;color:var(--rot);padding:4px 8px}
-button:disabled{opacity:.45}
-input,select,textarea{font:inherit;width:100%;padding:10px;border:1px solid var(--linie);border-radius:10px;background:#fff;color:var(--schwarz)}
-label{display:block;font-size:13px;color:var(--grau);margin:8px 0 3px}
-.seg{display:flex;gap:6px}.seg button{flex:1;padding:11px 4px}
-.seg .on-ja{background:#e3f3e4;border-color:var(--gruen);font-weight:700}
-.seg .on-vl{background:var(--gelb2);border-color:#e9c400;font-weight:700}
-.seg .on-nein{background:#fbe3e0;border-color:var(--rot);font-weight:700}
-.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;background:#eee;margin:2px 2px 2px 0}
-.pill.ja{background:#e3f3e4}.pill.nein{background:#fbe3e0}.pill.vl{background:var(--gelb2)}.pill.y{background:var(--gelb)}
-ul.l{list-style:none;margin:0;padding:0}ul.l li{padding:9px 0;border-bottom:1px solid var(--linie);display:flex;gap:8px;align-items:center}
-ul.l li:last-child{border-bottom:0}ul.l li .g{flex:1}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{padding:7px 11px;border-radius:99px;border:1px solid var(--linie);background:#fff;font-size:14px}
-.chip.on{background:var(--schwarz);color:#fff;border-color:var(--schwarz)}
-.chip.an{background:#e3f3e4;border-color:var(--gruen)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
-.tap{padding:12px 6px;border-radius:12px;border:1px solid var(--linie);background:#fff;text-align:center;user-select:none}
-.tap b{display:block;font-size:26px;line-height:1.1}
-.tap.minus{background:#fbe3e0}
-.tap:active{transform:scale(.96);background:var(--gelb2)}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:6;background:var(--ink);color:#fff;display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 16px 8px;min-height:var(--hdr)}
+header::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:var(--gelb)}
+header img{height:36px;background:#fff;border-radius:8px;padding:2px}
+header .t{flex:1;min-width:0}header .t b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header .t small{color:#cfcbbd;font-size:12px}
+header .hb{background:none;border:0;color:#fff;font-size:20px;padding:6px;border-radius:10px}
+#sync{font-size:12px;color:var(--gelb);white-space:nowrap}
+main{padding:16px 14px calc(100px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:6;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--linie);padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
+nav .in{max-width:720px;margin:0 auto;display:flex}
+nav button{flex:1;border:0;background:none;padding:2px 0;font-size:11.5px;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button i{font-style:normal;font-size:20px;line-height:30px;width:58px;border-radius:99px;transition:background .15s}
+nav button.on{color:var(--ink);font-weight:700}nav button.on i{background:var(--gelb)}
+.card{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 0 0 1px var(--linie)}
+.card.hero{background:var(--ink);color:#fff;box-shadow:none}
+.card.hero .muted{color:#cfcbbd}
+h2{font-size:22px;margin:0 0 2px;line-height:1.2}h3{font-size:16px;margin:0 0 10px}
+.sec{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 4px 8px}
+.muted{color:var(--muted);font-size:14px}.small{font-size:13px}
+.row{display:flex;gap:8px;align-items:center}.row>.f{flex:1;min-width:0}.wrap{flex-wrap:wrap}
+.btn{border:0;background:#f0eee6;border-radius:14px;padding:12px 14px;font-weight:600;cursor:pointer;min-height:46px}
+.btn.p{background:var(--gelb)}.btn.d{background:var(--ink);color:#fff}.btn.w{width:100%}
+.btn.s{min-height:36px;padding:7px 12px;font-size:14px;border-radius:11px}
+.btn:disabled{opacity:.4}
+.x{border:0;background:none;color:var(--rot);padding:6px 8px;font-size:16px;cursor:pointer}
+input,select,textarea{font:inherit;width:100%;padding:12px;border:1px solid var(--linie);border-radius:12px;background:#fff;color:var(--ink);min-height:46px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--gelb3);border-color:transparent}
+label{display:block;font-size:13px;color:var(--ink2);margin:10px 0 4px;font-weight:600}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button{border:0;border-radius:14px;padding:12px 4px;background:rgba(255,255,255,.1);color:#fff;font-weight:600;min-height:54px;cursor:pointer}
+.seg button span{display:block;font-size:18px}
+.seg .ja{background:#2e9e4d}.seg .vl{background:var(--gelb);color:var(--ink)}.seg .nein{background:#c4413a}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chips.wrap{flex-wrap:wrap;overflow:visible}
+.chip{flex:0 0 auto;border:0;border-radius:99px;padding:9px 14px;background:#efede5;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--ink);color:#fff}.chip.an{background:var(--gruenbg);color:var(--gruen)}
+.hero .chip{background:rgba(255,255,255,.12);color:#fff}.hero .chip.on{background:var(--gelb);color:var(--ink)}
+.dchip{flex:0 0 auto;border:0;border-radius:16px;padding:8px 12px;background:#fff;box-shadow:0 0 0 1px var(--linie);text-align:center;cursor:pointer;min-width:74px}
+.dchip b{display:block;font-size:15px}.dchip small{font-size:11px;color:var(--muted)}
+.dchip.on{background:var(--ink);color:#fff;box-shadow:none}.dchip.on small{color:#cfcbbd}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle;background:#cfccc2}
+.dot.ja{background:#2e9e4d}.dot.vl{background:var(--gelb3)}.dot.nein{background:#c4413a}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;background:#efede5}
+.pill.ja{background:var(--gruenbg);color:var(--gruen)}.pill.nein{background:var(--rotbg);color:var(--rot)}.pill.vl{background:var(--gelb2)}.pill.y{background:var(--gelb)}
+.hero .pill{background:rgba(255,255,255,.14);color:#fff}
+.av{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--gelb);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.av.s{width:30px;height:30px;font-size:12px}.av.ja{box-shadow:0 0 0 3px #2e9e4d}.av.vl{box-shadow:0 0 0 3px var(--gelb3)}.av.nein{opacity:.35}
+ul.l{list-style:none;margin:0;padding:0}ul.l li{padding:10px 0;border-bottom:1px solid var(--linie);display:flex;gap:10px;align-items:center}
+ul.l li:last-child{border-bottom:0}ul.l li .g{flex:1;min-width:0}
+.menu li{cursor:pointer}.menu li .ic{font-size:22px;width:38px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.tap{padding:12px 6px;border-radius:16px;border:0;background:#f3f1ea;text-align:center;user-select:none;cursor:pointer;font-weight:600}
+.tap b{display:block;font-size:28px;line-height:1.1}
+.tap.minus{background:var(--rotbg)}.tap:active{transform:scale(.95);background:var(--gelb)}
+.sticky{position:sticky;top:calc(var(--hdr) + env(safe-area-inset-top) + 3px);z-index:4;background:var(--bg);padding:8px 0;margin:-8px 0 4px}
 table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{padding:6px 4px;border-bottom:1px solid var(--linie);text-align:right}
-th:first-child,td:first-child{text-align:left}th{font-size:12px;color:var(--grau);font-weight:600}
-tr.sum td{font-weight:700;border-top:2px solid var(--schwarz)}
-.big{font-size:30px;font-weight:800}
+th,td{padding:7px 4px;border-bottom:1px solid var(--linie);text-align:right}
+th:first-child,td:first-child{text-align:left}th{font-size:12px;color:var(--muted);font-weight:600}
+tr.sum td{font-weight:800;border-top:2px solid var(--ink);border-bottom:0}
+.big{font-size:34px;font-weight:800;letter-spacing:-.5px}
 .rot{color:var(--rot)}.gruen{color:var(--gruen)}
-.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--schwarz);color:#fff;padding:10px 16px;border-radius:12px;z-index:20;max-width:90%;box-shadow:0 4px 18px rgba(0,0,0,.25)}
-.setup{max-width:440px;margin:30px auto;text-align:center}.setup img{width:170px}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:14px;z-index:30;max-width:90%;box-shadow:0 6px 24px rgba(0,0,0,.25);font-weight:600;font-size:14px}
+.setup{max-width:420px;margin:24px auto;padding:0 16px;text-align:center}.setup img{width:150px;margin:10px 0}
 .setup .card{text-align:left}
-pre.order{white-space:pre-wrap;background:var(--bg);padding:10px;border-radius:10px;font-size:14px;margin:8px 0}
-details summary{cursor:pointer;font-weight:600;padding:4px 0}
-.cat{margin:10px 0 4px;font-weight:700;font-size:14px;background:var(--gelb2);padding:4px 8px;border-radius:6px}
-.dish{display:flex;gap:8px;padding:8px 2px;border-bottom:1px solid var(--linie);cursor:pointer}
-.dish .nr{min-width:34px;font-weight:700}.dish .pr{white-space:nowrap;font-weight:600}
-.banner{background:var(--gelb2);border:1px solid #e9c400;border-radius:10px;padding:8px 10px;font-size:14px;margin-bottom:10px}
+pre.order{white-space:pre-wrap;background:var(--bg);padding:12px;border-radius:12px;font-size:14px;margin:8px 0}
+details>summary{cursor:pointer;font-weight:700;list-style:none;display:flex;align-items:center;justify-content:space-between}
+details>summary::-webkit-details-marker{display:none}
+details>summary::after{content:"›";transform:rotate(90deg);font-size:22px;color:var(--muted);transition:transform .15s}
+details[open]>summary::after{transform:rotate(270deg)}
+.cat{margin:12px 0 4px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2)}
+.dish{display:flex;gap:10px;padding:10px 2px;border-bottom:1px solid var(--linie);cursor:pointer;align-items:flex-start}
+.dish .nr{min-width:38px;font-weight:800;background:var(--gelb2);border-radius:8px;text-align:center;padding:2px 0}.dish .pr{white-space:nowrap;font-weight:700}
+.banner{background:var(--gelb2);border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:10px}
+.drv{border-radius:16px;background:#f6f4ee;padding:12px;margin-bottom:8px}
+.seats{display:flex;gap:4px;margin:6px 0}.seats span{width:22px;height:22px;border-radius:6px;background:#fff;box-shadow:0 0 0 1px var(--linie);font-size:12px;display:flex;align-items:center;justify-content:center}
+.seats span.b{background:var(--ink);color:var(--gelb)}
+.stepper{display:flex;align-items:center;gap:10px}.stepper button{width:40px;height:40px;border-radius:12px;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:20px;cursor:pointer}
+.stepper b{min-width:22px;text-align:center;font-size:18px}
+#sheet .bg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20}
+#sheet .sh{position:fixed;left:0;right:0;bottom:0;z-index:21;background:#fff;border-radius:22px 22px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto;max-width:720px;margin:0 auto;animation:up .18s ease-out}
+#sheet .grip{width:40px;height:5px;border-radius:9px;background:#d8d5cb;margin:0 auto 10px}
+@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:#fff;border-radius:16px;padding:12px;box-shadow:0 0 0 1px var(--linie)}
+.tile .k{font-size:12px;color:var(--muted);font-weight:600}.tile .v{font-size:18px;font-weight:800;margin-top:2px}.tile .s{font-size:12px;color:var(--ink2)}
+.bars .br{display:grid;grid-template-columns:26px 82px 1fr 58px;gap:6px;align-items:center;padding:4px 0;font-size:14px}
+.bars .rk{color:var(--muted);font-size:12px;text-align:right}.bars .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.bars .tr{height:18px;display:flex;align-items:center}.bars .bar{height:14px;border-radius:0 4px 4px 0;background:#4a4943;min-width:2px}
+.bars .me .bar{background:var(--gelb3)}.bars .me .nm{color:var(--ink)}
+.bars .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.cols{display:flex;align-items:flex-end;gap:3px;height:140px;border-bottom:1px solid #cfccc2;padding-top:6px}
+.cols button{flex:1;border:0;background:none;padding:0;height:100%;display:flex;align-items:flex-end;cursor:pointer}
+.cols button i{display:block;width:100%;background:#4a4943;border-radius:4px 4px 0 0;min-height:2px}
+.cols button.on i{background:var(--gelb3)}
+.axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
 </style>
 </head>
 <body>
@@ -78,20 +119,27 @@ details summary{cursor:pointer;font-weight:600;padding:4px 0}
 'use strict';
 /* =========================================================
    Schwelmer Kegeltreff – Vereins-App
-   Code: öffentliches Repo (GitHub Pages) · Daten: privates Repo (data/*.json)
+   Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='0.1.0';
+const APP_VERSION='0.2.0';
+const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const r2=n=>Math.round((+n||0)*100)/100;
 const eur=n=>r2(n).toLocaleString('de-DE',{style:'currency',currency:'EUR'});
+const fmtN=(n,d=1)=>(+n||0).toLocaleString('de-DE',{maximumFractionDigits:d,minimumFractionDigits:0});
 const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return isNaN(n)?0:n};
 const todayISO=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
 const addDays=(iso,n)=>{const d=new Date(iso+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)};
 const fmtD=(iso,o={weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'})=>new Date(iso+'T12:00:00').toLocaleDateString('de-DE',o);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const clone=o=>JSON.parse(JSON.stringify(o));
-function toast(msg,ms=2600){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),ms)}
+const ini=n=>String(n||'?').replace(/[^A-Za-zÄÖÜäöü]/g,'').slice(0,2).toUpperCase();
+function toast(msg,ms=2400){document.querySelectorAll('.toast').forEach(t=>t.remove());const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),ms)}
+function vib(){try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}}
+function sheet(html){closeSheet();const d=document.createElement('div');d.id='sheet';d.innerHTML=`<div class="bg" onclick="closeSheet()"></div><div class="sh"><div class="grip"></div>${html}</div>`;document.body.appendChild(d)}
+function closeSheet(){$('#sheet')?.remove()}
+function ask(text,okLabel,fn,danger){window._askFn=fn;sheet(`<h3>${esc(text)}</h3><div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn f ${danger?'d':'p'}" onclick="closeSheet();window._askFn()">${esc(okLabel)}</button></div>`)}
 
 const DEFAULT_STRAFEN=[
  {id:'pudel',name:'Pudel',betrag:.10,art:'selbst'},
@@ -101,32 +149,36 @@ const DEFAULT_STRAFEN=[
  {id:'figur',name:'Figur vergessen',betrag:1,art:'selbst',schnapsJedesMal:3},
  {id:'rauchen',name:'Einsatz verpasst (Rauchen)',betrag:1,art:'selbst'},
  {id:'team',name:'Teamspiel verloren',betrag:1,art:'selbst'}];
-const ANREISE={selbst:'🚗 Fahre selbst',mitfahrt:'🙋 Fahre mit / suche Mitfahrt',oepnv:'🚌 Bus & Bahn',taxi:'🚕 Taxi',fuss:'🚶 Zu Fuß / Rad',gebracht:'👋 Werde gebracht'};
+const ANREISE={selbst:['🚗','Ich fahre'],mitfahrt:['🙋','Fahre mit'],oepnv:['🚌','Bus & Bahn'],taxi:['🚕','Taxi'],fuss:['🚶','Zu Fuß / Rad']};
 const ZST={ja:'Dabei',vl:'Unsicher',nein:'Nicht dabei'};
 
 /* ---------------- Speicher: GitHub (privates Repo) oder Demo (Browser) ---------------- */
 const B64={enc:s=>btoa(unescape(encodeURIComponent(s))),dec:s=>decodeURIComponent(escape(atob(s.replace(/\s/g,''))))};
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(_){return null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(_){}};
+const lsDel=k=>{try{localStorage.removeItem(k)}catch(_){}};
 const Store={
- cfg:JSON.parse(localStorage.getItem('kt_cfg')||'null'),
+ cfg:(()=>{const c=JSON.parse(lsGet('kt_cfg')||'null');return c?(c.mode==='demo'?c:{mode:'github',token:c.token}):null})(),
  isDemo(){return this.cfg?.mode==='demo'},
- url(p){const c=this.cfg;return `https://api.github.com/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}/contents/data/${p}`},
+ url(p){return `https://api.github.com/repos/${OWNER}/${REPO}/contents/data/${p}`},
  hdr(){return{Authorization:'Bearer '+this.cfg.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}},
  async get(path){
-  if(this.isDemo()){const v=localStorage.getItem('kt_demo:'+path);return{data:v?JSON.parse(v):null,sha:null}}
-  const r=await fetch(this.url(path)+`?ref=${encodeURIComponent(this.cfg.branch||'main')}&_=${Date.now()}`,{headers:this.hdr(),cache:'no-store'});
+  if(this.isDemo()){const v=lsGet('kt_demo:'+path);return{data:v?JSON.parse(v):null,sha:null}}
+  const r=await fetch(this.url(path)+`?ref=${BRANCH}&_=${Date.now()}`,{headers:this.hdr(),cache:'no-store'});
   if(r.status===404)return{data:null,sha:null};
   if(!r.ok)throw await apiErr(r);
-  const j=await r.json();return{data:JSON.parse(B64.dec(j.content)),sha:j.sha};
+  const j=await r.json();
+  if(!j.content&&j.download_url){const raw=await fetch(j.git_url,{headers:this.hdr()});const b=await raw.json();return{data:JSON.parse(B64.dec(b.content)),sha:j.sha}}
+  return{data:JSON.parse(B64.dec(j.content)),sha:j.sha};
  },
  async put(path,data,sha,msg){
-  if(this.isDemo()){localStorage.setItem('kt_demo:'+path,JSON.stringify(data));return 'demo'}
-  const body={message:msg||('Update '+path),content:B64.enc(JSON.stringify(data,null,1)),branch:this.cfg.branch||'main'};
+  if(this.isDemo()){lsSet('kt_demo:'+path,JSON.stringify(data));return 'demo'}
+  const body={message:msg||('Update '+path),content:B64.enc(JSON.stringify(data,null,1)),branch:BRANCH};
   if(sha)body.sha=sha;
   const r=await fetch(this.url(path),{method:'PUT',headers:{...this.hdr(),'Content-Type':'application/json'},body:JSON.stringify(body)});
   if(!r.ok)throw await apiErr(r);
   return (await r.json()).content.sha;
  },
- /* liest frisch, wendet Änderung an, schreibt – bei Konflikt (gleichzeitige Änderung) automatisch erneut */
  async mutate(path,fn,msg,def){
   for(let i=0;i<5;i++){
    const {data,sha}=await this.get(path);
@@ -138,19 +190,20 @@ const Store={
  }
 };
 async function apiErr(r){let m='';try{m=(await r.json()).message}catch(_){}
- const e=new Error(r.status===401?'Zugangsschlüssel (Token) ungültig oder abgelaufen':r.status===403?'Keine Berechtigung: '+m:r.status===404?'Repository nicht gefunden':('GitHub-Fehler '+r.status+': '+m));e.status=r.status;return e}
+ const e=new Error(r.status===401?'Zugangsschlüssel ungültig oder abgelaufen':r.status===403?'Keine Berechtigung: '+m:r.status===404?'Daten-Repository nicht gefunden – passt der Zugangsschlüssel?':('GitHub-Fehler '+r.status+': '+m));e.status=r.status;return e}
 function setSync(t){const s=$('#sync');if(s)s.textContent=t}
 async function save(path,fn,msg,def){
- setSync('⏳ speichert…');
- try{const d=await Store.mutate(path,fn,`${meName()}: ${msg}`,def);setSync('✓ gespeichert');return d}
- catch(e){setSync('⚠ nicht gespeichert');toast('⚠ '+e.message,5000);throw e}
+ setSync('⏳');
+ try{const d=await Store.mutate(path,fn,`${meName()}: ${msg}`,def);setSync('✓');setTimeout(()=>setSync(''),1500);return d}
+ catch(e){setSync('⚠');toast('⚠ '+e.message,5000);throw e}
 }
 
 /* ---------------- Zustand ---------------- */
-const S={verein:null,termine:null,kasse:null,karte:null,me:localStorage.getItem('kt_me'),tab:localStorage.getItem('kt_tab')||'termine',
- selT:null,form:null,abend:null,abendSha:null,abendFor:null,kat:'pudel',minus:false,best:null,bestFor:null,ef:{},kOpen:null,err:null};
+const S={verein:null,termine:null,kasse:null,karte:null,hist:null,me:lsGet('kt_me'),tab:lsGet('kt_tab')||'termine',sub:null,
+ selT:null,abend:null,abendSha:null,abendFor:null,kat:'pudel',minus:false,best:null,bestFor:null,ef:{},kOpen:null,
+ st:{zeit:null,metrik:'pudel',modus:'avg',spieler:null,vSel:null},loadedAt:0};
 const M=id=>S.verein?.mitglieder.find(m=>m.id===id);
-const nameOf=id=>M(id)?.spitzname||id;
+const nameOf=id=>M(id)?.spitzname||S.hist?.namen?.[id]||id;
 const meName=()=>Store.isDemo()?'Demo':(M(S.me)?.spitzname||'?');
 const aktive=()=>(S.verein?.mitglieder||[]).filter(m=>m.aktiv).sort((a,b)=>a.spitzname.localeCompare(b.spitzname,'de'));
 const hasRole=r=>(M(S.me)?.rollen||[]).includes(r);
@@ -167,9 +220,10 @@ async function loadAll(){
  const [v,t,k]=await Promise.all([Store.get('verein.json'),Store.get('termine.json'),Store.get('kasse.json')]);
  if(!v.data)throw new Error('data/verein.json fehlt im Daten-Repository');
  S.verein=v.data;S.verein.strafen=S.verein.strafen||DEFAULT_STRAFEN;
- S.termine=t.data||{termine:[]};S.kasse=k.data||{buchungen:[]};
+ S.termine=t.data||{termine:[]};S.kasse=k.data||{buchungen:[]};S.loadedAt=Date.now();
 }
 async function loadKarte(force){if(S.karte&&!force)return;S.karte=(await Store.get('speisekarte.json')).data||{gerichte:[]}}
+async function loadHist(force){if(S.hist&&!force)return;S.hist=(await Store.get('historie.json')).data||{abende:[],pokale:[],rekorde:null,legacy:null,namen:{}}}
 
 /* ---------------- Berechnungen ---------------- */
 function berechneAbend(abend,verein){
@@ -195,7 +249,6 @@ function konto(mid){
  for(const t of termineSorted()){if(t.inStartSaldo||t.datum<(m.eintritt||'')||t.datum>heute&&t.status!=='abgeschlossen')continue;
   if(t.status==='abgeschlossen'&&t.abrechnung&&t.abrechnung[mid]!=null)items.push({datum:t.datum,text:t.abwesend?.includes(mid)?'Kegelabend (abwesend: höchste Strafe)':'Kegelabend',betrag:t.abrechnung[mid]});
   if(t.status==='ausgefallen')items.push({datum:t.datum,text:'Termin ausgefallen – Pauschale',betrag:v.pauschaleAusfall??15})}
- // Wochenbeiträge: jeder Samstag ohne Termin nach dem Stichtag
  let d=addDays(v.startSaldoStichtag,1);while(new Date(d+'T12:00:00Z').getUTCDay()!==6)d=addDays(d,1);
  const mon={};for(;d<=heute;d=addDays(d,7)){if(tDates.has(d)||d<(m.eintritt||''))continue;const k=d.slice(0,7);mon[k]=mon[k]||{n:0,d};mon[k].n++;mon[k].d=d}
  for(const k in mon)items.push({datum:mon[k].d,text:`Wochenbeiträge ${fmtD(k+'-15',{month:'long',year:'numeric'})} (${mon[k].n}× ${eur(v.wochenbeitrag??5)})`,betrag:mon[k].n*(v.wochenbeitrag??5)});
@@ -206,304 +259,423 @@ function konto(mid){
 }
 
 /* ---------------- Rahmen ---------------- */
+const TABS=[['termine','📅','Termine'],['abend','🎳','Abend'],['essen','🍽️','Essen'],['kasse','💶','Kasse'],['mehr','☰','Mehr']];
 function shell(){
- $('#app').innerHTML=`<header><img src="logo.png" alt=""><div class="t">Schwelmer Kegeltreff<small>${esc(meName())}${Store.isDemo()?' · DEMO':''}</small></div><div id="sync"></div></header>
+ $('#app').innerHTML=`<header><img src="logo.png" alt=""><div class="t"><b id="htitle">Schwelmer Kegeltreff</b><small>${esc(meName())}${Store.isDemo()?' · Demo':''}</small></div><span id="sync"></span><button class="hb" title="Aktualisieren" onclick="act.reload()">↻</button></header>
  <main id="main"></main>
- <nav>${[['termine','📅','Termine'],['abend','🎳','Abend'],['essen','🍽️','Essen'],['kasse','💶','Kasse'],['mehr','☰','Mehr']].map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="go('${k}')"><span>${i}</span>${l}</button>`).join('')}</nav>`;
+ <nav><div class="in">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</div></nav>`;
 }
-function go(tab){S.tab=tab;localStorage.setItem('kt_tab',tab);shell();render();window.scrollTo(0,0)}
+function go(tab){if(S.tab===tab&&tab==='mehr')S.sub=null;S.tab=tab;lsSet('kt_tab',tab);shell();render();window.scrollTo(0,0)}
 function render(){const m=$('#main');if(!m)return;
  try{m.innerHTML=({termine:vTermine,abend:vAbend,essen:vEssen,kasse:vKasse,mehr:vMehr}[S.tab]||vTermine)();after()}
  catch(e){console.error(e);m.innerHTML=`<div class="card rot">Fehler: ${esc(e.message)}</div>`}}
+function rerender(){const y=scrollY;render();scrollTo(0,y)}
 let afterHooks=[];function after(){const h=afterHooks;afterHooks=[];h.forEach(f=>f())}
 const terminOpts=(sel,filter=()=>true)=>termineSorted().filter(filter).map(t=>`<option value="${t.id}" ${t.id===sel?'selected':''}>${fmtD(t.datum)}${t.status==='ausgefallen'?' (ausgefallen)':t.status==='abgeschlossen'?' ✓':''}</option>`).join('');
+const act={};
 
 /* ---------------- TERMINE ---------------- */
-function initForm(t,who){const z=t.zusagen?.[who]||{};S.form={tid:t.id,who,status:z.status||'',anreise:z.anreise||'',plaetze:z.plaetze??3,mitBei:z.mitBei||'',gaeste:z.gaeste||0,bemerkung:z.bemerkung||''}}
 function vTermine(){
  const t=T(S.selT)||naechsterTermin();
- if(!t)return`<div class="card">Noch keine Termine angelegt.${isAdmin()?' Unter „Mehr“ kannst du Termine anlegen.':''}</div>`;
- if(!S.form||S.form.tid!==t.id)initForm(t,S.me);
- const z=t.zusagen||{},akt=aktive(),c={ja:0,vl:0,nein:0,offen:0};let gaeste=0;
- akt.forEach(m=>{const s=z[m.id]?.status;c[s||'offen']++;if(s==='ja')gaeste+=+z[m.id].gaeste||0});
- const f=S.form,fahrer=akt.filter(m=>z[m.id]?.status!=='nein'&&z[m.id]?.anreise==='selbst');
- let h=`<div class="card hl"><div class="row sp"><div><h2>${fmtD(t.datum,{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</h2>
- <div class="muted">${esc(t.uhrzeit||'')} Uhr · ${esc(S.verein.ort||'Samos')}</div></div>
- <div style="flex:0">${t.status==='geplant'?'':`<span class="pill ${t.status==='ausgefallen'?'nein':'ja'}">${t.status}</span>`}</div></div>
- ${t.bemerkung?`<div class="banner" style="margin-top:8px">${esc(t.bemerkung)}</div>`:''}
- <div style="margin-top:6px"><span class="pill ja">✓ ${c.ja} dabei</span><span class="pill vl">? ${c.vl} unsicher</span><span class="pill nein">✗ ${c.nein} abgesagt</span><span class="pill">${c.offen} offen</span>${gaeste?`<span class="pill y">+${gaeste} Gast</span>`:''}</div></div>`;
+ if(!t)return`<div class="card">Noch keine Termine angelegt.${isAdmin()?' Unter „Mehr → Verwaltung“ kannst du Termine anlegen.':''}</div>`;
+ const z=t.zusagen||{},akt=aktive(),my=z[S.me]||{},c={ja:0,vl:0,nein:0,offen:0};
+ akt.forEach(m=>c[z[m.id]?.status||'offen']++);
+ const h0=todayISO(),upcoming=termineSorted().filter(x=>x.datum>=addDays(h0,-1)||x.id===t.id).slice(0,10);
+ let h=`<div class="chips" style="margin-bottom:12px">${upcoming.map(x=>`<button class="dchip ${x.id===t.id?'on':''}" onclick="S.selT='${x.id}';rerender()"><small>${fmtD(x.datum,{weekday:'short'})}</small><b>${fmtD(x.datum,{day:'2-digit',month:'2-digit'})}</b><small>${x.status==='ausgefallen'?'fällt aus':x.status==='abgeschlossen'?'✓':`<span class="dot ${x.zusagen?.[S.me]?.status||''}"></span>${Object.values(x.zusagen||{}).filter(v=>v.status==='ja').length}`}</small></button>`).join('')}</div>`;
+ h+=`<div class="card hero"><div class="muted small">${t.status==='ausgefallen'?'Fällt aus':t.status==='abgeschlossen'?'Abgerechnet':'Nächster Kegelabend'}</div>
+ <h2>${fmtD(t.datum,{weekday:'long',day:'numeric',month:'long'})}</h2>
+ <div class="muted">${esc(t.uhrzeit||'')} Uhr · Samos, Langerfeld</div>
+ ${t.bemerkung?`<div class="pill" style="margin-top:8px">${esc(t.bemerkung)}</div>`:''}`;
  if(t.status==='geplant'){
-  h+=`<div class="card"><h3>${f.who===S.me?'Deine Rückmeldung':'Rückmeldung für '+esc(nameOf(f.who))}</h3>
-  ${isAdmin()?`<label>Eintragen für</label><select onchange="initForm(T('${t.id}'),this.value);render()">${akt.map(m=>`<option value="${m.id}" ${m.id===f.who?'selected':''}>${esc(m.spitzname)}</option>`).join('')}</select>`:''}
-  <div class="seg" style="margin-top:8px">${['ja','vl','nein'].map(s=>`<button class="${f.status===s?'on-'+s:''}" onclick="S.form.status='${s}';render()">${s==='ja'?'✓ ':s==='vl'?'? ':'✗ '}${ZST[s]}</button>`).join('')}</div>
-  ${f.status&&f.status!=='nein'?`<label>Wie kommst du hin?</label><select onchange="S.form.anreise=this.value;render()"><option value="">– bitte wählen –</option>${Object.entries(ANREISE).map(([k,v])=>`<option value="${k}" ${f.anreise===k?'selected':''}>${v}</option>`).join('')}</select>
-   ${f.anreise==='selbst'?`<label>Freie Plätze zum Mitnehmen</label><input type="number" min="0" max="8" value="${f.plaetze}" oninput="S.form.plaetze=+this.value">`:''}
-   ${f.anreise==='mitfahrt'?`<label>Fahre mit bei</label><select onchange="S.form.mitBei=this.value"><option value="">noch offen – suche Mitfahrt</option>${fahrer.filter(m=>m.id!==f.who).map(m=>`<option value="${m.id}" ${f.mitBei===m.id?'selected':''}>${esc(m.spitzname)}</option>`).join('')}</select>`:''}
-   <label>Gäste, die ich mitbringe</label><input type="number" min="0" max="5" value="${f.gaeste}" oninput="S.form.gaeste=+this.value">`:''}
-  <label>Bemerkung</label><input value="${esc(f.bemerkung)}" placeholder="z. B. komme später" oninput="S.form.bemerkung=this.value">
-  <button class="btn-p" style="width:100%;margin-top:10px" onclick="act.zusage()" ${f.status?'':'disabled'}>Speichern</button></div>`;
-  // Fahrgemeinschaften
-  const suchende=akt.filter(m=>z[m.id]?.status!=='nein'&&z[m.id]?.anreise==='mitfahrt');
-  if(fahrer.length||suchende.length){h+=`<div class="card"><h3>🚗 Fahrgemeinschaften</h3><ul class="l">${fahrer.map(d=>{const mit=suchende.filter(s=>z[s.id].mitBei===d.id),frei=(+z[d.id].plaetze||0)-mit.length;
-   return`<li><div class="g"><b>${esc(d.spitzname)}</b> <span class="muted small">${frei>0?frei+' Platz/Plätze frei':'voll'}</span><div class="small">${mit.map(s=>esc(s.spitzname)).join(', ')||'<span class="muted">noch niemand</span>'}</div></div></li>`}).join('')}
-   ${suchende.filter(s=>!z[s.id].mitBei||!fahrer.find(d=>d.id===z[s.id].mitBei)).map(s=>`<li><div class="g">🙋 <b>${esc(s.spitzname)}</b> <span class="muted small">sucht noch eine Mitfahrt</span></div></li>`).join('')}</ul></div>`}
+  h+=`<div class="seg" style="margin-top:14px">${['ja','vl','nein'].map(s=>`<button class="${my.status===s?s:''}" onclick="act.status('${t.id}','${s}')"><span>${s==='ja'?'✓':s==='vl'?'?':'✗'}</span>${ZST[s]}</button>`).join('')}</div>`;
+  if(my.status==='ja'||my.status==='vl'){
+   h+=`<div class="muted small" style="margin:14px 0 6px">Wie kommst du hin?</div><div class="chips wrap">${Object.entries(ANREISE).map(([k,[i,l]])=>`<button class="chip ${my.anreise===k?'on':''}" onclick="act.anreise('${t.id}','${k}')">${i} ${l}</button>`).join('')}</div>`;
+   if(my.anreise==='selbst')h+=`<div class="row" style="margin-top:12px"><div class="f muted small">Freie Plätze für Mitfahrer</div><div class="stepper"><button onclick="act.plaetze('${t.id}',-1)">−</button><b>${my.plaetze??0}</b><button onclick="act.plaetze('${t.id}',1)">+</button></div></div>`;
+   if(my.anreise==='mitfahrt')h+=`<div class="muted small" style="margin-top:10px">${my.mitBei?`Du fährst bei <b style="color:#fff">${esc(nameOf(my.mitBei))}</b> mit.`:'Wähle unten einen Fahrer aus.'}</div>`;
+  }
+  h+=`<input style="margin-top:12px;background:rgba(255,255,255,.08);border-color:transparent;color:#fff" placeholder="Bemerkung (z. B. komme später)" value="${esc(my.bemerkung||'')}" onchange="act.bemerkung('${t.id}',this.value)">`;
  }
- // Teilnehmer
+ h+=`<div class="row wrap" style="gap:6px;margin-top:12px"><span class="pill">✓ ${c.ja}</span><span class="pill">? ${c.vl}</span><span class="pill">✗ ${c.nein}</span><span class="pill">offen ${c.offen}</span></div></div>`;
+ if(t.status==='geplant'){
+  const fahrer=akt.filter(m=>z[m.id]?.status!=='nein'&&z[m.id]?.anreise==='selbst');
+  const mitf=akt.filter(m=>z[m.id]?.status!=='nein'&&z[m.id]?.anreise==='mitfahrt');
+  h+=`<div class="sec">🚗 Fahrgemeinschaften</div><div class="card">`;
+  if(!fahrer.length)h+=`<p class="muted" style="margin:0">Noch bietet niemand Plätze an. Wer fährt, wählt oben „🚗 Ich fahre“.</p>`;
+  for(const d of fahrer){const pl=+z[d.id].plaetze||0,pass=mitf.filter(p=>z[p.id].mitBei===d.id),frei=pl-pass.length,ich=my.mitBei===d.id&&my.anreise==='mitfahrt';
+   h+=`<div class="drv"><div class="row"><div class="av s">${ini(d.spitzname)}</div><div class="f"><b>${esc(d.spitzname)}</b> <span class="muted small">${frei>0?frei+' frei':'voll'}</span></div>
+   ${d.id===S.me?'<span class="pill y">Du fährst</span>':ich?`<button class="btn s" onclick="act.aussteigen('${t.id}')">Aussteigen</button>`:`<button class="btn s p" ${frei>0?'':'disabled'} onclick="act.mitfahren('${t.id}','${d.id}')">Mitfahren</button>`}</div>
+   <div class="seats">${Array.from({length:Math.max(pl,pass.length)},(_,i)=>pass[i]?`<span class="b" title="${esc(pass[i].spitzname)}">${ini(pass[i].spitzname)}</span>`:'<span></span>').join('')}</div>
+   <div class="small muted">${pass.map(p=>esc(p.spitzname)).join(', ')||'noch keine Mitfahrer'}</div></div>`}
+  const suchend=mitf.filter(p=>!fahrer.find(d=>d.id===z[p.id].mitBei));
+  if(suchend.length)h+=`<div class="small" style="margin-top:6px">🙋 Suchen noch eine Mitfahrt: <b>${suchend.map(p=>esc(p.spitzname)).join(', ')}</b></div>`;
+  h+=`</div>`;
+ }
  const grp={ja:[],vl:[],nein:[],offen:[]};akt.forEach(m=>grp[z[m.id]?.status||'offen'].push(m));
- h+=`<div class="card"><h3>Teilnehmer</h3><ul class="l">${['ja','vl','nein','offen'].flatMap(s=>grp[s].map(m=>{const x=z[m.id]||{};
-  return`<li><span class="pill ${s}" style="min-width:74px;text-align:center">${s==='offen'?'offen':ZST[s]}</span><div class="g"><b>${esc(m.spitzname)}</b>${x.gaeste?` <span class="pill y">+${x.gaeste}</span>`:''}
-  <div class="small muted">${x.anreise&&s!=='nein'?ANREISE[x.anreise]+(x.anreise==='mitfahrt'&&x.mitBei?' bei '+esc(nameOf(x.mitBei)):''):''}${x.bemerkung?' · '+esc(x.bemerkung):''}</div></div></li>`})).join('')}</ul></div>`;
- // weitere Termine
- const h0=todayISO(),list=termineSorted().filter(x=>x.datum>=addDays(h0,-40)).slice(0,8);
- h+=`<div class="card"><h3>Termine</h3><ul class="l">${list.map(x=>{const zz=x.zusagen||{},ja=Object.values(zz).filter(v=>v.status==='ja').length,mine=zz[S.me]?.status;
-  return`<li onclick="S.selT='${x.id}';S.form=null;render();scrollTo(0,0)" style="cursor:pointer;${x.id===t.id?'background:var(--gelb2);':''}"><div class="g"><b>${fmtD(x.datum)}</b>
-  <div class="small muted">${x.status==='geplant'?ja+' dabei'+(mine?' · du: '+ZST[mine]:' · du: offen'):x.status==='ausgefallen'?'ausgefallen'+(x.bemerkung?' – '+esc(x.bemerkung):''):'abgeschlossen'}</div></div><span>›</span></li>`}).join('')}</ul></div>`;
+ h+=`<div class="sec">Teilnehmer</div><div class="card"><ul class="l">${['ja','vl','nein','offen'].flatMap(s=>grp[s].map(m=>{const x=z[m.id]||{};
+  return`<li ${isAdmin()&&t.status==='geplant'?`style="cursor:pointer" onclick="act.fuerAndere('${t.id}','${m.id}')"`:''}><div class="av s ${s}">${ini(m.spitzname)}</div><div class="g"><b>${esc(m.spitzname)}</b>
+  <div class="small muted">${s==='offen'?'noch keine Rückmeldung':ZST[s]}${x.anreise&&s!=='nein'?' · '+ANREISE[x.anreise]?.join(' ')+(x.anreise==='mitfahrt'&&x.mitBei?' bei '+esc(nameOf(x.mitBei)):''):''}${x.bemerkung?' · '+esc(x.bemerkung):''}</div></div>${isAdmin()&&t.status==='geplant'?'<span class="muted">✎</span>':''}</li>`})).join('')}</ul>
+  ${isAdmin()&&t.status==='geplant'?'<p class="muted small" style="margin:8px 0 0">Als Admin kannst du auf eine Person tippen und für sie eintragen.</p>':''}</div>`;
  return h;
 }
-const act={};
-act.zusage=async()=>{const f={...S.form};
- S.termine=await save('termine.json',d=>{const t=d.termine.find(x=>x.id===f.tid);t.zusagen=t.zusagen||{};
-  t.zusagen[f.who]={status:f.status,anreise:f.status==='nein'?'':f.anreise,plaetze:f.anreise==='selbst'?f.plaetze:0,mitBei:f.anreise==='mitfahrt'?f.mitBei:'',gaeste:f.status==='nein'?0:f.gaeste,bemerkung:f.bemerkung,ts:new Date().toISOString(),von:S.me};return d},
-  `Zusage ${nameOf(f.who)} für ${f.tid}: ${ZST[f.status]}`);
- toast('Gespeichert ✓');render()};
+async function setZusage(tid,who,patch,msg,check){
+ const apply=d=>{const t=d.termine.find(x=>x.id===tid);t.zusagen=t.zusagen||{};
+  if(check){const e=check(t);if(e)throw new Error(e)}
+  const z={...(t.zusagen[who]||{}),...patch,ts:new Date().toISOString(),von:S.me};
+  if(z.status==='nein'){z.anreise='';z.mitBei='';z.plaetze=0}
+  if(z.anreise!=='mitfahrt')z.mitBei='';
+  t.zusagen[who]=z;
+  if(z.status==='nein'||z.anreise!=='selbst')for(const k in t.zusagen)if(t.zusagen[k].mitBei===who)t.zusagen[k].mitBei='';
+  return d};
+ const backup=clone(S.termine);
+ try{apply(S.termine)}catch(e){return toast(e.message)}
+ rerender();vib();
+ try{S.termine=await save('termine.json',apply,msg)}catch(e){S.termine=backup}
+ rerender();
+}
+const myZ=tid=>T(tid)?.zusagen?.[S.me]||{};
+act.status=(tid,s)=>setZusage(tid,S.me,{status:s},`${meName()} ${ZST[s]} am ${tid}`);
+act.anreise=(tid,a)=>setZusage(tid,S.me,{anreise:a,plaetze:a==='selbst'?(myZ(tid).plaetze||3):0},`${meName()} Anreise ${a}`);
+act.plaetze=(tid,d)=>{const t=T(tid),n=Math.max(0,Math.min(8,(+myZ(tid).plaetze||0)+d)),belegt=Object.values(t.zusagen||{}).filter(z=>z.mitBei===S.me&&z.anreise==='mitfahrt').length;
+ if(n<belegt)return toast(`Es fahren schon ${belegt} bei dir mit`);setZusage(tid,S.me,{plaetze:n},`${meName()} bietet ${n} Plätze`)};
+act.bemerkung=(tid,v)=>setZusage(tid,S.me,{bemerkung:v.trim()},`${meName()} Bemerkung`);
+act.mitfahren=(tid,drv)=>setZusage(tid,S.me,{status:myZ(tid).status==='ja'||myZ(tid).status==='vl'?myZ(tid).status:'ja',anreise:'mitfahrt',mitBei:drv},`${meName()} fährt mit bei ${nameOf(drv)}`,
+ t=>{const d=t.zusagen[drv];if(!d||d.anreise!=='selbst')return'Fahrer bietet keine Plätze mehr an';const n=Object.entries(t.zusagen).filter(([k,z])=>k!==S.me&&z.mitBei===drv&&z.anreise==='mitfahrt').length;return n>=(+d.plaetze||0)?'Leider schon voll':null});
+act.aussteigen=tid=>setZusage(tid,S.me,{anreise:'mitfahrt',mitBei:''},`${meName()} sucht neue Mitfahrt`);
+act.fuerAndere=(tid,who)=>{const z=T(tid).zusagen?.[who]||{};
+ sheet(`<h3>${esc(nameOf(who))} – ${fmtD(tid)}</h3><div class="chips wrap">${['ja','vl','nein'].map(s=>`<button class="chip ${z.status===s?'on':''}" onclick="closeSheet();setZusage('${tid}','${who}',{status:'${s}'},'Admin: ${esc(nameOf(who))} ${ZST[s]}')">${ZST[s]}</button>`).join('')}</div>
+ <label>Anreise</label><div class="chips wrap">${Object.entries(ANREISE).filter(([k])=>k!=='mitfahrt').map(([k,[i,l]])=>`<button class="chip ${z.anreise===k?'on':''}" onclick="closeSheet();setZusage('${tid}','${who}',{status:'${z.status==='nein'||!z.status?'ja':z.status}',anreise:'${k}',plaetze:${k==='selbst'?3:0}},'Admin: Anreise ${esc(nameOf(who))}')">${i} ${l}</button>`).join('')}</div>
+ <button class="btn w" style="margin-top:14px" onclick="closeSheet()">Schließen</button>`)};
 
 /* ---------------- ABEND / STRICHLISTE ---------------- */
 function neuerAbend(t){const z=t.zusagen||{};
  return{id:t.id,gefuehrtVon:S.me,gestartet:new Date().toISOString(),rechnung:{getraenke:'',trinkgeld:''},
   spieler:aktive().map(m=>({id:m.id,name:m.spitzname,anwesend:z[m.id]?.status==='ja',counts:{},spiele:'',essen:'',sonstiges:''}))}}
-async function ladeAbend(tid){S.abendFor=tid;S.abend=null;S.abendLoading=true;try{const r=await Store.get(`abende/${tid}.json`);S.abend=r.data;S.abendSha=r.sha}finally{S.abendLoading=false}render()}
+async function ladeAbend(tid){S.abendFor=tid;S.abend=null;S.abendLoading=true;try{const r=await Store.get(`abende/${tid}.json`);S.abend=r.data;S.abendSha=r.sha}finally{S.abendLoading=false}rerender()}
 let saveTimer=null;
-function abendChanged(rerender=true){
- localStorage.setItem('kt_abend_backup',JSON.stringify(S.abend));setSync('● ungespeichert');
+function abendChanged(full=true){
+ lsSet('kt_abend_backup',JSON.stringify(S.abend));setSync('● ungespeichert');
  clearTimeout(saveTimer);saveTimer=setTimeout(speichereAbend,2500);
- if(rerender){const y=scrollY;render();scrollTo(0,y)}else renderAbendSum();
+ if(full)rerender();else renderAbendSum();
 }
-async function speichereAbend(){clearTimeout(saveTimer);if(!S.abend)return;setSync('⏳ speichert…');
- for(let i=0;i<3;i++){try{S.abendSha=await Store.put(`abende/${S.abend.id}.json`,S.abend,S.abendSha,`${meName()}: Strichliste ${S.abend.id}`);setSync('✓ gespeichert');return}
-  catch(e){if(e.status===409||e.status===422){S.abendSha=(await Store.get(`abende/${S.abend.id}.json`)).sha;continue}setSync('⚠ nicht gespeichert');toast('⚠ '+e.message,5000);return}}}
+async function speichereAbend(){clearTimeout(saveTimer);saveTimer=null;if(!S.abend)return;setSync('⏳');
+ for(let i=0;i<3;i++){try{S.abendSha=await Store.put(`abende/${S.abend.id}.json`,S.abend,S.abendSha,`${meName()}: Strichliste ${S.abend.id}`);setSync('✓');setTimeout(()=>setSync(''),1500);return}
+  catch(e){if(e.status===409||e.status===422){S.abendSha=(await Store.get(`abende/${S.abend.id}.json`)).sha;continue}setSync('⚠');toast('⚠ '+e.message,5000);return}}}
 function vAbend(){
  const tid=S.selAbend&&T(S.selAbend)?S.selAbend:abendTermin()?.id;
  if(!tid)return`<div class="card">Kein Termin vorhanden.</div>`;
  const t=T(tid);
- const kopf=`<div class="card"><label style="margin-top:0">Kegelabend</label><select onchange="S.selAbend=this.value;render()">${terminOpts(tid,x=>x.status!=='ausgefallen')}</select></div>`;
+ const kopf=`<div class="row" style="margin-bottom:12px"><select onchange="S.selAbend=this.value;render()">${terminOpts(tid,x=>x.status!=='ausgefallen')}</select></div>`;
  if(t.status==='abgeschlossen')return kopf+abgeschlossenAnsicht(t);
  if(S.abendFor!==tid){afterHooks.push(()=>ladeAbend(tid).catch(e=>toast('⚠ '+e.message,5000)));return kopf+`<div class="card muted">Lade Strichliste…</div>`}
  if(S.abendLoading)return kopf+`<div class="card muted">Lade Strichliste…</div>`;
  const a=S.abend;
- if(!a)return kopf+`<div class="card"><h3>Strichliste ${fmtD(t.datum)}</h3><p class="muted">Noch nicht gestartet. Anwesend sind zunächst alle, die zugesagt haben – das kannst du gleich anpassen.</p>
-  <button class="btn-p" style="width:100%" onclick="act.startAbend('${tid}')">🎳 Strichliste starten</button></div>`;
+ if(!a)return kopf+`<div class="card hero"><h2>Strichliste</h2><p class="muted">Anwesend sind zunächst alle, die zugesagt haben – das passt du gleich an.</p>
+  <button class="btn p w" onclick="act.startAbend('${tid}')">🎳 Strichliste starten</button></div>`;
  if(a.gefuehrtVon!==S.me)return kopf+`<div class="banner">Die Tafel führt gerade <b>${esc(nameOf(a.gefuehrtVon))}</b>. Bitte nur auf einem Handy mitschreiben.</div>
-  <div class="row"><button onclick="ladeAbend('${tid}')">↻ Aktualisieren</button><button class="btn-d" onclick="act.uebernehmen()">Tafel übernehmen</button></div><div id="abend-sum" style="margin-top:12px"></div>`+(afterHooks.push(renderAbendSum),'');
+  <div class="row"><button class="btn f" onclick="ladeAbend('${tid}')">↻ Aktualisieren</button><button class="btn d f" onclick="act.uebernehmen()">Tafel übernehmen</button></div><div id="abend-sum" style="margin-top:12px"></div>`+(afterHooks.push(()=>renderAbendSum(true)),'');
  const st=strafen(),pres=a.spieler.filter(p=>p.anwesend);
- const kats=[...st.map(s=>({id:s.id,name:s.name})),{id:'spiele',name:'Spiele (€)'},{id:'essen',name:'Essen (€)'},{id:'sonstiges',name:'Sonstiges (€)'}];
- let h=kopf+`<div class="card"><details ${pres.length?'':'open'}><summary>Anwesend: ${pres.length} · Gäste: ${a.spieler.filter(p=>p.gast&&p.anwesend).length}</summary>
-  <div class="chips" style="margin-top:8px">${a.spieler.map((p,i)=>`<button class="chip ${p.anwesend?'an':''}" onclick="act.toggleAnw(${i})">${p.anwesend?'✓ ':''}${esc(p.name)}${p.gast?' (Gast)':''}</button>`).join('')}</div>
-  <div class="row" style="margin-top:8px"><input id="gastname" placeholder="Name des Gastes"><button style="flex:0" onclick="act.gast()">+ Gast</button></div></details></div>`;
- h+=`<div class="card"><div class="chips">${kats.map(k=>`<button class="chip ${S.kat===k.id?'on':''}" onclick="S.kat='${k.id}';render()">${esc(k.name)}</button>`).join('')}</div>`;
+ const kats=[...st.map(s=>({id:s.id,name:s.name})),{id:'spiele',name:'Spiele €'},{id:'essen',name:'Essen €'},{id:'sonstiges',name:'Sonstiges €'}];
+ let h=kopf+`<div class="card"><details ${pres.length?'':'open'}><summary>👥 Anwesend: ${pres.length}${a.spieler.some(p=>p.gast&&p.anwesend)?' · Gäste: '+a.spieler.filter(p=>p.gast&&p.anwesend).length:''}</summary>
+  <div class="chips wrap" style="margin-top:10px">${a.spieler.map((p,i)=>`<button class="chip ${p.anwesend?'an':''}" onclick="act.toggleAnw(${i})">${p.anwesend?'✓ ':''}${esc(p.name)}${p.gast?' (Gast)':''}</button>`).join('')}</div>
+  <div class="row" style="margin-top:10px"><input class="f" id="gastname" placeholder="Name des Gastes"><button class="btn" onclick="act.gast()">+ Gast</button></div></details></div>`;
+ h+=`<div class="sticky"><div class="chips">${kats.map(k=>`<button class="chip ${S.kat===k.id?'on':''}" onclick="S.kat='${k.id}';rerender()">${esc(k.name)}</button>`).join('')}</div></div><div class="card">`;
  if(['spiele','essen','sonstiges'].includes(S.kat)){
-  h+=`<p class="muted small">${S.kat==='spiele'?'Strafen aus den Spielen (Platzierungen, verlorene Teamspiele) als Betrag je Spieler.':S.kat==='essen'?'Essen je Person in €. Getränke und Trinkgeld werden unten gleichmäßig verteilt.':'Sonstiges, z. B. Schnapsrunde, Kostüm-Ersatz, Korrektur.'}</p>
-  ${S.kat==='essen'?`<button class="btn-s" onclick="act.essenAusBestellung()">Aus Bestellung übernehmen</button>`:''}
-  <table>${pres.map(p=>{const i=a.spieler.indexOf(p);return`<tr><td>${esc(p.name)}</td><td style="width:120px"><input inputmode="decimal" value="${esc(p[S.kat]??'')}" onchange="S.abend.spieler[${i}].${S.kat}=this.value.replace(',','.');abendChanged(false)"></td></tr>`}).join('')}</table>`;
+  h+=`<p class="muted small" style="margin-top:0">${S.kat==='spiele'?'Strafen aus den Spielen (Platzierungen, Teamspiele) als Betrag je Spieler.':S.kat==='essen'?'Essen je Person in €. Getränke und Trinkgeld werden unten gleichmäßig verteilt.':'Sonstiges, z. B. Schnapsrunde oder Korrektur.'}</p>
+  ${S.kat==='essen'?`<button class="btn s" style="margin-bottom:8px" onclick="act.essenAusBestellung()">Aus Bestellung übernehmen</button>`:''}
+  <table>${pres.map(p=>{const i=a.spieler.indexOf(p);return`<tr><td>${esc(p.name)}</td><td style="width:130px"><input inputmode="decimal" placeholder="0,00" value="${esc(String(p[S.kat]??'').replace('.',','))}" onchange="S.abend.spieler[${i}].${S.kat}=this.value.replace(',','.');abendChanged(false)"></td></tr>`}).join('')}</table>`;
  }else{
   const s=st.find(x=>x.id===S.kat);
-  h+=`<div class="row sp" style="margin:10px 0 8px"><div class="muted small">${esc(s.name)}: ${eur(s.betrag)} ${s.art==='andere'?'– zahlen alle anderen':''}</div>
-   <button class="btn-s ${S.minus?'btn-d':''}" style="flex:0" onclick="S.minus=!S.minus;render()">${S.minus?'− Korrigieren an':'− Korrigieren'}</button></div>
-  <div class="grid">${pres.map(p=>{const i=a.spieler.indexOf(p);return`<div class="tap ${S.minus?'minus':''}" onclick="act.tap(${i})"><b>${p.counts?.[S.kat]||0}</b>${esc(p.name)}</div>`}).join('')}</div>`;
+  h+=`<div class="row" style="margin-bottom:10px"><div class="f muted small">${esc(s.name)} · ${eur(s.betrag)}${s.art==='andere'?' – zahlen alle anderen':''}</div>
+   <button class="btn s ${S.minus?'d':''}" onclick="S.minus=!S.minus;rerender()">${S.minus?'− Korrektur an':'− Korrektur'}</button></div>
+  <div class="grid">${pres.map(p=>{const i=a.spieler.indexOf(p);return`<button class="tap ${S.minus?'minus':''}" onclick="act.tap(${i})"><b>${p.counts?.[S.kat]||0}</b>${esc(p.name)}</button>`}).join('')}</div>`;
  }
  h+=`</div><div id="abend-sum"></div>
- <div class="card"><h3>Rechnung Samos</h3><div class="row"><div><label>Getränke gesamt €</label><input inputmode="decimal" value="${esc(a.rechnung.getraenke)}" onchange="S.abend.rechnung.getraenke=this.value.replace(',','.');abendChanged(false)"></div>
- <div><label>Trinkgeld €</label><input inputmode="decimal" value="${esc(a.rechnung.trinkgeld)}" onchange="S.abend.rechnung.trinkgeld=this.value.replace(',','.');abendChanged(false)"></div></div>
- <p class="muted small">Getränke und Trinkgeld werden gleichmäßig auf alle Anwesenden (inkl. Gäste) verteilt, Essen je Person (Reiter „Essen (€)“).</p></div>
- <div class="row"><button onclick="speichereAbend()">💾 Jetzt speichern</button>${isKasse()?`<button class="btn-d" onclick="act.abschliessen()">Abend abschließen</button>`:''}</div>`;
- afterHooks.push(renderAbendSum);return h;
+ <div class="card"><details><summary>🧾 Rechnung Samos</summary><div class="row" style="margin-top:6px"><div class="f"><label>Getränke gesamt €</label><input inputmode="decimal" value="${esc(String(a.rechnung.getraenke).replace('.',','))}" onchange="S.abend.rechnung.getraenke=this.value.replace(',','.');abendChanged(false)"></div>
+ <div class="f"><label>Trinkgeld €</label><input inputmode="decimal" value="${esc(String(a.rechnung.trinkgeld).replace('.',','))}" onchange="S.abend.rechnung.trinkgeld=this.value.replace(',','.');abendChanged(false)"></div></div>
+ <p class="muted small">Getränke und Trinkgeld werden gleichmäßig auf alle Anwesenden (inkl. Gäste) verteilt, Essen je Person (Reiter „Essen €“).</p></details></div>
+ <div class="row"><button class="btn f" onclick="speichereAbend()">💾 Speichern</button>${isKasse()?`<button class="btn d f" onclick="act.abschliessen()">Abend abschließen</button>`:''}</div>`;
+ afterHooks.push(()=>renderAbendSum());return h;
 }
-function renderAbendSum(){const el=$('#abend-sum');if(!el||!S.abend)return;
+function renderAbendSum(open){const el=$('#abend-sum');if(!el||!S.abend)return;
  const a=S.abend,{res,max}=berechneAbend(a,S.verein),st=strafen().filter(s=>['pudel','glocke','neun','kranz','figur'].includes(s.id));
  const short={pudel:'P',glocke:'G',neun:'9',kranz:'K',figur:'F'};let sum=0,sumS=0;
  const rows=a.spieler.filter(p=>res[p.id]).map(p=>{const r=res[p.id];sum+=r.gesamt;sumS+=r.strafe;
-  return`<tr><td>${esc(p.name)}${p.gast?' <span class="muted">(G)</span>':''}</td>${r.abwesend?`<td colspan="${st.length+1}" class="muted small" style="text-align:center">abwesend – höchste Strafe</td>`:st.map(s=>`<td>${p.counts?.[s.id]||''}</td>`).join('')+`<td>${num(p.spiele)?eur(p.spiele):''}</td>`}<td><b>${eur(r.strafe)}</b></td><td>${eur(r.gesamt)}</td></tr>`}).join('');
- el.innerHTML=`<div class="card"><h3>Tafel</h3><div style="overflow-x:auto"><table><tr><th>Name</th>${st.map(s=>`<th title="${esc(s.name)}">${short[s.id]}</th>`).join('')}<th>Spiele</th><th>Strafe</th><th>Gesamt</th></tr>${rows}
+  return`<tr><td>${esc(p.name)}${p.gast?' <span class="muted">(G)</span>':''}</td>${r.abwesend?`<td colspan="${st.length+1}" class="muted small" style="text-align:center">abwesend</td>`:st.map(s=>`<td>${p.counts?.[s.id]||''}</td>`).join('')+`<td>${num(p.spiele)?fmtN(p.spiele,2):''}</td>`}<td><b>${eur(r.strafe)}</b></td><td>${eur(r.gesamt)}</td></tr>`}).join('');
+ const isOpen=open||lsGet('kt_tafel_open')==='1';
+ el.innerHTML=`<div class="card"><details ${isOpen?'open':''} ontoggle="lsSet('kt_tafel_open',this.open?'1':'0')"><summary>📋 Tafel <span class="muted small" style="margin-left:auto;margin-right:8px">Strafen ${eur(sumS)}</span></summary>
+ <div style="overflow-x:auto;margin-top:8px"><table><tr><th>Name</th>${st.map(s=>`<th title="${esc(s.name)}">${short[s.id]}</th>`).join('')}<th>Spiele</th><th>Strafe</th><th>Gesamt</th></tr>${rows}
  <tr class="sum"><td>Summe</td><td colspan="${st.length+1}"></td><td>${eur(sumS)}</td><td>${eur(sum)}</td></tr></table></div>
- <p class="muted small">Höchste Strafe heute: ${eur(max)} – die zahlen abwesende Mitglieder. „Gesamt“ = Strafe + Anteil Getränke/Trinkgeld + Essen + Sonstiges.</p></div>`}
-act.startAbend=async tid=>{S.abend=neuerAbend(T(tid));S.abendSha=null;await speichereAbend();render()};
-act.uebernehmen=()=>{if(!confirm('Tafel auf diesem Handy übernehmen?'))return;S.abend.gefuehrtVon=S.me;abendChanged()};
+ <p class="muted small">Höchste Strafe heute: ${eur(max)} – die zahlen abwesende Mitglieder. „Gesamt“ = Strafe + Anteil Getränke/Trinkgeld + Essen + Sonstiges.</p></details></div>`}
+act.startAbend=async tid=>{S.abend=neuerAbend(T(tid));S.abendSha=null;await speichereAbend();rerender()};
+act.uebernehmen=()=>ask('Tafel auf diesem Handy übernehmen?','Übernehmen',()=>{S.abend.gefuehrtVon=S.me;abendChanged()});
 act.toggleAnw=i=>{S.abend.spieler[i].anwesend=!S.abend.spieler[i].anwesend;abendChanged()};
 act.gast=()=>{const n=$('#gastname').value.trim();if(!n)return;S.abend.spieler.push({id:'gast-'+Date.now(),name:n,gast:true,anwesend:true,counts:{},spiele:'',essen:'',sonstiges:''});abendChanged()};
 act.tap=i=>{const p=S.abend.spieler[i];p.counts=p.counts||{};const v=(p.counts[S.kat]||0)+(S.minus?-1:1);if(v<0)return;p.counts[S.kat]=v;
- if(S.kat==='figur'&&!S.minus&&!p.gast){const s=strafen().find(x=>x.id==='figur'),n=figurGesamt(p.id,S.abend.id)+v;if(s?.schnapsJedesMal&&n%s.schnapsJedesMal===0)toast(`🥃 ${p.name} hat die Figur zum ${n}. Mal vergessen – Runde Schnaps!`,5000)}
- if(navigator.vibrate)navigator.vibrate(15);abendChanged()};
+ if(S.kat==='figur'&&!S.minus&&!p.gast){const s=strafen().find(x=>x.id==='figur'),n=figurGesamt(p.id,S.abend.id)+v;if(s?.schnapsJedesMal&&n%s.schnapsJedesMal===0)toast(`🥃 ${p.name}: Figur zum ${n}. Mal vergessen – Runde Schnaps!`,5000)}
+ vib();abendChanged()};
 act.essenAusBestellung=async()=>{await loadKarte();const b=(await Store.get(`bestellungen/${S.abend.id}.json`)).data;if(!b?.positionen?.length)return toast('Keine Bestellung für diesen Termin');
  let n=0;for(const p of S.abend.spieler){const s=b.positionen.filter(x=>x.fuer===p.id||x.fuer===p.name).reduce((a,x)=>a+num(x.preis),0);if(s){p.essen=String(r2(s));n++}}
  toast(n?`Essen für ${n} Personen übernommen`:'Keine Preise in der Bestellung gefunden');abendChanged()};
-act.abschliessen=async()=>{const a=S.abend,{res}=berechneAbend(a,S.verein);
- if(!confirm(`Abend ${fmtD(a.id)} abschließen und auf die Konten buchen?`))return;
+act.abschliessen=()=>ask(`Abend ${fmtD(S.abend.id)} abschließen und auf die Konten buchen?`,'Abschließen',async()=>{
+ const a=S.abend,{res}=berechneAbend(a,S.verein);
  await speichereAbend();
- const abr={},fig={},gaeste=[],abw=[];for(const p of a.spieler){const r=res[p.id];if(!r)continue;
-  if(p.gast)gaeste.push({name:p.name,betrag:r.gesamt,strafe:r.strafe});else{abr[p.id]=r.gesamt;if(r.abwesend)abw.push(p.id);if(p.counts?.figur)fig[p.id]=p.counts.figur}}
- S.termine=await save('termine.json',d=>{const t=d.termine.find(x=>x.id===a.id);Object.assign(t,{status:'abgeschlossen',abrechnung:abr,figur:fig,gaeste,abwesend:abw,abgeschlossenVon:S.me,abgeschlossenAm:new Date().toISOString()});return d},`Abend ${a.id} abgeschlossen`);
- toast('Abend abgerechnet ✓');render()};
+ const abr={},fig={},gaeste=[],abw=[],stats={},str={};for(const p of a.spieler){const r=res[p.id];if(!r)continue;
+  if(p.gast){gaeste.push({name:p.name,betrag:r.gesamt,strafe:r.strafe});continue}
+  abr[p.id]=r.gesamt;str[p.id]=r.strafe;if(r.abwesend){abw.push(p.id);continue}
+  if(p.counts?.figur)fig[p.id]=p.counts.figur;
+  stats[p.id]={pudel:p.counts?.pudel||0,glocke:p.counts?.glocke||0,neun:p.counts?.neun||0,kranz:p.counts?.kranz||0,figur:p.counts?.figur||0,spiele:num(p.spiele),strafe:r.strafe}}
+ S.termine=await save('termine.json',d=>{const t=d.termine.find(x=>x.id===a.id);Object.assign(t,{status:'abgeschlossen',abrechnung:abr,figur:fig,gaeste,abwesend:abw,stats,strafen:str,abgeschlossenVon:S.me,abgeschlossenAm:new Date().toISOString()});return d},`Abend ${a.id} abgeschlossen`);
+ toast('Abend abgerechnet ✓');rerender()});
 function abgeschlossenAnsicht(t){const ab=t.abrechnung||{};let s=0;
  const rows=Object.entries(ab).sort((a,b)=>nameOf(a[0]).localeCompare(nameOf(b[0]),'de')).map(([id,b])=>{s+=b;return`<tr><td>${esc(nameOf(id))}${t.abwesend?.includes(id)?' <span class="muted small">(abwesend)</span>':''}</td><td>${eur(b)}</td></tr>`}).join('');
  const g=(t.gaeste||[]).map(x=>{s+=x.betrag;return`<tr><td>${esc(x.name)} <span class="muted small">(Gast)</span></td><td>${eur(x.betrag)}</td></tr>`}).join('');
- return`<div class="card"><h3>Abgerechnet ✓</h3>${rows||g?`<table><tr><th>Name</th><th>Betrag</th></tr>${rows}${g}<tr class="sum"><td>Summe</td><td>${eur(s)}</td></tr></table>`:'<p class="muted">Abend aus dem Excel-Kassenbuch – Beträge stecken im Übertrag.</p>'}
- ${isKasse()&&!t.inStartSaldo?`<button style="margin-top:10px" onclick="act.wiederOeffnen('${t.id}')">Wieder öffnen</button>`:''}</div>`}
-act.wiederOeffnen=async id=>{if(!confirm('Abrechnung zurücknehmen und Strichliste wieder öffnen?'))return;
- S.termine=await save('termine.json',d=>{const t=d.termine.find(x=>x.id===id);t.status='geplant';delete t.abrechnung;delete t.figur;delete t.gaeste;delete t.abwesend;return d},`Abend ${id} wieder geöffnet`);S.abendFor=null;render()};
+ return`<div class="card"><h3>Abgerechnet ✓</h3>${rows||g?`<table><tr><th>Name</th><th>Betrag</th></tr>${rows}${g}<tr class="sum"><td>Summe</td><td>${eur(s)}</td></tr></table>`:'<p class="muted">Abend aus dem Excel-Kassenbuch – die Beträge stecken im Übertrag, die Zahlen in den Statistiken.</p>'}
+ ${isKasse()&&!t.inStartSaldo?`<button class="btn" style="margin-top:10px" onclick="act.wiederOeffnen('${t.id}')">Wieder öffnen</button>`:''}</div>`}
+act.wiederOeffnen=id=>ask('Abrechnung zurücknehmen und Strichliste wieder öffnen?','Wieder öffnen',async()=>{
+ S.termine=await save('termine.json',d=>{const t=d.termine.find(x=>x.id===id);t.status='geplant';['abrechnung','figur','gaeste','abwesend','stats','strafen'].forEach(k=>delete t[k]);return d},`Abend ${id} wieder geöffnet`);S.abendFor=null;rerender()},true);
 
 /* ---------------- ESSEN / BESTELLUNG ---------------- */
-async function ladeBest(tid){S.bestFor=tid;S.best=null;await loadKarte();S.best=(await Store.get(`bestellungen/${tid}.json`)).data||{positionen:[]};render()}
+async function ladeBest(tid){S.bestFor=tid;S.best=null;await loadKarte();S.best=(await Store.get(`bestellungen/${tid}.json`)).data||{positionen:[]};rerender()}
 function vEssen(){
  const tid=S.selEssen&&T(S.selEssen)?S.selEssen:(abendTermin()||naechsterTermin())?.id;
  if(!tid)return`<div class="card">Kein Termin vorhanden.</div>`;
- const kopf=`<div class="card"><label style="margin-top:0">Bestellung für</label><select onchange="S.selEssen=this.value;render()">${terminOpts(tid,x=>x.status==='geplant'||x.id===tid)}</select></div>`;
+ const kopf=`<div style="margin-bottom:12px"><select onchange="S.selEssen=this.value;render()">${terminOpts(tid,x=>x.status==='geplant'||x.id===tid)}</select></div>`;
  if(S.bestFor!==tid||!S.best){if(S.bestFor!==tid)afterHooks.push(()=>ladeBest(tid).catch(e=>toast('⚠ '+e.message,5000)));return kopf+`<div class="card muted">Lade…</div>`}
  const g=S.karte.gerichte||[],pos=S.best.positionen||[],ef=S.ef;ef.fuer=ef.fuer||S.me;
- const hatNr=g.some(x=>x.nr);
  let h=kopf+`<div class="card"><h3>Bestellen</h3>
  <label>Für</label><select onchange="S.ef.fuer=this.value">${aktive().map(m=>`<option value="${m.id}" ${ef.fuer===m.id?'selected':''}>${esc(m.spitzname)}</option>`).join('')}<option value="gast" ${ef.fuer==='gast'?'selected':''}>Gast …</option></select>
- <div class="row"><div style="flex:0 0 90px"><label>Nr.</label><input id="e-nr" inputmode="numeric" value="${esc(ef.nr||'')}" oninput="act.nrEingabe(this.value)"></div>
- <div><label>Gericht</label><input id="e-name" list="dl-g" value="${esc(ef.name||'')}" oninput="S.ef.name=this.value"></div></div>
+ <div class="row"><div style="flex:0 0 92px"><label>Nr.</label><input id="e-nr" inputmode="numeric" value="${esc(ef.nr||'')}" oninput="act.nrEingabe(this.value)"></div>
+ <div class="f"><label>Gericht</label><input id="e-name" list="dl-g" value="${esc(ef.name||'')}" oninput="S.ef.name=this.value"></div></div>
  <datalist id="dl-g">${g.map(x=>`<option value="${esc(x.name)}">${x.nr?esc(x.nr)+' · ':''}${x.preis?eur(x.preis):''}</option>`).join('')}</datalist>
  <label>Sonderwunsch</label><input value="${esc(ef.wunsch||'')}" placeholder="z. B. ohne Zwiebeln, Reis statt Pommes" oninput="S.ef.wunsch=this.value">
- <button class="btn-p" style="width:100%;margin-top:10px" onclick="act.bestellen('${tid}')">+ Hinzufügen</button>
- ${hatNr?'':'<p class="muted small">Hinweis: Die hinterlegte Karte hat noch keine Nummern und Preise (Stand 2023). Bitte aktuelle Karte fotografieren und unter „Mehr → Speisekarte“ einpflegen.</p>'}</div>`;
- // Positionen nach Person
- const per={};pos.forEach((p,i)=>{(per[p.fuerName]=per[p.fuerName]||[]).push({...p,i})});
- h+=`<div class="card"><h3>Bestellungen (${pos.length})</h3>${pos.length?`<ul class="l">${Object.keys(per).sort((a,b)=>a.localeCompare(b,'de')).map(n=>per[n].map(p=>`<li><div class="g"><b>${esc(n)}</b>: ${p.nr?esc(p.nr)+' – ':''}${esc(p.gericht)}${p.wunsch?`<div class="small">↳ ${esc(p.wunsch)}</div>`:''}</div>${p.preis?`<span class="small">${eur(p.preis)}</span>`:''}${p.von===S.me||p.fuer===S.me||isAdmin()?`<button class="btn-x" onclick="act.posLoeschen('${tid}','${p.id}')">✕</button>`:''}</li>`).join('')).join('')}</ul>`:'<p class="muted">Noch nichts bestellt.</p>'}</div>`;
+ <button class="btn p w" style="margin-top:12px" onclick="act.bestellen('${tid}')">+ Hinzufügen</button></div>`;
+ const per={};pos.forEach(p=>{(per[p.fuerName]=per[p.fuerName]||[]).push(p)});
+ h+=`<div class="sec">Bestellungen (${pos.length})</div><div class="card">${pos.length?`<ul class="l">${Object.keys(per).sort((a,b)=>a.localeCompare(b,'de')).map(n=>per[n].map(p=>`<li><div class="av s">${ini(n)}</div><div class="g"><b>${esc(n)}</b> · ${p.nr?'<b>'+esc(p.nr)+'</b> ':''}${esc(p.gericht)}${p.wunsch?`<div class="small muted">↳ ${esc(p.wunsch)}</div>`:''}</div>${p.preis?`<span class="small">${eur(p.preis)}</span>`:''}${p.von===S.me||p.fuer===S.me||isAdmin()?`<button class="x" onclick="act.posLoeschen('${tid}','${p.id}')">✕</button>`:''}</li>`).join('')).join('')}</ul>`:'<p class="muted" style="margin:0">Noch nichts bestellt.</p>'}</div>`;
  if(pos.length){const txt=sammelText(T(tid),pos);
-  h+=`<div class="card"><h3>Sammelbestellung fürs Samos</h3><pre class="order">${esc(txt)}</pre><div class="row"><button onclick="act.kopieren()">📋 Kopieren</button><button onclick="act.teilen()">📤 Teilen</button></div></div>`}
- // Speisekarte
- const q=(S.kq||'').toLowerCase(),fl=g.filter(x=>!q||(x.nr+' '+x.name+' '+(x.beschreibung||'')).toLowerCase().includes(q));let cat='';
- h+=`<div class="card"><h3>Speisekarte</h3><input placeholder="Suchen: Nummer oder Gericht" value="${esc(S.kq||'')}" oninput="S.kq=this.value;act.karteFilter()"><div id="karte">${fl.map(x=>{const c=x.kategorie!==cat?`<div class="cat">${esc(cat=x.kategorie)}</div>`:'';
-  return c+`<div class="dish" onclick="act.waehle(${g.indexOf(x)})"><span class="nr">${esc(x.nr||'')}</span><div style="flex:1"><b>${esc(x.name)}</b>${x.beschreibung?`<div class="small muted">${esc(x.beschreibung)}</div>`:''}</div><span class="pr">${x.preis?eur(x.preis):''}</span></div>`}).join('')||'<p class="muted">Nichts gefunden.</p>'}</div>
-  <p class="muted small">${esc(S.karte.stand||'')}</p></div>`;
+  h+=`<div class="card"><details><summary>📝 Sammelbestellung fürs Samos</summary><pre class="order">${esc(txt)}</pre></details><div class="row" style="margin-top:8px"><button class="btn f" onclick="act.kopieren()">📋 Kopieren</button><button class="btn f" onclick="act.teilen()">📤 Teilen</button></div></div>`}
+ h+=`<div class="sec">Speisekarte</div><div class="card"><input id="ksearch" placeholder="🔍 Nummer oder Gericht suchen" value="${esc(S.kq||'')}" oninput="S.kq=this.value;renderKarte()"><div id="karte"></div><p class="muted small">${esc(S.karte.stand||'')}</p></div>`;
+ afterHooks.push(renderKarte);
  return h;
 }
+function renderKarte(){const el=$('#karte');if(!el)return;const g=S.karte.gerichte||[],q=(S.kq||'').toLowerCase().trim();
+ const fl=g.filter(x=>!q||String(x.nr)===q||(x.nr+' '+x.name+' '+(x.beschreibung||'')).toLowerCase().includes(q));let cat='';
+ el.innerHTML=fl.map(x=>{const c=x.kategorie!==cat?`<div class="cat">${esc(cat=x.kategorie)}</div>`:'';
+  return c+`<div class="dish" onclick="act.waehle(${g.indexOf(x)})"><span class="nr">${esc(x.nr||'–')}</span><div style="flex:1"><b>${esc(x.name)}</b>${x.beschreibung?`<div class="small muted">${esc(x.beschreibung)}</div>`:''}</div><span class="pr">${x.preis?eur(x.preis):''}</span></div>`}).join('')||'<p class="muted">Nichts gefunden.</p>'}
 function sammelText(t,pos){const grp={};
  pos.forEach(p=>{const k=(p.nr?p.nr+' ':'')+p.gericht;(grp[k]=grp[k]||[]).push(p)});
  const keys=Object.keys(grp).sort((a,b)=>(parseInt(a)||999)-(parseInt(b)||999)||a.localeCompare(b,'de'));
  return`Schwelmer Kegeltreff – Bestellung ${fmtD(t.datum,{day:'2-digit',month:'2-digit',year:'numeric'})}\n`+keys.map(k=>{const l=grp[k],w=l.filter(p=>p.wunsch);
   return`${l.length}× ${k}`+(w.length?'\n'+w.map(p=>`   – ${p.fuerName}: ${p.wunsch}`).join('\n'):'')}).join('\n')+`\n\nGesamt: ${pos.length} Gerichte`}
-act.karteFilter=()=>{const y=scrollY,f=document.activeElement;render();scrollTo(0,y);const i=$('#main input[placeholder^="Suchen"]');if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length)}};
 act.nrEingabe=v=>{S.ef.nr=v.trim();const x=(S.karte.gerichte||[]).find(g=>g.nr&&String(g.nr)===S.ef.nr);if(x){S.ef.name=x.name;$('#e-name').value=x.name}};
-act.waehle=i=>{const x=S.karte.gerichte[i];S.ef.nr=x.nr||'';S.ef.name=x.name;render();scrollTo({top:0,behavior:'smooth'})};
+act.waehle=i=>{const x=S.karte.gerichte[i];S.ef.nr=x.nr||'';S.ef.name=x.name;render();scrollTo({top:0,behavior:'smooth'});toast(`${x.nr?x.nr+' · ':''}${x.name} ausgewählt`)};
 act.bestellen=async tid=>{const ef=S.ef;if(!ef.name?.trim())return toast('Bitte Nummer oder Gericht angeben');
  let fuer=ef.fuer||S.me,fuerName=nameOf(fuer);if(fuer==='gast'){fuerName=prompt('Name des Gastes?');if(!fuerName)return;fuer=fuerName}
  const x=(S.karte.gerichte||[]).find(g=>g.name===ef.name.trim()&&(!ef.nr||String(g.nr)===ef.nr));
  const p={id:'p'+Date.now().toString(36),fuer,fuerName,nr:ef.nr||x?.nr||'',gericht:ef.name.trim(),wunsch:(ef.wunsch||'').trim(),preis:x?.preis??null,von:S.me,ts:new Date().toISOString()};
  S.best=await save(`bestellungen/${tid}.json`,d=>{d.positionen=d.positionen||[];d.positionen.push(p);return d},`Bestellung ${fuerName}: ${p.nr} ${p.gericht}`,{positionen:[]});
- S.ef={fuer:S.ef.fuer};toast('Hinzugefügt ✓');render()};
-act.posLoeschen=async(tid,id)=>{S.best=await save(`bestellungen/${tid}.json`,d=>{d.positionen=d.positionen.filter(p=>p.id!==id);return d},'Bestellposition gelöscht',{positionen:[]});render()};
+ S.ef={fuer:S.ef.fuer};vib();toast('Hinzugefügt ✓');rerender()};
+act.posLoeschen=async(tid,id)=>{S.best=await save(`bestellungen/${tid}.json`,d=>{d.positionen=d.positionen.filter(p=>p.id!==id);return d},'Bestellposition gelöscht',{positionen:[]});rerender()};
 act.kopieren=async()=>{const t=$('pre.order').textContent;try{await navigator.clipboard.writeText(t);toast('Kopiert ✓')}catch(_){toast('Kopieren nicht möglich')}};
 act.teilen=()=>{const t=$('pre.order').textContent;if(navigator.share)navigator.share({text:t}).catch(()=>{});else location.href='https://wa.me/?text='+encodeURIComponent(t)};
 
 /* ---------------- KASSE ---------------- */
 function vKasse(){
  const mine=konto(S.me),alle=aktive().map(m=>({m,k:konto(m.id)}));
- const lbl=s=>s>0.004?`<span class="rot">${eur(s)} offen</span>`:s<-0.004?`<span class="gruen">${eur(-s)} Guthaben</span>`:'ausgeglichen';
- let h=`<div class="card hl"><div class="muted small">Dein Kontostand</div><div class="big ${mine.saldo>0?'rot':'gruen'}">${eur(Math.abs(mine.saldo))}</div><div>${mine.saldo>0.004?'noch zu überweisen':mine.saldo<-0.004?'Guthaben (zu viel überwiesen)':'ausgeglichen'}</div>
- ${mine.saldo>200?'<div class="banner" style="margin-top:8px">🎭 Mehr als 200 € Rückstand – laut Strafenkatalog ist beim nächsten Termin ein Kostüm fällig.</div>':''}
- <details style="margin-top:8px"><summary>Buchungen anzeigen</summary>${kontoTabelle(mine)}</details></div>`;
- if(isKasse())h+=`<div class="card"><h3>Buchung erfassen</h3><div class="row"><div><label>Mitglied</label><select id="b-m">${aktive().map(m=>`<option value="${m.id}">${esc(m.spitzname)}</option>`).join('')}</select></div>
-  <div><label>Art</label><select id="b-a"><option value="einzahlung">Einzahlung (Überweisung)</option><option value="belastung">Belastung (+ offen)</option><option value="gutschrift">Gutschrift (− offen)</option></select></div></div>
-  <div class="row"><div><label>Betrag €</label><input id="b-b" inputmode="decimal"></div><div><label>Datum</label><input id="b-d" type="date" value="${todayISO()}"></div></div>
+ const lbl=s=>s>0.004?`<span class="rot">${eur(s)} offen</span>`:s<-0.004?`<span class="gruen">${eur(-s)} Guthaben</span>`:'<span class="muted">ausgeglichen</span>';
+ let h=`<div class="card hero"><div class="muted small">Dein Kontostand</div><div class="big" style="color:${mine.saldo>0.004?'#ff8a80':'#8be39f'}">${eur(Math.abs(mine.saldo))}</div><div>${mine.saldo>0.004?'noch zu überweisen':mine.saldo<-0.004?'Guthaben':'ausgeglichen'}</div>
+ ${mine.saldo>200?'<div class="pill y" style="margin-top:8px">🎭 Über 200 € Rückstand – Kostüm fällig!</div>':''}
+ <button class="btn s" style="margin-top:12px;background:rgba(255,255,255,.12);color:#fff" onclick="act.kontoSheet('${S.me}')">Buchungen anzeigen</button></div>`;
+ if(isKasse())h+=`<div class="card"><details><summary>➕ Buchung erfassen</summary><div class="row" style="margin-top:6px"><div class="f"><label>Mitglied</label><select id="b-m">${aktive().map(m=>`<option value="${m.id}">${esc(m.spitzname)}</option>`).join('')}</select></div>
+  <div class="f"><label>Art</label><select id="b-a"><option value="einzahlung">Einzahlung</option><option value="belastung">Belastung (+ offen)</option><option value="gutschrift">Gutschrift (− offen)</option></select></div></div>
+  <div class="row"><div class="f"><label>Betrag €</label><input id="b-b" inputmode="decimal"></div><div class="f"><label>Datum</label><input id="b-d" type="date" value="${todayISO()}"></div></div>
   <label>Text</label><input id="b-t" placeholder="z. B. Dauerauftrag November">
-  <button class="btn-p" style="width:100%;margin-top:10px" onclick="act.buchen()">Buchen</button></div>`;
+  <button class="btn p w" style="margin-top:12px" onclick="act.buchen()">Buchen</button></details></div>`;
  const sum=alle.reduce((a,x)=>a+x.k.saldo,0);
- h+=`<div class="card"><h3>Alle Mitglieder</h3><ul class="l">${alle.sort((a,b)=>b.k.saldo-a.k.saldo).map(({m,k})=>`<li style="cursor:pointer;display:block" onclick="S.kOpen=S.kOpen==='${m.id}'?null:'${m.id}';render()"><div class="row sp"><b>${esc(m.spitzname)}${k.saldo>200?' 🎭':''}</b><span style="flex:0;white-space:nowrap">${lbl(k.saldo)}</span></div>${S.kOpen===m.id?kontoTabelle(k,isKasse()):''}</li>`).join('')}</ul>
- <p class="muted small">Summe offen/Guthaben: ${eur(sum)} · Start-Salden aus dem Excel-Kassenbuch (Stand ${fmtD(S.verein.startSaldoStichtag)}), seitdem automatisch: Wochenbeiträge ${eur(S.verein.wochenbeitrag??5)} je Woche ohne Termin, ${eur(S.verein.pauschaleAusfall??15)} bei ausgefallenem Termin, abgerechnete Abende.</p></div>`;
+ h+=`<div class="sec">Alle Mitglieder</div><div class="card"><ul class="l">${alle.sort((a,b)=>b.k.saldo-a.k.saldo).map(({m,k})=>`<li style="cursor:pointer" onclick="act.kontoSheet('${m.id}')"><div class="av s">${ini(m.spitzname)}</div><div class="g"><b>${esc(m.spitzname)}</b>${k.saldo>200?' 🎭':''}</div><span style="white-space:nowrap;font-weight:600">${lbl(k.saldo)}</span></li>`).join('')}</ul>
+ <p class="muted small">Summe: ${eur(sum)} · Start-Salden aus dem Excel-Kassenbuch (Stand ${fmtD(S.verein.startSaldoStichtag)}), seitdem automatisch: ${eur(S.verein.wochenbeitrag??5)} je Woche ohne Termin, ${eur(S.verein.pauschaleAusfall??15)} bei ausgefallenem Termin, abgerechnete Abende.</p></div>`;
  return h;
 }
-function kontoTabelle(k,del){return`<table style="margin-top:6px">${k.items.map(i=>`<tr><td class="small">${fmtD(i.datum,{day:'2-digit',month:'2-digit',year:'2-digit'})} ${esc(i.text)}${del&&i.bid?` <button class="btn-x" onclick="event.stopPropagation();act.bLoeschen('${i.bid}')">✕</button>`:''}</td><td class="${i.betrag>0?'rot':'gruen'}">${i.betrag>0?'+':''}${eur(i.betrag)}</td></tr>`).join('')}
- <tr class="sum"><td>Saldo (+ = offen)</td><td>${eur(k.saldo)}</td></tr></table>`}
+act.kontoSheet=id=>{const k=konto(id);sheet(`<h3>Konto ${esc(nameOf(id))}</h3><table>${k.items.map(i=>`<tr><td class="small">${fmtD(i.datum,{day:'2-digit',month:'2-digit',year:'2-digit'})} ${esc(i.text)}${isKasse()&&i.bid?` <button class="x" onclick="act.bLoeschen('${i.bid}')">✕</button>`:''}</td><td class="${i.betrag>0?'rot':'gruen'}" style="white-space:nowrap">${i.betrag>0?'+':''}${eur(i.betrag)}</td></tr>`).join('')}
+ <tr class="sum"><td>Saldo (+ = offen)</td><td>${eur(k.saldo)}</td></tr></table><button class="btn w" style="margin-top:12px" onclick="closeSheet()">Schließen</button>`)};
 act.buchen=async()=>{const b={id:'b'+Date.now().toString(36),mitglied:$('#b-m').value,art:$('#b-a').value,betrag:r2(num($('#b-b').value)),datum:$('#b-d').value,text:$('#b-t').value.trim(),von:S.me,ts:new Date().toISOString()};
  if(!b.betrag)return toast('Bitte Betrag eingeben');
- S.kasse=await save('kasse.json',d=>{d.buchungen=d.buchungen||[];d.buchungen.push(b);return d},`Buchung ${nameOf(b.mitglied)} ${b.art} ${b.betrag}`,{buchungen:[]});toast('Gebucht ✓');render()};
-act.bLoeschen=async id=>{if(!confirm('Buchung löschen?'))return;S.kasse=await save('kasse.json',d=>{d.buchungen=d.buchungen.filter(b=>b.id!==id);return d},'Buchung gelöscht');render()};
+ S.kasse=await save('kasse.json',d=>{d.buchungen=d.buchungen||[];d.buchungen.push(b);return d},`Buchung ${nameOf(b.mitglied)} ${b.art} ${b.betrag}`,{buchungen:[]});toast('Gebucht ✓');rerender()};
+act.bLoeschen=id=>ask('Buchung löschen?','Löschen',async()=>{S.kasse=await save('kasse.json',d=>{d.buchungen=d.buchungen.filter(b=>b.id!==id);return d},'Buchung gelöscht');rerender()},true);
 
-/* ---------------- MEHR / ADMIN ---------------- */
-function vMehr(){
- const m=M(S.me);let h=`<div class="card"><h3>Ich</h3><div>${esc(m?.vorname||'')} ${esc(m?.nachname||'')} („${esc(m?.spitzname||'')}“) ${(m?.rollen||[]).map(r=>`<span class="pill y">${r}</span>`).join('')}</div>
- <div class="muted small" style="margin-top:4px">${Store.isDemo()?'Demo-Modus – Daten nur in diesem Browser':'Verbunden mit '+esc(Store.cfg.owner+'/'+Store.cfg.repo)} · App ${APP_VERSION}</div>
- <div class="row" style="margin-top:10px"><button onclick="act.reload()">↻ Daten neu laden</button><button onclick="act.wechsel()">Person wechseln</button><button onclick="act.abmelden()">Abmelden</button></div></div>`;
- h+=`<div class="card"><h3>Strafenkatalog</h3><table>${strafen().map((s,i)=>`<tr><td>${esc(s.name)}${s.art==='andere'?' <span class="muted small">(für alle anderen)</span>':''}${s.schnapsJedesMal?` <span class="muted small">jedes ${s.schnapsJedesMal}. Mal + Runde Schnaps</span>`:''}</td><td style="width:100px">${isAdmin()?`<input inputmode="decimal" value="${String(s.betrag).replace('.',',')}" onchange="act.strafe(${i},this.value)">`:eur(s.betrag)}</td></tr>`).join('')}
- <tr><td>Platzierung Einzelspiel (2. bis Letzter)</td><td>0,10 € je Platz</td></tr><tr><td>Mehr als 200 € Rückstand</td><td>Kostüm</td></tr>
- <tr><td>Wochenbeitrag ohne Termin</td><td>${eur(S.verein.wochenbeitrag??5)}</td></tr><tr><td>Termin ausgefallen</td><td>${eur(S.verein.pauschaleAusfall??15)}</td></tr><tr><td>Abwesend</td><td>höchste Strafe des Abends</td></tr></table></div>`;
- if(!isAdmin())return h;
- h+=`<div class="card"><h3>Termine verwalten</h3><div class="row"><div><label>Datum</label><input id="t-d" type="date"></div><div><label>Uhrzeit</label><input id="t-u" type="time" value="18:00"></div></div>
- <label>Bemerkung</label><input id="t-b"><div class="row" style="margin-top:10px"><button class="btn-p" onclick="act.terminNeu()">+ Termin</button><button onclick="act.serie()">+ nächste 5 im 5-Wochen-Takt</button></div>
- <ul class="l" style="margin-top:8px">${termineSorted().filter(t=>t.datum>=addDays(todayISO(),-60)).map(t=>`<li><div class="g">${fmtD(t.datum)} <span class="muted small">${t.status}${t.bemerkung?' · '+esc(t.bemerkung):''}</span></div>
-  ${t.status==='geplant'?`<button class="btn-s" onclick="act.ausfall('${t.id}')">Ausfall</button>`:t.status==='ausgefallen'?`<button class="btn-s" onclick="act.tStatus('${t.id}','geplant')">reaktivieren</button>`:''}${t.status!=='abgeschlossen'?`<button class="btn-x" onclick="act.tLoeschen('${t.id}')">✕</button>`:''}</li>`).join('')}</ul></div>`;
- h+=`<div class="card"><h3>Mitglieder</h3><ul class="l">${[...S.verein.mitglieder].sort((a,b)=>a.spitzname.localeCompare(b.spitzname,'de')).map(m=>`<li><div class="g"><b>${esc(m.spitzname)}</b> <span class="small">${esc(m.vorname)} ${esc(m.nachname)}</span> ${m.aktiv?'':'<span class="pill nein">inaktiv</span>'}${(m.rollen||[]).map(r=>`<span class="pill y">${r}</span>`).join('')}</div><button class="btn-s" onclick="act.mEdit('${m.id}')">✎</button></li>`).join('')}</ul>
- <button style="margin-top:8px" onclick="act.mNeu()">+ Mitglied</button></div>`;
- h+=`<div class="card"><h3>Speisekarte pflegen</h3><p class="muted small">Eine Zeile pro Gericht: <code>Nr;Gericht;Preis;Kategorie;Beschreibung</code>. Ersetzt die komplette Karte.</p>
- <textarea id="k-csv" rows="8" placeholder="12;Gyros;14,90;Grill;mit Pommes und Tzatziki"></textarea><div class="row" style="margin-top:8px"><button onclick="act.karteExport()">Aktuelle Karte laden</button><button class="btn-p" onclick="act.karteImport()">Karte speichern</button></div></div>`;
- if(!Store.isDemo())h+=`<div class="card"><h3>Einladungslink</h3><p class="muted small">Link mit Zugang zum Daten-Repo – nur privat in der WhatsApp-Gruppe teilen. Wer ihn öffnet, ist direkt verbunden.</p><button onclick="act.invite()">🔗 Link erzeugen & kopieren</button></div>`;
+/* ---------------- STATISTIKEN ---------------- */
+const KEYS=[['pudel','Pudel','🐩'],['glocke','Glöckchen','🔔'],['neun','Alle Neune','9️⃣'],['kranz','Kranz','🎯'],['figur','Figur vergessen','🗿'],['strafe','Strafen €','💸'],['abende','Abende','📅']];
+function statAbende(){const h=S.hist?.abende||[],dates=new Set(h.map(a=>a.datum));
+ const app=termineSorted().filter(t=>t.status==='abgeschlossen'&&t.stats&&!dates.has(t.datum)).map(t=>({datum:t.datum,quelle:'app',spieler:t.stats,strafen:t.strafen||{}}));
+ return[...h,...app].sort((a,b)=>a.datum.localeCompare(b.datum))}
+function aggregate(ab){const r={};const P=pid=>r[pid]??={pid,abende:0,pudel:0,glocke:0,neun:0,kranz:0,figur:0,spiele:0,strafe:0,strafeN:0,best:{}};
+ for(const a of ab){for(const[pid,v]of Object.entries(a.spieler)){const x=P(pid);x.abende++;
+   for(const k of['pudel','glocke','neun','kranz','figur','spiele']){x[k]+=+v[k]||0;if((+v[k]||0)>(x.best[k]?.wert||0))x.best[k]={wert:+v[k],datum:a.datum}}
+   if(!a.strafen&&v.strafe!=null){x.strafe+=v.strafe;x.strafeN++}}
+  for(const[pid,s]of Object.entries(a.strafen||{})){const x=P(pid);x.strafe+=s;x.strafeN++;if(s>(x.best.strafe?.wert||0))x.best.strafe={wert:s,datum:a.datum}}}
+ return r}
+const metricVal=(x,k,modus)=>k==='abende'?x.abende:k==='strafe'?(modus==='avg'?(x.strafeN?x.strafe/x.strafeN:null):(x.strafeN?x.strafe:null)):(modus==='avg'?(x.abende?x[k]/x.abende:null):x[k]);
+function bars(rows,fmt,me){const max=Math.max(...rows.map(r=>r.v),0.0001);
+ return`<div class="bars">${rows.map((r,i)=>`<div class="br ${r.pid===me?'me':''}" title="${esc(nameOf(r.pid))}: ${fmt(r.v)}${r.n!=null?' · '+r.n+' Abende':''}"><span class="rk">${i+1}.</span><span class="nm">${esc(nameOf(r.pid))}</span><span class="tr"><span class="bar" style="width:${Math.max(1,r.v/max*100)}%"></span></span><span class="val">${fmt(r.v)}</span></div>`).join('')}</div>`}
+function vStatistik(){
+ if(!S.hist){afterHooks.push(()=>loadHist().then(rerender).catch(e=>toast('⚠ '+e.message,5000)));return`<div class="card muted">Lade Statistiken…</div>`}
+ const all=statAbende(),years=[...new Set(all.map(a=>a.datum.slice(0,4)))].sort().reverse();
+ const st=S.st;if(!st.zeit)st.zeit=years[0]||'alle';
+ const ab=st.zeit==='alle'?all:st.zeit==='letzter'?all.slice(-1):all.filter(a=>a.datum.startsWith(st.zeit));
+ const ag=aggregate(ab),list=Object.values(ag),N=ab.length;
+ let h=`<div class="chips" style="margin-bottom:12px">${[...years.map(y=>[y,y]),['alle','Alle Jahre'],['letzter','Letzter Abend']].map(([k,l])=>`<button class="chip ${st.zeit===k?'on':''}" onclick="S.st.zeit='${k}';S.st.vSel=null;rerender()">${l}</button>`).join('')}</div>`;
+ if(!N)return h+`<div class="card muted">Für diesen Zeitraum gibt es noch keine Abende.</div>`;
+ const minA=Math.max(1,Math.ceil(N/3)),reg=list.filter(x=>x.abende>=minA);
+ const top=(k,dir=1,pool=list,avg=false)=>pool.filter(x=>metricVal(x,k,avg?'avg':'sum')!=null).sort((a,b)=>dir*(metricVal(b,k,avg?'avg':'sum')-metricVal(a,k,avg?'avg':'sum')))[0];
+ const tile=(ic,k,x,val,sub)=>x?`<div class="tile"><div class="k">${ic} ${k}</div><div class="v">${esc(nameOf(x.pid))}</div><div class="s">${val}${sub?' · '+sub:''}</div></div>`:'';
+ const pk=top('pudel',-1,reg,true),pt=top('pudel',1,reg,true),gl=top('glocke'),nn=top('neun'),kr=top('kranz'),fg=top('figur'),tr=top('abende'),sp=list.filter(x=>x.strafeN>=minA).sort((a,b)=>a.strafe/a.strafeN-b.strafe/b.strafeN)[0];
+ h+=`<div class="muted small" style="margin:0 4px 8px">${N} ${N===1?'Abend':'Abende'}${st.zeit==='letzter'?' · '+fmtD(ab[0].datum):''}</div><div class="tiles">
+ ${tile('👑','Pudelkönig',pk,fmtN(metricVal(pk,'pudel','avg'))+' Pudel/Abend','am wenigsten')}${tile('🐩','Pudeltrottel',pt,fmtN(metricVal(pt,'pudel','avg'))+' Pudel/Abend','am meisten')}
+ ${tile('🔔','Glöckner',gl,gl?.glocke+' Glöckchen')}${tile('9️⃣','Alle-Neune-König',nn,nn?.neun+'× Alle Neune')}
+ ${tile('🎯','Kranzkönig',kr,kr?.kranz+' Kränze')}${fg?.figur?tile('🗿','Figur vergessen',fg,fg.figur+'×'):''}
+ ${st.zeit!=='letzter'?tile('📅','Treueste Seele',tr,tr?.abende+' von '+N+' Abenden'):''}${sp?tile('💸','Sparfuchs',sp,eur(sp.strafe/sp.strafeN)+' Ø Strafe'):''}</div>
+ ${st.zeit!=='letzter'?`<p class="muted small" style="margin:6px 4px 0">Pudelkönig/-trottel zählt ab ${minA} ${minA===1?'Abend':'Abenden'} Teilnahme, wie in der Excel nach Pudel pro Abend.</p>`:''}`;
+ // Rangliste
+ const mk=KEYS.find(k=>k[0]===st.metrik)||KEYS[0],modus=st.metrik==='abende'?'sum':st.modus;
+ const rows=list.map(x=>({pid:x.pid,v:metricVal(x,st.metrik,modus),n:x.abende})).filter(r=>r.v!=null&&(r.v>0||st.metrik==='strafe')).sort((a,b)=>b.v-a.v);
+ const fmt=v=>st.metrik==='strafe'?eur(v):modus==='avg'?fmtN(v,2):fmtN(v,0);
+ h+=`<div class="sec">Rangliste</div><div class="card"><div class="chips">${KEYS.map(([k,l,i])=>`<button class="chip ${st.metrik===k?'on':''}" onclick="S.st.metrik='${k}';rerender()">${i} ${l}</button>`).join('')}</div>
+ ${st.metrik!=='abende'?`<div class="chips" style="margin:8px 0 6px">${[['avg','Ø pro Abend'],['sum','Summe']].map(([k,l])=>`<button class="chip ${st.modus===k?'on':''}" onclick="S.st.modus='${k}';rerender()">${l}</button>`).join('')}</div>`:'<div style="height:8px"></div>'}
+ ${rows.length?bars(rows,fmt,S.me):'<p class="muted">Keine Daten für diese Auswahl.</p>'}
+ ${st.metrik==='strafe'?'<p class="muted small">Strafbeträge gibt es erst ab 2026 – inklusive der höchsten Strafe für Abwesende.</p>':''}</div>`;
+ // Verlauf
+ if(ab.length>1){const pts=ab.map(a=>{const n=Object.keys(a.spieler).length,p=Object.values(a.spieler).reduce((s,v)=>s+(+v.pudel||0),0);return{d:a.datum,n,p,v:n?p/n:0}});
+  const mx=Math.max(...pts.map(p=>p.v)),sel=pts.find(p=>p.d===st.vSel)||pts[pts.length-1];
+  h+=`<div class="sec">Verlauf · Ø Pudel pro Spieler</div><div class="card"><div class="small" style="margin-bottom:6px"><b>${fmtD(sel.d)}</b>: ${fmtN(sel.v)} Pudel/Spieler · ${sel.n} Spieler · ${sel.p} Pudel gesamt</div>
+  <div class="cols">${pts.map(p=>`<button class="${p.d===sel.d?'on':''}" title="${fmtD(p.d)}: ${fmtN(p.v)}" onclick="S.st.vSel='${p.d}';rerender()"><i style="height:${p.v/mx*100}%"></i></button>`).join('')}</div>
+  <div class="axis"><span>${fmtD(pts[0].d,{month:'2-digit',year:'2-digit'})}</span><span>${fmtD(pts[pts.length-1].d,{month:'2-digit',year:'2-digit'})}</span></div><p class="muted small" style="margin-bottom:0">Tippe auf einen Balken für Details.</p></div>`}
+ // Rekorde
+ const rec=(k,l)=>{let b=null;for(const a of ab)for(const[pid,v]of Object.entries(a.spieler))if((+v[k]||0)>(b?.w||0))b={w:+v[k],pid,d:a.datum};return b?`<tr><td>${l}</td><td><b>${b.w}</b> · ${esc(nameOf(b.pid))}</td><td class="muted small">${fmtD(b.d,{day:'2-digit',month:'2-digit',year:'2-digit'})}</td></tr>`:''};
+ const club=(k,l)=>{let b=null;for(const a of ab){const s=Object.values(a.spieler).reduce((x,v)=>x+(+v[k]||0),0);if(s>(b?.w||0))b={w:s,d:a.datum}}return b?`<tr><td>${l}</td><td><b>${b.w}</b></td><td class="muted small">${fmtD(b.d,{day:'2-digit',month:'2-digit',year:'2-digit'})}</td></tr>`:''};
+ h+=`<div class="sec">Rekorde${st.zeit==='alle'?'':' im Zeitraum'}</div><div class="card"><table><tr><th>Ein Spieler an einem Abend</th><th></th><th></th></tr>${rec('pudel','Meiste Pudel')}${rec('glocke','Meiste Glöckchen')}${rec('neun','Meiste Alle Neune')}${rec('kranz','Meiste Kränze')}
+ <tr><th>Alle zusammen an einem Abend</th><th></th><th></th></tr>${club('pudel','Pudel')}${club('neun','Alle Neune')}${club('kranz','Kränze')}</table>`;
+ const R=S.hist.rekorde;if(R)h+=`<details style="margin-top:12px"><summary>Allzeit-Rekorde laut Excel</summary><table style="margin-top:6px"><tr><th>Abend-Höchstwerte</th><th>Wert</th><th>am</th></tr>
+  ${[['spieler','Anzahl Spieler'],['pudel','Pudel'],['glocke','Glöckchen'],['neun','Alle Neune'],['kranz','Kränze'],['summe','Strafen gesamt'],['summeSpieler','Strafe eines Spielers']].map(([k,l])=>R.hoch[k]?.wert!=null?`<tr><td>${l}</td><td>${k.startsWith('summe')?eur(R.hoch[k].wert):R.hoch[k].wert}</td><td class="small">${R.hoch[k].datum?fmtD(R.hoch[k].datum,{day:'2-digit',month:'2-digit',year:'2-digit'}):''}</td></tr>`:'').join('')}
+  <tr><th>Abend-Tiefstwerte</th><th></th><th></th></tr>${[['spieler','Anzahl Spieler'],['pudel','Pudel'],['summe','Strafen gesamt']].map(([k,l])=>R.tief[k]?.wert!=null?`<tr><td>${l}</td><td>${k.startsWith('summe')?eur(R.tief[k].wert):R.tief[k].wert}</td><td class="small">${R.tief[k].datum?fmtD(R.tief[k].datum,{day:'2-digit',month:'2-digit',year:'2-digit'}):''}</td></tr>`:'').join('')}</table></details>`;
+ h+=`</div>`;
+ // Spielerprofil
+ const pid=st.spieler&&ag[st.spieler]?st.spieler:(ag[S.me]?S.me:list[0]?.pid),x=ag[pid];
+ if(x){const pkW=(S.hist.pokale||[]).flatMap(p=>[['pudelkoenig','Pudelkönig'],['pudeltrottel','Pudeltrottel'],['glocke','Glöckchen'],['neun','Alle Neune'],['kranz','Kranz'],['platz1','1. Platz'],['platz2','2. Platz'],['platz3','3. Platz']].filter(([k])=>p[k]===pid).map(([,l])=>`${l} ${p.jahr}`));
+  h+=`<div class="sec">Spielerprofil</div><div class="card"><select onchange="S.st.spieler=this.value;rerender()">${list.sort((a,b)=>nameOf(a.pid).localeCompare(nameOf(b.pid),'de')).map(y=>`<option value="${y.pid}" ${y.pid===pid?'selected':''}>${esc(nameOf(y.pid))}</option>`).join('')}</select>
+  <div class="tiles" style="margin-top:10px">${[['📅','Abende',x.abende+' / '+N],['🐩','Pudel',fmtN(x.pudel,0)+' · Ø '+fmtN(x.pudel/x.abende)],['🔔','Glöckchen',fmtN(x.glocke,0)+' · Ø '+fmtN(x.glocke/x.abende,2)],['9️⃣','Alle Neune',fmtN(x.neun,0)+' · Ø '+fmtN(x.neun/x.abende,2)],['👑','Kränze',fmtN(x.kranz,0)+' · Ø '+fmtN(x.kranz/x.abende,2)],['💸','Ø Strafe',x.strafeN?eur(x.strafe/x.strafeN):'–']].map(([i,k,v])=>`<div class="tile"><div class="k">${i} ${k}</div><div class="v" style="font-size:16px">${v}</div></div>`).join('')}</div>
+  <div class="small" style="margin-top:10px">${x.best.pudel?`Bestwert Pudel: <b>${x.best.pudel.wert}</b> am ${fmtD(x.best.pudel.datum)}<br>`:''}${x.best.neun?`Meiste Alle Neune: <b>${x.best.neun.wert}</b> am ${fmtD(x.best.neun.datum)}<br>`:''}${x.best.kranz?`Meiste Kränze: <b>${x.best.kranz.wert}</b> am ${fmtD(x.best.kranz.datum)}`:''}</div>
+  ${pkW.length?`<div style="margin-top:10px">🏆 ${pkW.map(esc).join(' · ')}</div>`:''}</div>`}
+ // Ehrentafel
+ const pokale=[...(S.hist.pokale||[])],known=new Set(pokale.map(p=>p.jahr));
+ for(const y of [...new Set(all.map(a=>a.datum.slice(0,4)))].sort()){if(known.has(y)||y<'2023')continue;const ya=all.filter(a=>a.datum.startsWith(y)),g=Object.values(aggregate(ya)),mn=Math.max(1,Math.ceil(ya.length/3)),rg=g.filter(q=>q.abende>=mn);
+  const best=(k,dir,pool=g,avg)=>pool.filter(q=>metricVal(q,k,avg?'avg':'sum')!=null).sort((a,b)=>dir*(metricVal(b,k,avg?'avg':'sum')-metricVal(a,k,avg?'avg':'sum')))[0]?.pid;
+  const pl=g.filter(q=>q.strafeN&&M(q.pid)?.aktiv!==false).sort((a,b)=>a.strafe-b.strafe);
+  pokale.push({jahr:y+(y===todayISO().slice(0,4)?' (Zwischenstand)':''),pudelkoenig:best('pudel',-1,rg,true),pudeltrottel:best('pudel',1,rg,true),glocke:best('glocke',1),neun:best('neun',1),kranz:best('kranz',1),platz1:pl[0]?.pid,platz2:pl[1]?.pid,platz3:pl[2]?.pid})}
+ h+=`<div class="sec">Ehrentafel</div><div class="card" style="overflow-x:auto"><table><tr><th>Jahr</th><th>👑 Pudel­könig</th><th>🐩 Pudel­trottel</th><th>🔔</th><th>9️⃣</th><th>Kranz</th><th>🥇</th><th>🥈</th><th>🥉</th></tr>
+ ${pokale.reverse().map(p=>`<tr><td>${esc(p.jahr)}</td>${['pudelkoenig','pudeltrottel','glocke','neun','kranz','platz1','platz2','platz3'].map(k=>`<td>${p[k]?esc(nameOf(p[k])):'–'}</td>`).join('')}</tr>`).join('')}</table>
+ <p class="muted small">🥇🥈🥉 = wenigste Strafen im Jahr (Gesamtwertung). Pokale bis 2022 aus der Excel, ab 2026 automatisch berechnet.</p></div>`;
+ // Ewige Tabelle (Excel)
+ const L=S.hist.legacy;if(L){const rws=Object.entries(L.spieler).filter(([,v])=>v.termine).sort((a,b)=>(a[1].strafen||9e9)-(b[1].strafen||9e9));
+  h+=`<div class="card"><details><summary>📚 Ewige Tabelle aus der Excel</summary><p class="muted small">${esc(L.hinweis)} · ${L.termineGesamt} Termine, davon ${L.coronaAusfall} Corona-Ausfall</p><div style="overflow-x:auto"><table><tr><th>Name</th><th>Abende</th><th>Pudel</th><th>Ø</th><th>G</th><th>9</th><th>K</th><th>Wertung</th></tr>
+  ${rws.map(([id,v])=>`<tr><td>${esc(nameOf(id))}</td><td>${v.termine}</td><td>${v.pudel}</td><td>${fmtN(v.pudel/v.termine)}</td><td>${v.glocke}</td><td>${v.neun}</td><td>${v.kranz}</td><td>${v.strafen?eur(v.strafen):''}</td></tr>`).join('')}</table></div></details></div>`}
+ h+=`<p class="muted small" style="margin:4px">Einzelabende liegen aus der Excel für 2018, 2019 und 2026 vor; jeder in der App abgeschlossene Abend kommt automatisch dazu.</p>`;
  return h;
 }
-act.reload=async()=>{await loadAll();S.karte=null;S.abendFor=null;S.bestFor=null;toast('Aktualisiert ✓');render()};
-act.wechsel=()=>{localStorage.removeItem('kt_me');S.me=null;boot()};
-act.abmelden=()=>{if(!confirm('Abmelden? Der Zugang wird auf diesem Gerät gelöscht.'))return;localStorage.removeItem('kt_cfg');localStorage.removeItem('kt_me');location.hash='';location.reload()};
-const saveVerein=(fn,msg)=>save('verein.json',d=>{fn(d);return d},msg).then(d=>{S.verein=d;render()});
+
+/* ---------------- MEHR ---------------- */
+function vMehr(){
+ const subs={statistik:['📊','Statistiken',vStatistik],strafen:['📜','Strafenkatalog & Regeln',vStrafen],verwaltung:['⚙️','Verwaltung',vVerwaltung],profil:['👤','Profil & Verbindung',vProfil]};
+ if(S.sub&&subs[S.sub]){afterHooks.push(()=>{const t=$('#htitle');if(t)t.textContent=subs[S.sub][1]});
+  return`<button class="btn s" style="margin-bottom:12px" onclick="S.sub=null;render();scrollTo(0,0)">‹ Zurück</button>`+subs[S.sub][2]()}
+ afterHooks.push(()=>{const t=$('#htitle');if(t)t.textContent='Schwelmer Kegeltreff'});
+ return`<div class="card"><ul class="l menu">${Object.entries(subs).filter(([k])=>k!=='verwaltung'||isAdmin()).map(([k,[i,l]])=>`<li onclick="S.sub='${k}';render();scrollTo(0,0)"><span class="ic">${i}</span><div class="g"><b>${l}</b></div><span class="muted">›</span></li>`).join('')}</ul></div>
+ <p class="muted small" style="text-align:center">App ${APP_VERSION}</p>`;
+}
+function vProfil(){const m=M(S.me);
+ return`<div class="card"><div class="row"><div class="av">${ini(m?.spitzname)}</div><div class="f"><b>${esc(m?.vorname||'')} ${esc(m?.nachname||'')}</b><div class="muted small">„${esc(m?.spitzname||'')}“ ${(m?.rollen||[]).map(r=>`<span class="pill y">${r}</span>`).join(' ')}</div></div></div>
+ <p class="muted small">${Store.isDemo()?'Demo-Modus – Daten nur in diesem Browser.':'Verbunden mit '+OWNER+' / '+REPO+'.'}</p>
+ <div class="row wrap"><button class="btn f" onclick="act.wechsel()">Person wechseln</button><button class="btn f" onclick="act.abmelden()">Abmelden</button></div></div>
+ <div class="card"><h3>Als App installieren</h3><p class="small" style="margin:0"><b>iPhone:</b> Safari → Teilen → „Zum Home-Bildschirm“<br><b>Android:</b> Chrome → ⋮ → „App installieren“</p></div>`}
+function vStrafen(){return`<div class="card"><table>${strafen().map((s,i)=>`<tr><td>${esc(s.name)}${s.art==='andere'?'<div class="muted small">zahlen alle anderen</div>':''}${s.schnapsJedesMal?`<div class="muted small">jedes ${s.schnapsJedesMal}. Mal zusätzlich eine Runde Schnaps</div>`:''}</td><td style="width:100px">${isAdmin()?`<input inputmode="decimal" value="${String(s.betrag).replace('.',',')}" onchange="act.strafe(${i},this.value)">`:eur(s.betrag)}</td></tr>`).join('')}
+ <tr><td>Platzierung Einzelspiel (2. bis Letzter)</td><td>0,10 € je Platz</td></tr><tr><td>Mehr als 200 € Rückstand</td><td>Kostüm 🎭</td></tr></table></div>
+ <div class="card"><h3>Beiträge (Satzung § 3)</h3><table><tr><td>Woche ohne Termin</td><td>${eur(S.verein.wochenbeitrag??5)}</td></tr><tr><td>Termin ausgefallen</td><td>${eur(S.verein.pauschaleAusfall??15)}</td></tr><tr><td>Abwesend beim Termin</td><td>höchste Strafe des Abends</td></tr><tr><td>Anwesend</td><td>Strafen + gleicher Anteil an Getränken und Trinkgeld, Essen je Person</td></tr><tr><td>Gäste</td><td>wie Anwesende, keine Wochenbeiträge</td></tr></table></div>`}
+function vVerwaltung(){if(!isAdmin())return'<div class="card">Nur für Admins.</div>';
+ return`<div class="card"><details open><summary>📅 Termine</summary><div class="row" style="margin-top:6px"><div class="f"><label>Datum</label><input id="t-d" type="date"></div><div class="f"><label>Uhrzeit</label><input id="t-u" type="time" value="18:00"></div></div>
+ <label>Bemerkung</label><input id="t-b"><div class="row wrap" style="margin-top:12px"><button class="btn p f" onclick="act.terminNeu()">+ Termin</button><button class="btn f" onclick="act.serie()">+ 5 im 5-Wochen-Takt</button></div>
+ <ul class="l" style="margin-top:8px">${termineSorted().filter(t=>t.datum>=addDays(todayISO(),-60)).map(t=>`<li><div class="g">${fmtD(t.datum)} <div class="muted small">${t.status}${t.bemerkung?' · '+esc(t.bemerkung):''}</div></div>
+  ${t.status==='geplant'?`<button class="btn s" onclick="act.ausfall('${t.id}')">Ausfall</button>`:t.status==='ausgefallen'?`<button class="btn s" onclick="act.tStatus('${t.id}','geplant')">reaktivieren</button>`:''}${t.status!=='abgeschlossen'?`<button class="x" onclick="act.tLoeschen('${t.id}')">✕</button>`:''}</li>`).join('')}</ul></details></div>
+ <div class="card"><details><summary>👥 Mitglieder</summary><ul class="l" style="margin-top:6px">${[...S.verein.mitglieder].sort((a,b)=>a.spitzname.localeCompare(b.spitzname,'de')).map(m=>`<li style="cursor:pointer" onclick="act.mEdit('${m.id}')"><div class="av s">${ini(m.spitzname)}</div><div class="g"><b>${esc(m.spitzname)}</b> <span class="small muted">${esc(m.vorname)} ${esc(m.nachname)}</span> ${m.aktiv?'':'<span class="pill nein">inaktiv</span>'} ${(m.rollen||[]).map(r=>`<span class="pill y">${r}</span>`).join(' ')}</div><span class="muted">✎</span></li>`).join('')}</ul>
+ <button class="btn" style="margin-top:8px" onclick="act.mEdit()">+ Mitglied</button></details></div>
+ <div class="card"><details><summary>🍽️ Speisekarte pflegen</summary><p class="muted small">Eine Zeile pro Gericht: <code>Nr;Gericht;Preis;Kategorie;Beschreibung</code>. Ersetzt die komplette Karte.</p>
+ <textarea id="k-csv" rows="8" placeholder="60;Gyros;14,90;Grill;Pommes, Reis, Salat"></textarea><div class="row" style="margin-top:8px"><button class="btn f" onclick="act.karteExport()">Aktuelle Karte laden</button><button class="btn p f" onclick="act.karteImport()">Speichern</button></div></details></div>
+ ${Store.isDemo()?'':`<div class="card"><h3>🔗 Einladungslink</h3><p class="muted small">Enthält den Zugangsschlüssel – nur privat in der WhatsApp-Gruppe teilen. Wer ihn öffnet, ist sofort verbunden.</p><button class="btn p w" onclick="act.invite()">Link erzeugen & kopieren</button></div>`}`}
+act.reload=async()=>{setSync('⏳');try{await loadAll();S.karte=null;S.hist=null;S.abendFor=null;S.bestFor=null;setSync('');toast('Aktualisiert ✓');rerender()}catch(e){setSync('⚠');toast('⚠ '+e.message,5000)}};
+act.wechsel=()=>{lsDel('kt_me');S.me=null;boot()};
+act.abmelden=()=>ask('Abmelden? Der Zugang wird auf diesem Gerät gelöscht.','Abmelden',()=>{lsDel('kt_cfg');lsDel('kt_me');location.hash='';location.reload()},true);
+const saveVerein=(fn,msg)=>save('verein.json',d=>{fn(d);return d},msg).then(d=>{S.verein=d;rerender()});
 act.strafe=(i,v)=>saveVerein(d=>{d.strafen=d.strafen||clone(DEFAULT_STRAFEN);d.strafen[i].betrag=r2(num(v))},'Strafsatz geändert');
-const saveTermine=(fn,msg)=>save('termine.json',d=>{fn(d);return d},msg).then(d=>{S.termine=d;render()});
+const saveTermine=(fn,msg)=>save('termine.json',d=>{fn(d);return d},msg).then(d=>{S.termine=d;rerender()});
 const neuT=(datum,uhrzeit,bem)=>({id:datum,datum,uhrzeit:uhrzeit||'18:00',status:'geplant',bemerkung:bem||'',inStartSaldo:false,zusagen:{}});
 act.terminNeu=()=>{const d=$('#t-d').value;if(!d)return toast('Datum fehlt');if(T(d))return toast('Termin existiert schon');saveTermine(x=>x.termine.push(neuT(d,$('#t-u').value,$('#t-b').value)),'Termin '+d+' angelegt')};
 act.serie=()=>{const last=termineSorted().pop();let d=last?last.datum:todayISO();const neu=[];for(let i=0;i<5;i++){d=addDays(d,7*(S.verein.rhythmusWochen||5));neu.push(d)}
- if(!confirm('Anlegen: '+neu.map(x=>fmtD(x)).join(', ')+'?'))return;saveTermine(x=>neu.forEach(n=>x.termine.find(t=>t.id===n)||x.termine.push(neuT(n))),'Terminserie angelegt')};
-act.ausfall=id=>{const g=prompt('Grund für den Ausfall (alle zahlen die Pauschale)?','Samos geschlossen');if(g===null)return;saveTermine(x=>{const t=x.termine.find(t=>t.id===id);t.status='ausgefallen';t.bemerkung=g},'Termin '+id+' ausgefallen')};
+ ask('Anlegen: '+neu.map(x=>fmtD(x,{day:'2-digit',month:'2-digit',year:'2-digit'})).join(', ')+'?','Anlegen',()=>saveTermine(x=>neu.forEach(n=>x.termine.find(t=>t.id===n)||x.termine.push(neuT(n))),'Terminserie angelegt'))};
+act.ausfall=id=>sheet(`<h3>Termin ${fmtD(id)} fällt aus</h3><p class="muted small">Alle Mitglieder zahlen die Pauschale von ${eur(S.verein.pauschaleAusfall??15)}.</p><label>Grund</label><input id="af-g" value="Samos geschlossen"><div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn d f" onclick="const g=$('#af-g').value;closeSheet();saveTermine(x=>{const t=x.termine.find(t=>t.id==='${id}');t.status='ausgefallen';t.bemerkung=g},'Termin ${id} ausgefallen')">Ausfallen lassen</button></div>`);
 act.tStatus=(id,s)=>saveTermine(x=>{x.termine.find(t=>t.id===id).status=s},'Termin '+id+' '+s);
-act.tLoeschen=id=>{if(confirm('Termin '+fmtD(id)+' löschen?'))saveTermine(x=>{x.termine=x.termine.filter(t=>t.id!==id)},'Termin '+id+' gelöscht')};
-act.mEdit=id=>{const m=M(id),sp=prompt('Spitzname',m.spitzname);if(sp===null)return;const vn=prompt('Vorname',m.vorname);if(vn===null)return;const nn=prompt('Nachname',m.nachname);if(nn===null)return;
- const ro=prompt('Rollen (admin, kassenwart – kommagetrennt, leer = Mitglied)',(m.rollen||[]).join(', '));if(ro===null)return;const ak=confirm('Mitglied aktiv? (OK = aktiv, Abbrechen = ausgetreten)');
- saveVerein(d=>{Object.assign(d.mitglieder.find(x=>x.id===id),{spitzname:sp.trim(),vorname:vn.trim(),nachname:nn.trim(),rollen:ro.split(',').map(s=>s.trim()).filter(Boolean),aktiv:ak})},'Mitglied '+sp+' geändert')};
-act.mNeu=()=>{const sp=prompt('Spitzname des neuen Mitglieds');if(!sp)return;const vn=prompt('Vorname')||'',nn=prompt('Nachname')||'',ein=prompt('Eintrittsdatum (JJJJ-MM-TT)',todayISO())||todayISO();
- const id=sp.toLowerCase().replace(/ß/g,'ss').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/[^a-z0-9]+/g,'-');if(M(id))return toast('ID existiert schon');
- saveVerein(d=>d.mitglieder.push({id,spitzname:sp,vorname:vn,nachname:nn,nr:Math.max(0,...d.mitglieder.map(m=>m.nr||0))+1,eintritt:ein,aktiv:true,rollen:[],startSaldo:0,figurVergessenGesamt:0,schnapsrundenBezahlt:0}),'Mitglied '+sp+' aufgenommen')};
+act.tLoeschen=id=>ask('Termin '+fmtD(id)+' löschen?','Löschen',()=>saveTermine(x=>{x.termine=x.termine.filter(t=>t.id!==id)},'Termin '+id+' gelöscht'),true);
+act.mEdit=id=>{const m=id?M(id):{spitzname:'',vorname:'',nachname:'',rollen:[],aktiv:true,eintritt:todayISO()};
+ sheet(`<h3>${id?'Mitglied bearbeiten':'Neues Mitglied'}</h3><label>Spitzname</label><input id="m-sp" value="${esc(m.spitzname)}"><div class="row"><div class="f"><label>Vorname</label><input id="m-vn" value="${esc(m.vorname)}"></div><div class="f"><label>Nachname</label><input id="m-nn" value="${esc(m.nachname)}"></div></div>
+ <label>Eintritt</label><input id="m-ein" type="date" value="${esc(m.eintritt||'')}">
+ <label>Rollen</label><div class="chips wrap">${['admin','kassenwart'].map(r=>`<label class="chip" style="margin:0"><input type="checkbox" class="m-r" value="${r}" ${(m.rollen||[]).includes(r)?'checked':''} style="width:auto;min-height:0;margin-right:6px">${r}</label>`).join('')}</div>
+ <label class="row" style="margin-top:12px"><input type="checkbox" id="m-ak" ${m.aktiv?'checked':''} style="width:auto;min-height:0"> aktives Mitglied</label>
+ <div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn p f" onclick="act.mSave('${id||''}')">Speichern</button></div>`)};
+act.mSave=id=>{const v={spitzname:$('#m-sp').value.trim(),vorname:$('#m-vn').value.trim(),nachname:$('#m-nn').value.trim(),eintritt:$('#m-ein').value,rollen:[...document.querySelectorAll('.m-r:checked')].map(c=>c.value),aktiv:$('#m-ak').checked};
+ if(!v.spitzname)return toast('Spitzname fehlt');closeSheet();
+ if(id)return saveVerein(d=>Object.assign(d.mitglieder.find(x=>x.id===id),v),'Mitglied '+v.spitzname+' geändert');
+ const nid=v.spitzname.toLowerCase().replace(/ß/g,'ss').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/[^a-z0-9]+/g,'-');if(M(nid))return toast('Spitzname existiert schon');
+ saveVerein(d=>d.mitglieder.push({id:nid,...v,nr:Math.max(0,...d.mitglieder.map(m=>m.nr||0))+1,startSaldo:0,figurVergessenGesamt:0,schnapsrundenBezahlt:0}),'Mitglied '+v.spitzname+' aufgenommen')};
 act.karteExport=async()=>{await loadKarte(true);$('#k-csv').value=S.karte.gerichte.map(g=>[g.nr,g.name,g.preis!=null?String(g.preis).replace('.',','):'',g.kategorie,g.beschreibung].join(';')).join('\n')};
-act.karteImport=async()=>{const lines=$('#k-csv').value.split('\n').map(l=>l.trim()).filter(Boolean);if(!lines.length)return toast('Keine Zeilen');
+act.karteImport=()=>{const lines=$('#k-csv').value.split('\n').map(l=>l.trim()).filter(Boolean);if(!lines.length)return toast('Keine Zeilen');
  const gerichte=lines.map(l=>{const [nr,name,preis,kategorie,beschreibung]=l.split(';').map(s=>(s||'').trim());return{nr,name,preis:preis?r2(num(preis)):null,kategorie:kategorie||'Sonstiges',beschreibung:beschreibung||''}}).filter(g=>g.name);
- if(!confirm(gerichte.length+' Gerichte speichern und die Karte ersetzen?'))return;
- S.karte=await save('speisekarte.json',()=>({stand:'Gepflegt am '+fmtD(todayISO())+' von '+meName(),gerichte}),'Speisekarte aktualisiert');toast('Karte gespeichert ✓')};
-act.invite=async()=>{const c=Store.cfg,l=location.origin+location.pathname+'#s='+btoa(JSON.stringify({o:c.owner,r:c.repo,t:c.token,b:c.branch||'main'}));
- try{await navigator.clipboard.writeText(l);toast('Link kopiert ✓')}catch(_){prompt('Link kopieren:',l)}};
+ ask(gerichte.length+' Gerichte speichern und die Karte ersetzen?','Speichern',async()=>{S.karte=await save('speisekarte.json',()=>({stand:'Gepflegt am '+fmtD(todayISO())+' von '+meName(),gerichte}),'Speisekarte aktualisiert');toast('Karte gespeichert ✓')})};
+act.invite=async()=>{const l=location.origin+location.pathname+'#k='+encodeURIComponent(Store.cfg.token);
+ try{await navigator.clipboard.writeText(l);toast('Link kopiert ✓')}catch(_){sheet(`<h3>Link kopieren</h3><textarea rows="4" onclick="this.select()">${esc(l)}</textarea><button class="btn w" style="margin-top:10px" onclick="closeSheet()">Fertig</button>`)}};
 
 /* ---------------- Einrichtung ---------------- */
 function vSetup(err){$('#app').innerHTML=`<div class="setup"><img src="logo.png" alt="Schwelmer Kegeltreff">
- <div class="card"><h3>Mit den Vereinsdaten verbinden</h3><p class="muted small">Die Zugangsdaten bekommst du vom Admin (am einfachsten als Einladungslink).</p>
+ <div class="card"><h3>Willkommen beim Kegeltreff</h3><p class="muted small" style="margin-top:0">Am einfachsten öffnest du den Einladungslink aus der WhatsApp-Gruppe. Alternativ hier den Zugangsschlüssel einfügen:</p>
  ${err?`<div class="banner rot">${esc(err)}</div>`:''}
- <label>GitHub-Organisation / Konto</label><input id="s-o" value="schwelmer-kegeltreff" autocapitalize="off">
- <label>Daten-Repository</label><input id="s-r" value="kegeltreff-daten" autocapitalize="off">
- <label>Zugangsschlüssel (Token)</label><input id="s-t" type="password" autocapitalize="off" placeholder="github_pat_…">
- <button class="btn-p" style="width:100%;margin-top:12px" onclick="act.connect()">Verbinden</button></div>
- <button onclick="act.demo()">Erst mal ohne Daten ausprobieren (Demo)</button></div>`}
-act.connect=async()=>{Store.cfg={mode:'github',owner:$('#s-o').value.trim(),repo:$('#s-r').value.trim(),token:$('#s-t').value.trim(),branch:'main'};
- try{await loadAll();localStorage.setItem('kt_cfg',JSON.stringify(Store.cfg));boot()}catch(e){Store.cfg=null;vSetup(e.message)}};
-act.demo=()=>{Store.cfg={mode:'demo'};localStorage.setItem('kt_cfg',JSON.stringify(Store.cfg));demoSeed();localStorage.setItem('kt_me','anton');S.me='anton';boot()};
-function vWer(){$('#app').innerHTML=`<div class="setup"><img src="logo.png" alt=""><div class="card"><h3>Wer bist du?</h3><ul class="l">${aktive().map(m=>`<li style="cursor:pointer" onclick="act.ich('${m.id}')"><div class="g"><b>${esc(m.spitzname)}</b> <span class="muted small">${esc(m.vorname)} ${esc(m.nachname)}</span></div><span>›</span></li>`).join('')}</ul></div></div>`}
-act.ich=id=>{S.me=id;localStorage.setItem('kt_me',id);boot()};
-function demoSeed(){if(localStorage.getItem('kt_demo:verein.json'))return;
+ <label>Zugangsschlüssel</label><input id="s-t" type="password" autocapitalize="off" autocomplete="off" placeholder="github_pat_…">
+ <button class="btn p w" style="margin-top:12px" onclick="act.connect($('#s-t').value)">Verbinden</button></div>
+ <button class="btn" onclick="act.demo()">Erst mal ohne Daten ausprobieren (Demo)</button></div>`}
+act.connect=async tok=>{Store.cfg={mode:'github',token:(tok||'').trim()};if(!Store.cfg.token)return vSetup('Bitte Zugangsschlüssel einfügen');
+ $('#app').innerHTML='<div class="setup"><img src="logo.png" alt=""><p class="muted">Verbinde…</p></div>';
+ try{await loadAll();lsSet('kt_cfg',JSON.stringify(Store.cfg));boot()}catch(e){Store.cfg=null;vSetup(e.message)}};
+act.demo=()=>{Store.cfg={mode:'demo'};lsSet('kt_cfg',JSON.stringify(Store.cfg));demoSeed();lsSet('kt_me','anton');S.me='anton';boot()};
+function vWer(){$('#app').innerHTML=`<div class="setup"><img src="logo.png" alt=""><div class="card"><h3>Wer bist du?</h3><ul class="l">${aktive().map(m=>`<li style="cursor:pointer" onclick="act.ich('${m.id}')"><div class="av s">${ini(m.spitzname)}</div><div class="g"><b>${esc(m.spitzname)}</b> <span class="muted small">${esc(m.vorname)} ${esc(m.nachname)}</span></div><span class="muted">›</span></li>`).join('')}</ul></div></div>`}
+act.ich=id=>{S.me=id;lsSet('kt_me',id);boot()};
+function demoSeed(){if(lsGet('kt_demo:verein.json'))return;
  const n=['Anton','Bernd','Carsten','Dirk','Erik','Frank','Gregor','Holger','Jens','Kai'],sal=[-120,35.5,210.4,-60,0,88.2,-15,140,-33.3,12];
  const h=todayISO();let sat=h;while(new Date(sat+'T12:00:00Z').getUTCDay()!==6)sat=addDays(sat,1);
  const v={name:'Schwelmer Kegeltreff (Demo)',ort:'Restaurant Samos, Wuppertal-Langerfeld',rhythmusWochen:5,wochenbeitrag:5,pauschaleAusfall:15,startSaldoStichtag:addDays(sat,-36),strafen:clone(DEFAULT_STRAFEN),
   mitglieder:n.map((x,i)=>({id:x.toLowerCase(),spitzname:x,vorname:x,nachname:'Mustermann',nr:i+1,eintritt:'2016-12-10',aktiv:true,rollen:i===0?['admin','kassenwart']:[],startSaldo:sal[i],figurVergessenGesamt:i%4,schnapsrundenBezahlt:0}))};
- const zs={};n.slice(0,6).forEach((x,i)=>zs[x.toLowerCase()]={status:i<4?'ja':'vl',anreise:['selbst','mitfahrt','oepnv','selbst','taxi','fuss'][i],plaetze:i===0?3:i===3?2:0,mitBei:i===1?'anton':'',gaeste:i===2?1:0,bemerkung:''});
+ const zs={};n.slice(0,6).forEach((x,i)=>zs[x.toLowerCase()]={status:i<4?'ja':'vl',anreise:['selbst','mitfahrt','oepnv','selbst','taxi','fuss'][i],plaetze:i===0?3:i===3?2:0,mitBei:i===1?'anton':'',bemerkung:''});
  const t={termine:[{...neuT(addDays(sat,-35)),status:'abgeschlossen',inStartSaldo:true},{...neuT(sat),zusagen:zs},neuT(addDays(sat,35)),neuT(addDays(sat,70))]};
- const k={stand:'Demo-Karte',gerichte:[['10','Tzatziki',5.5,'Vorspeisen','mit Brot'],['12','Saganaki',8.9,'Vorspeisen','gebratener Käse'],['30','Griechischer Bauernsalat',12.5,'Salate','Feta, Oliven'],['51','Gyros',14.9,'Grill','Pommes, Tzatziki, Salat'],['52','Suvlaki',15.5,'Grill','2 Spieße'],['55','Bifteki',16.9,'Grill','mit Schafskäse gefüllt'],['60','Olympia-Teller',18.5,'Grillplatten','Gyros, Steak'],['63','Dorf-Platte',19.9,'Grillplatten','Suvlaki, Gyros, Bifteki'],['80','Jägerschnitzel',15.9,'International','Pommes, Salat'],['90','Musaka',15.5,'Lamm & Aufläufe','mit Béchamel']].map(([nr,name,preis,kategorie,beschreibung])=>({nr,name,preis,kategorie,beschreibung}))};
- localStorage.setItem('kt_demo:verein.json',JSON.stringify(v));localStorage.setItem('kt_demo:termine.json',JSON.stringify(t));localStorage.setItem('kt_demo:kasse.json',JSON.stringify({buchungen:[]}));localStorage.setItem('kt_demo:speisekarte.json',JSON.stringify(k))}
+ const k={stand:'Demo-Karte',gerichte:[['4','Tzatziki',5.5,'Kalte Vorspeisen',''],['32','Saganaki',8.9,'Käse','gebratener Käse'],['36','Griechischer Bauernsalat',12.5,'Salate',''],['60','Gyros',14.9,'Grill-Spezialitäten','Pommes, Reis, Salat'],['63','Suvlaki',15.5,'Grill-Spezialitäten',''],['65','Bifteki',16.9,'Grill-Spezialitäten','mit Schafskäse'],['71','Olympia-Teller',18.5,'Grillplatten','Gyros, Steak'],['76','Dorf-Platte',19.9,'Grillplatten','Suvlaki, Gyros, Bifteki'],['151','Jägerschnitzel',15.9,'Internationale Gerichte',''],['176','Musaka',15.5,'Lamm aus dem Backofen','']].map(([nr,name,preis,kategorie,beschreibung])=>({nr,name,preis,kategorie,beschreibung}))};
+ const rnd=s=>{let x=s;return()=>(x=(x*9301+49297)%233280)/233280};const R=rnd(7);
+ const hist={abende:[0,1,2,3,4,5].map(i=>({datum:addDays(sat,-35*(i+2)),quelle:'excel',spieler:Object.fromEntries(n.filter(()=>R()>.25).map(x=>[x.toLowerCase(),{pudel:Math.round(R()*16),glocke:Math.round(R()*2),neun:Math.round(R()*2),kranz:Math.round(R()*1.4),spiele:r2(R()*8),figur:R()>.9?1:0}]))})),pokale:[],rekorde:null,legacy:null,namen:{}};
+ lsSet('kt_demo:verein.json',JSON.stringify(v));lsSet('kt_demo:termine.json',JSON.stringify(t));lsSet('kt_demo:kasse.json',JSON.stringify({buchungen:[]}));lsSet('kt_demo:speisekarte.json',JSON.stringify(k));lsSet('kt_demo:historie.json',JSON.stringify(hist))}
 
 async function boot(){
- // Einladungslink #s=…
- const m=location.hash.match(/#s=([^&]+)/);
- if(m){try{const j=JSON.parse(atob(decodeURIComponent(m[1])));Store.cfg={mode:'github',owner:j.o,repo:j.r,token:j.t,branch:j.b||'main'};localStorage.setItem('kt_cfg',JSON.stringify(Store.cfg))}catch(_){}
-  history.replaceState(null,'',location.pathname)}
+ const h=location.hash;
+ let m=h.match(/#k=([^&]+)/);if(m){Store.cfg={mode:'github',token:decodeURIComponent(m[1])};lsSet('kt_cfg',JSON.stringify(Store.cfg));history.replaceState(null,'',location.pathname)}
+ m=h.match(/#s=([^&]+)/);if(m){try{const j=JSON.parse(atob(decodeURIComponent(m[1])));Store.cfg={mode:'github',token:j.t};lsSet('kt_cfg',JSON.stringify(Store.cfg))}catch(_){}history.replaceState(null,'',location.pathname)}
  if(!Store.cfg)return vSetup();
  $('#app').innerHTML='<div class="setup"><img src="logo.png" alt=""><p class="muted">Lade Vereinsdaten…</p></div>';
- try{await loadAll()}catch(e){if(Store.isDemo()){localStorage.clear();return vSetup()}return vSetup(e.message)}
+ try{await loadAll()}catch(e){if(Store.isDemo()){try{localStorage.clear()}catch(_){}return vSetup()}return vSetup(e.message)}
  if(!S.me||!M(S.me))return vWer();
  shell();render();
 }
-window.addEventListener('beforeunload',e=>{if(saveTimer&&$('#sync')?.textContent.includes('ungespeichert')){speichereAbend();e.preventDefault()}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.verein&&Date.now()-S.loadedAt>60000&&!saveTimer&&!$('#sheet'))loadAll().then(rerender).catch(()=>{})});
+window.addEventListener('beforeunload',e=>{if(saveTimer){speichereAbend();e.preventDefault()}});
 boot();
 </script>
 </body>
