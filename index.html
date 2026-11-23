@@ -27,7 +27,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-u
 button{font:inherit;color:inherit}
 header{position:sticky;top:0;z-index:6;background:var(--dark);color:#fff;display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 16px 8px;min-height:var(--hdr)}
 header::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;background:var(--hbar)}
-header img{height:36px;background:var(--card);border-radius:8px;padding:2px}
+header img{height:42px;background:none;padding:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
 header .t{flex:1;min-width:0}header .t b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 header .t small{color:rgba(255,255,255,.72);font-size:12px}
 header .hb{background:none;border:0;color:#fff;font-size:20px;padding:6px;border-radius:10px}
@@ -132,7 +132,7 @@ details[open]>summary::after{transform:rotate(270deg)}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='0.8.0';
+const APP_VERSION='0.8.1';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
