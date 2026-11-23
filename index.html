@@ -14,7 +14,7 @@
 <style>
 :root{--gelb:#FFD400;--gelb2:#FFF3B0;--gelb3:#F2C500;--ink:#111827;--ink2:#374151;--muted:#5B6270;--linie:#E5E7EB;--linie2:#CBD0D8;--bg:#F3F4F6;--card:#fff;--input:#fff;--chip:#EEF0F3;--tapbg:#F1F3F6;--rot:#b3261e;--rotbg:#fdeceb;--gruen:#1e7b34;--gruenbg:#e6f4ea;--r:20px;--hdr:58px;
  --dark:#111827;--on-accent:#111827;--hbar:var(--gelb);--navbg:#fff;--navtext:#5B6270;--navtext-on:#111827;--navon:var(--gelb);--navon-ink:var(--on-accent);--barc:#4B5563;--avtext:var(--gelb);
- --hero-accent:var(--gelb);--hero-accent-ink:var(--on-accent);--hero-bg:var(--dark);--slogan:var(--gelb);--glow:transparent;--font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-d:var(--font);color-scheme:light}
+ --hero-accent:var(--gelb);--hero-accent-ink:var(--on-accent);--hero-bg:var(--dark);--slogan:var(--gelb);--glow:transparent;--slogan2:var(--ink);--font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-d:var(--font);color-scheme:light}
 /* ===== Stil: Vereinsheim (hell, ruhig) ===== */
 [data-stil=vereinsheim]{--font:'Plus Jakarta Sans',system-ui,sans-serif;--font-d:var(--font);--r:22px;--navon:var(--dark);--navon-ink:#fff;--navtext-on:var(--ink);--slogan:var(--ink)}
 /* ===== Stil: Flutlicht (dunkel, sportlich) ===== */
@@ -25,7 +25,8 @@
 [data-stil=anzeigetafel]{--bg:#ECECE7;--ink:#0A0A0A;--ink2:#2E2E2B;--muted:#4A4A45;--linie:#D4D4CC;--linie2:#9C9C94;--chip:#E2E2DA;--tapbg:#fff;--dark:#0A0A0A;--r:6px;--barc:#0A0A0A;
  --navbg:var(--dark);--navtext:#BDBDB6;--navtext-on:#fff;--font:'Barlow',system-ui,sans-serif;--font-d:'Barlow Condensed','Arial Narrow',sans-serif}
 /* ===== Farbwelt Rot-Weiß (FC Bayern) ===== */
-[data-farbe=rw]{--gelb:#DC052D;--gelb2:#FDE3E8;--gelb3:#B00425;--on-accent:#fff;--hbar:#0066B2;--avtext:#fff;--slogan:#fff}
+[data-stil=flutlicht]{--slogan2:var(--gelb)}
+[data-farbe=rw]{--slogan2:var(--gelb3);--gelb:#DC052D;--gelb2:#FDE3E8;--gelb3:#B00425;--on-accent:#fff;--hbar:#0066B2;--avtext:#fff;--slogan:#fff}
 [data-stil=vereinsheim][data-farbe=rw]{--dark:#0E2240;--navon:#DC052D;--slogan:#DC052D}
 [data-stil=flutlicht][data-farbe=rw]{--gelb2:#3A1420;--gelb3:#FF4D6A;--glow:rgba(220,5,45,.45);--avtext:#FF8095}
 [data-stil=anzeigetafel][data-farbe=rw]{--dark:#0E2240;--barc:#0E2240;--hbar:#DC052D}
@@ -193,17 +194,14 @@ h2,h3,.big,header .t b,.tile .v,.tap b{font-family:var(--font-d)}
 [data-stil=vereinsheim] h2{letter-spacing:-.02em;font-weight:800}
 [data-stil=vereinsheim] .card{box-shadow:none}
 [data-stil=vereinsheim] .tap{background:var(--tapbg)}
-[data-stil=vereinsheim] nav,[data-stil=flutlicht] nav{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto;border-radius:24px;border:0;padding:6px 4px;box-shadow:0 10px 30px -12px rgba(17,24,39,.35)}
-[data-stil=flutlicht] nav{box-shadow:0 0 0 1px var(--linie),0 10px 30px -12px rgba(0,0,0,.6)}
-/* Leiste: oben schwebend, beim Scrollen dockt sie unten am Rand an – immer deckend, nichts scheint durch */
-nav{backdrop-filter:none;transition:left .22s ease,right .22s ease,bottom .22s ease,border-radius .22s ease,padding .22s ease}
-body.unten nav{box-shadow:0 -6px 20px -10px rgba(0,0,0,.25)}
-[data-stil=vereinsheim] body.unten nav,[data-stil=flutlicht] body.unten nav{left:0;right:0;bottom:0;max-width:none;border-radius:20px 20px 0 0;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-[data-stil=flutlicht] body.unten nav{box-shadow:0 -1px 0 var(--linie),0 -8px 24px -12px rgba(0,0,0,.7)}
-@media (prefers-reduced-motion:reduce){nav{transition:none}}
-[data-stil=vereinsheim] body::after,[data-stil=flutlicht] body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(34px + env(safe-area-inset-bottom));background:linear-gradient(to bottom,transparent,var(--bg) 55%);z-index:5;pointer-events:none;transition:opacity .2s}
-body.unten::after{opacity:0}
-[data-stil=vereinsheim] main,[data-stil=flutlicht] main{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
+/* Leiste: immer volle Breite unten. Ganz oben mit Beschriftung, beim Scrollen niedriger – nur Symbole */
+nav{transition:padding .2s ease}
+[data-stil=vereinsheim] nav,[data-stil=flutlicht] nav{border:0;border-radius:20px 20px 0 0;box-shadow:0 -6px 22px -12px rgba(17,24,39,.35)}
+[data-stil=flutlicht] nav{box-shadow:0 -1px 0 var(--linie),0 -8px 24px -12px rgba(0,0,0,.7)}
+nav button span{display:block;max-height:18px;overflow:hidden;transition:max-height .2s ease,opacity .15s ease}
+body.unten nav{padding-top:3px;padding-bottom:calc(3px + env(safe-area-inset-bottom))}
+body.unten nav button{gap:0}body.unten nav button span{max-height:0;opacity:0}body.unten nav button i{line-height:30px}
+@media (prefers-reduced-motion:reduce){nav,nav button span{transition:none}}
 [data-stil=flutlicht] header{background:var(--bg);border-bottom:1px solid var(--linie)}
 [data-stil=flutlicht] header::after{display:none}
 [data-stil=flutlicht] .card{box-shadow:0 0 0 1px var(--linie)}
@@ -257,8 +255,8 @@ body.unten::after{opacity:0}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='1.1.0';
-const APP_NEU='Hinweis bei neuen Versionen, Anleitung unter Mehr und kurzer Rundgang für Neue';
+const APP_VERSION='1.1.1';
+const APP_NEU='Bessere Lesbarkeit im Dunkel-Design, Menüleiste unten wird beim Scrollen schmaler';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -498,7 +496,7 @@ const TABS=[['start','🏠','Start'],['termine','📅','Termine'],['abend','🎳
 function shell(){
  $('#app').innerHTML=`<header><img src="logo.png" alt=""><div class="t"><b id="htitle">Schwelmer Kegeltreff</b><small>${esc(meName())}${Store.isDemo()?' · Demo':''}${THEMES[themeAktiv()]?.motto?` · <span class="slogan">${THEMES[themeAktiv()].motto}</span>`:''}</small></div><span id="sync" onclick="act.syncJetzt()" style="cursor:pointer"></span>${adminOffen()?`<button class="hb adm" title="Admin-Bereich sperren" aria-label="Admin-Bereich sperren" onclick="act.adminSperren()">🔓</button>`:''}<button class="hb" title="${stilAktiv()==='flutlicht'?'Hell':'Dunkel'} schalten" aria-label="Hell oder dunkel" onclick="act.hellDunkel()">${stilAktiv()==='flutlicht'?'☀️':'🌙'}</button><button class="hb" title="Aktualisieren" onclick="act.reload()">↻</button></header>
  <div id="upd"></div><main id="main"></main>
- <nav><div class="in">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="go('${k}')"><i>${i}</i>${l}</button>`).join('')}</div></nav>`;
+ <nav><div class="in">${TABS.map(([k,i,l])=>`<button class="${S.tab===k?'on':''}" onclick="go('${k}')" aria-label="${l}"><i>${i}</i><span>${l}</span></button>`).join('')}</div></nav>`;
  syncAnzeige();updateBanner();
 }
 function go(tab){flushTermine();if(saveTimer)speichereAbend();if(S.tab===tab&&tab==='mehr')S.sub=null;if(tab==='spiele')S.sp=null;S.tab=tab;lsSet('kt_tab',tab);shell();render();window.scrollTo(0,0)}
@@ -542,7 +540,7 @@ function vTermine(){
  const z=t.zusagen||{},akt=aktive(),my=z[S.me]||{},c={ja:0,vl:0,nein:0,offen:0};
  akt.forEach(m=>c[z[m.id]?.status||'offen']++);
  const h0=todayISO(),upcoming=termineSorted().filter(x=>x.datum>=addDays(h0,-1)||x.id===t.id).slice(0,10);
- let h=`<div class="chips" style="margin-bottom:12px"><button class="dchip" style="min-width:52px;background:var(--gelb);box-shadow:none" onclick="act.terminForm()" title="Termin hinzufügen"><b style="font-size:22px;line-height:1.6">+</b><small>Neu</small></button>${upcoming.map(x=>`<button class="dchip ${x.id===t.id?'on':''}" onclick="S.selT='${x.id}';rerender()"><small>${emo(x)} ${fmtD(x.datum,{weekday:'short'})}</small><b>${fmtD(x.datum,{day:'2-digit',month:'2-digit'})}</b><small>${x.status==='ausgefallen'||x.status==='abgesagt'?'fällt aus':x.status==='abgeschlossen'?'✓':`<span class="dot ${x.zusagen?.[S.me]?.status||''}"></span>${Object.values(x.zusagen||{}).filter(v=>v.status==='ja').length}`}</small></button>`).join('')}</div>`;
+ let h=`<div class="chips" style="margin-bottom:12px"><button class="dchip" style="min-width:52px;background:var(--gelb);color:var(--on-accent);box-shadow:none" onclick="act.terminForm()" title="Termin hinzufügen"><b style="font-size:22px;line-height:1.6">+</b><small style="color:inherit">Neu</small></button>${upcoming.map(x=>`<button class="dchip ${x.id===t.id?'on':''}" onclick="S.selT='${x.id}';rerender()"><small>${emo(x)} ${fmtD(x.datum,{weekday:'short'})}</small><b>${fmtD(x.datum,{day:'2-digit',month:'2-digit'})}</b><small>${x.status==='ausgefallen'||x.status==='abgesagt'?'fällt aus':x.status==='abgeschlossen'?'✓':`<span class="dot ${x.zusagen?.[S.me]?.status||''}"></span>${Object.values(x.zusagen||{}).filter(v=>v.status==='ja').length}`}</small></button>`).join('')}</div>`;
  const kann=isAdmin()||(!isKegeln(t)&&t.von===S.me);
  h+=`<div class="card hero"><div class="row" style="align-items:flex-start"><div class="f"><div class="muted small">${t.status==='ausgefallen'||t.status==='abgesagt'?'Fällt aus':t.status==='abgeschlossen'?'Abgerechnet':isKegeln(t)?'Kegelabend':'Besonderer Termin'} · ${bisText(t.datum)}</div>
  <h2>${isKegeln(t)?fmtD(t.datum,{weekday:'long',day:'numeric',month:'long'}):esc(titelOf(t))}</h2>
@@ -873,7 +871,7 @@ act.terminLoeschen=id=>{closeSheet();ask('Diesen Termin löschen?','Löschen',()
 function vStart(){
  const m=M(S.me),t=naechsterTermin(),sd=naechsterSonder(),k=konto(S.me),Y=todayISO().slice(0,4),hh=new Date().getHours();
  if(!S.hist&&!S.histLoading){S.histLoading=true;afterHooks.push(()=>loadHist().then(()=>{S.histLoading=false;if(S.tab==='start')rerender()}).catch(()=>{S.histLoading=false}))}
- let h=`<div style="margin:2px 4px 14px"><div class="muted">${hh<11?'Guten Morgen':hh<18?'Hallo':'Guten Abend'},</div><h2 style="font-size:26px">${esc(m?.vorname||m?.spitzname||'')} ${themeAktiv()==='bvb'?'🖤💛':themeAktiv()==='fcb'?'❤️🤍':'👋'}</h2>${slogan()?`<div class="slogan" style="margin-top:2px;font-size:18px;color:${themeAktiv()==='fcb'?'#DC052D':'#000'}">${esc(slogan())}</div>`:''}</div>`;
+ let h=`<div style="margin:2px 4px 14px"><div class="muted">${hh<11?'Guten Morgen':hh<18?'Hallo':'Guten Abend'},</div><h2 style="font-size:26px">${esc(m?.vorname||m?.spitzname||'')} ${themeAktiv()==='bvb'?'🖤💛':themeAktiv()==='fcb'?'❤️🤍':'👋'}</h2>${slogan()?`<div class="slogan" style="margin-top:2px;font-size:18px;color:var(--slogan2)">${esc(slogan())}</div>`:''}</div>`;
  // Nächster Kegelabend
  if(t){const z=t.zusagen||{},my=z[S.me]||{},ja=aktive().filter(x=>z[x.id]?.status==='ja'),offen=aktive().filter(x=>!z[x.id]?.status).length;
   const pass=Object.entries(z).filter(([,v])=>v.mitBei===S.me&&v.anreise==='mitfahrt').map(([id])=>nameOf(id));
