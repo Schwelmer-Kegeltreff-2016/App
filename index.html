@@ -136,7 +136,9 @@ details[open]>summary::after{transform:rotate(270deg)}
 .cols button.on i{background:var(--gelb3)}
 .axis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
 
-.kopf2{margin-bottom:12px}.kopf2 .kopfsel{margin-bottom:12px}.kopf2>.card{margin-bottom:12px}
+.kopf2{display:flex;flex-direction:column;gap:12px;margin-bottom:12px}.kopf2 .kopfsel,.kopf2>.card{margin:0;width:100%}
+.chips.anw{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.chips.anw .chip{text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chips.anw .chip.gast{grid-column:span 2}
 .sitzk summary{gap:8px}.sitzk .sk{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:14px}
 .sitzk .hero{margin:0}.pill.warn{background:var(--gelb);color:#1a1a1a;border-radius:99px;padding:2px 8px;font-size:12px;font-weight:700;white-space:nowrap}
 .katnav{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px;padding:2px}.katnav::-webkit-scrollbar{display:none}
@@ -144,8 +146,6 @@ details[open]>summary::after{transform:rotate(270deg)}
 .kat i{font-style:normal;font-size:20px}.kat small{display:block;font-weight:500;font-size:11px;opacity:.7}
 .kat.on{background:var(--dark);color:#fff;box-shadow:0 0 0 2px var(--gelb)}
 @media (min-width:640px){
- .kopf2{display:grid;grid-template-columns:minmax(150px,auto) minmax(0,1fr) minmax(0,1.3fr);gap:10px;align-items:start;margin-bottom:12px}
- .kopf2 .kopfsel,.kopf2>.card{margin:0}
  .erf{display:grid;grid-template-columns:250px minmax(0,1fr);gap:12px;align-items:start}
  .katnav{display:grid;grid-template-columns:1fr 1fr;overflow:visible;margin:0;position:sticky;top:calc(var(--hdr) + 10px)}
  .kat{padding:8px 9px;min-height:48px}
@@ -218,7 +218,7 @@ h2,h3,.big,header .t b,.tile .v,.tap b{font-family:var(--font-d)}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='1.0.1';
+const APP_VERSION='1.0.2';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -581,8 +581,8 @@ function vAbend(){
  const kats=[...st.map(s=>({id:s.id,name:s.name,betrag:s.betrag})),{id:'spiele',name:'Spiele €'},{id:'sonstiges',name:'Sonstiges €'}];
  if(S.anwOpen==null)S.anwOpen=!pres.length;
  let h=`<div class="kopf2"><select class="kopfsel" onchange="S.selAbend=this.value;render()">${terminOpts(tid,x=>x.status!=='ausgefallen')}</select><div class="card"><details ${S.anwOpen?'open':''} ontoggle="S.anwOpen=this.open"><summary>👥 Anwesend: ${pres.length}${a.spieler.some(p=>p.gast&&p.anwesend)?' · Gäste: '+a.spieler.filter(p=>p.gast&&p.anwesend).length:''}</summary>
-  <div class="chips wrap" style="margin-top:10px">${a.spieler.map((p,i)=>`<button class="chip ${p.anwesend?'an':''}" onclick="act.toggleAnw(${i})">${p.anwesend?'✓ ':''}${esc(p.name)}${p.gast?' (Gast)':''}</button>`).join('')}</div>
-  <div class="row" style="margin-top:10px"><input class="f" id="gastname" placeholder="Name des Gastes"><button class="btn" onclick="act.gast()">+ Gast</button></div></details></div>${sitzFest?sitzKlapp(tid):''}</div>`+(sitzFest?'':sitzKarte(tid,true));
+  <div class="chips wrap anw" style="margin-top:12px">${a.spieler.map((p,i)=>`<button class="chip ${p.anwesend?'an':''} ${p.gast?'gast':''}" title="${esc(p.name)}" onclick="act.toggleAnw(${i})">${p.anwesend?'✓ ':''}${esc(p.name)}${p.gast?' (Gast)':''}</button>`).join('')}</div>
+  <div class="row" style="margin-top:12px"><input class="f" id="gastname" placeholder="Name des Gastes" onkeydown="if(event.key==='Enter')act.gast()"><button class="btn" onclick="act.gast()">+ Gast</button></div></details></div>${sitzFest?sitzKlapp(tid):''}</div>`+(sitzFest?'':sitzKarte(tid,true));
  if(S.kat==='essen'||!kats.some(k=>k.id===S.kat))S.kat=kats[0].id;
  h+=`<div class="erf"><div class="katnav">${kats.map(k=>{const sum=k.betrag==null?0:pres.reduce((n,p)=>n+(p.counts?.[k.id]||0),0);
   return`<button class="kat ${S.kat===k.id?'on':''}" onclick="S.kat='${k.id}';S.minus=false;rerender()"><i>${KAT_EMO[k.id]||'•'}</i><span>${esc(k.name.replace(/\s*\(.*\)/,''))}<small>${k.betrag!=null?eur(k.betrag)+(sum?' · '+sum+'×':''):'Betrag'}</small></span></button>`}).join('')}</div><div class="card erf-main">`;
