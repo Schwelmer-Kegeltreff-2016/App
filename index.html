@@ -47,7 +47,7 @@ header .t small{color:rgba(255,255,255,.72);font-size:12px}
 header .hb{background:none;border:0;color:#fff;font-size:20px;padding:6px;border-radius:10px}
 #sync{font-size:12px;color:var(--gelb);white-space:nowrap}
 main{padding:16px 14px calc(100px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
-nav{position:fixed;bottom:0;left:0;right:0;z-index:6;background:var(--navbg);backdrop-filter:blur(10px);border-top:1px solid var(--linie);padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:6;background:var(--navbg);border-top:1px solid var(--linie);padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
 nav .in{max-width:720px;margin:0 auto;display:flex}
 nav button{flex:1;border:0;background:none;padding:2px 0;font-size:11.5px;color:var(--navtext);display:flex;flex-direction:column;align-items:center;gap:3px}
 nav button i{font-style:normal;font-size:20px;line-height:30px;width:52px;border-radius:99px;transition:background .15s}
@@ -197,6 +197,22 @@ main.wl{animation:wl .24s ease-out}main.wr{animation:wr .24s ease-out}
 input[type=date],input[type=time],input[type=datetime-local]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;text-align:left}
 input::-webkit-date-and-time-value{text-align:left;margin:0}
 .f>input,.f>select{max-width:100%}
+html.modal,html.modal body{overflow:hidden;overscroll-behavior:none}
+#sheet .bg{z-index:40}#sheet .sh{z-index:41;bottom:var(--vvb,0px);max-height:calc(var(--vvh,100dvh) * .9);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#tour{z-index:45}.guthol{z-index:60}
+.pinn .bem-f{display:flex;align-items:center;gap:8px;margin-top:2px}
+.daumen{display:flex;gap:6px}.dm{display:flex;align-items:center;gap:4px;border:0;background:var(--chip);color:var(--ink);border-radius:99px;min-height:34px;min-width:44px;padding:4px 10px;font-size:15px;cursor:pointer}
+.dm b{font-size:13px;min-width:0}.dm.on{background:var(--gelb);color:var(--on-accent);box-shadow:0 0 0 2px var(--gelb3)}.dm:disabled{opacity:.7;cursor:default}
+#mini{position:fixed;inset:0;z-index:58;background:radial-gradient(120% 80% at 50% 20%,#2a2f3a,#0b0c10);color:#fff;touch-action:none;user-select:none;-webkit-user-select:none;animation:ghIn .2s ease-out}
+#mini canvas{position:absolute;inset:0;width:100%;height:100%}#mini.aus{opacity:0;transition:opacity .25s}
+#mini .mi-top{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:calc(14px + env(safe-area-inset-top)) 16px 10px}
+#mini .mi-top b{flex:1;font-size:17px}#mini .mi-skip{border:0;background:rgba(255,255,255,.14);color:#fff;font-weight:700;border-radius:99px;padding:10px 16px;min-height:44px;cursor:pointer}
+#mini .mi-hint{position:absolute;left:0;right:0;bottom:calc(28px + env(safe-area-inset-bottom));text-align:center;font-size:14px;opacity:.8;animation:tipp 1.6s ease-in-out infinite}
+#mini .mi-erg{position:absolute;left:0;right:0;margin:0 auto;bottom:calc(16% + env(safe-area-inset-bottom));width:min(88vw,360px);background:rgba(20,22,28,.92);border-radius:22px;padding:20px;text-align:center;display:flex;flex-direction:column;gap:6px;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:ghT .35s ease-out both}
+#mini .mi-erg[hidden]{display:none}#mini .mi-erg .mi-i{font-size:46px;line-height:1}#mini .mi-erg b{font-size:28px}#mini .mi-erg span{font-size:15px;opacity:.9}#mini .mi-erg small{opacity:.7;font-size:12.5px;margin:4px 0 8px}
+#mini .mi-erg.gut{box-shadow:0 0 0 3px var(--gelb),0 20px 60px rgba(0,0,0,.5)}#mini .mi-erg.gut b{color:var(--gelb)}#mini .mi-erg.schlecht b{color:#ff8a80}
+.mini-k{display:flex;align-items:center;gap:12px;width:100%;border:0;border-radius:var(--r);background:var(--card);color:var(--ink);padding:12px 14px;margin:4px 0 6px;text-align:left;cursor:pointer;box-shadow:0 0 0 1px var(--linie)}
+.mini-k .mi-ic{font-size:28px}.mini-k .g{flex:1;display:flex;flex-direction:column;min-width:0}.mini-k .go{background:var(--gelb);color:var(--on-accent);border-radius:10px;padding:8px 12px;font-weight:700;font-size:14px}
 /* ---------- Stil-Details ---------- */
 h2,h3,.big,header .t b,.tile .v,.tap b{font-family:var(--font-d)}
 [data-stil=vereinsheim] header{background:var(--bg);color:var(--ink)}
@@ -208,12 +224,14 @@ h2,h3,.big,header .t b,.tile .v,.tap b{font-family:var(--font-d)}
 [data-stil=vereinsheim] .card{box-shadow:none}
 [data-stil=vereinsheim] .tap{background:var(--tapbg)}
 /* Leiste: immer volle Breite unten. Ganz oben mit Beschriftung, beim Scrollen niedriger – nur Symbole */
-nav{transition:padding .2s ease}
+/* Leiste fest am unteren Rand: eigene Ebene, keine Höhenänderung beim Scrollen (iPhone zeichnet sie sonst kurz an falscher Stelle).
+   „Schmaler“ beim Scrollen = nur Verschieben nach unten (Beschriftung rutscht unter den Rand) – ohne Neuberechnung des Layouts. */
+nav{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;transform:translate3d(0,0,0);will-change:transform;transition:transform .2s ease;-webkit-backface-visibility:hidden}
 [data-stil=vereinsheim] nav,[data-stil=flutlicht] nav{border:0;border-radius:20px 20px 0 0;box-shadow:0 -6px 22px -12px rgba(17,24,39,.35)}
 [data-stil=flutlicht] nav{box-shadow:0 -1px 0 var(--linie),0 -8px 24px -12px rgba(0,0,0,.7)}
-nav button span{display:block;max-height:18px;overflow:hidden;transition:max-height .2s ease,opacity .15s ease}
-body.unten nav{padding-top:3px;padding-bottom:calc(3px + env(safe-area-inset-bottom))}
-body.unten nav button{gap:0}body.unten nav button span{max-height:0;opacity:0}body.unten nav button i{line-height:30px}
+nav button span{display:block;height:16px;line-height:16px;overflow:hidden;transition:opacity .15s ease}
+body.unten nav{transform:translate3d(0,15px,0)}
+body.unten nav button span{opacity:0}
 @media (prefers-reduced-motion:reduce){nav,nav button span{transition:none}}
 [data-stil=flutlicht] header{background:var(--bg);border-bottom:1px solid var(--linie)}
 [data-stil=flutlicht] header::after{display:none}
@@ -249,7 +267,7 @@ body.unten nav button{gap:0}body.unten nav button span{max-height:0;opacity:0}bo
  nav{padding:2px 0 calc(2px + env(safe-area-inset-bottom))}nav button{font-size:0;gap:0}nav button i{line-height:28px}
  main{padding:10px calc(14px + env(safe-area-inset-right)) calc(60px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left))}
  .tap{padding:8px 4px}.tap b{font-size:24px}.card{padding:12px;margin-bottom:10px}
- .kat{min-height:40px;padding:5px 8px;font-size:13px}.kat i{font-size:17px}.kat small{font-size:10px}.katnav{gap:6px}.kopf2 select{padding:10px}}
+ .kat{min-height:40px;padding:5px 8px;font-size:13px}.kat i{font-size:17px}.kat small{font-size:10px}.katnav{gap:6px}.kopf2 select{padding:10px}body.unten nav{transform:none}}
 .guthol{position:fixed;inset:0;z-index:60;background:rgba(10,10,12,.72);backdrop-filter:blur(2px);cursor:pointer;animation:ghIn .25s ease-out}
 .guthol canvas{position:absolute;inset:0;width:100%;height:100%}
 .guthol .gh-t{position:absolute;left:0;right:0;bottom:12%;text-align:center;color:#fff;display:flex;flex-direction:column;gap:4px;pointer-events:none;animation:ghT .5s 1.2s both ease-out}
@@ -268,8 +286,8 @@ body.unten nav button{gap:0}body.unten nav button span{max-height:0;opacity:0}bo
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='1.2.0';
-const APP_NEU='Pinnwand, Vereinsgegenstände & Verleih, Kalender repariert, Wischen zum Blättern, Knopf „Auf Updates prüfen“';
+const APP_VERSION='1.3.0';
+const APP_NEU='Neu: Minispiel „Ein Wurf“ – Alle Neune oder Pudel? Mit Bestenliste im Profil';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -372,6 +390,7 @@ function setSync(t){const s=$('#sync');if(s)s.textContent=t}
 const offErr=()=>{const e=new Error('Keine Internetverbindung');e.offline=true;return e};
 const OUT={list:(()=>{try{return JSON.parse(lsGet('kt_outbox')||'[]')}catch(_){return[]}})(),timer:null,busy:null};
 const OPS={
+ miniWurf:(d,o)=>{d.personen=d.personen||{};const p=d.personen[o.who]=d.personen[o.who]||{w:0,holz:0,neun:0,kranz:0,pudel:0};p.w++;p.holz+=o.holz;if(o.typ==='neun')p.neun++;if(o.typ==='kranz')p.kranz++;if(o.typ==='pudel')p.pudel++;p.zuletzt=o.ts},
  invAdd:(d,o)=>{d.gegenstaende=d.gegenstaende||[];if(!d.gegenstaende.some(x=>x.id===o.g.id))d.gegenstaende.push(o.g)},
  invEdit:(d,o)=>{const g=d.gegenstaende?.find(x=>x.id===o.id);if(g)Object.assign(g,o.patch)},
  invDel:(d,o)=>{d.gegenstaende=(d.gegenstaende||[]).filter(x=>x.id!==o.id)},
@@ -379,6 +398,7 @@ const OPS={
  invZurueck:(d,o)=>{const g=d.gegenstaende?.find(x=>x.id===o.id);if(!g||!g.leihe)return;g.verlauf=g.verlauf||[];g.verlauf.unshift({...g.leihe,zurueck:o.ts,ort:o.ort});g.verlauf=g.verlauf.slice(0,30);g.leihe=null;g.ort=o.ort},
  bemAdd:(d,o)=>{d.eintraege=d.eintraege||[];if(!d.eintraege.some(x=>x.id===o.e.id))d.eintraege.push(o.e);const jetzt=new Date().toISOString();d.eintraege=d.eintraege.filter(x=>x.bis>jetzt)},
  bemDel:(d,o)=>{d.eintraege=(d.eintraege||[]).filter(x=>x.id!==o.id)},
+ bemVote:(d,o)=>{const e=(d.eintraege||[]).find(x=>x.id===o.id);if(!e)return;e.votes=e.votes||{};if(o.v)e.votes[o.who]=o.v;else delete e.votes[o.who]},
  nutz:(d,o)=>{d.personen=d.personen||{};const p=d.personen[o.who]||{};p.erst=p.erst&&p.erst<o.ts?p.erst:o.ts;p.zuletzt=!p.zuletzt||p.zuletzt<o.ts?o.ts:p.zuletzt;p.version=o.ver;p.geraet=o.geraet;p.starts=(p.starts||0)+1;d.personen[o.who]=p},
  zusage:(d,o)=>{const t=d.termine?.find(x=>x.id===o.tid);if(!t)return;t.zusagen=t.zusagen||{};const z={...(t.zusagen[o.who]||{}),...o.patch,ts:o.ts,von:o.von};
   if(z.status==='nein'){z.anreise='';z.mitBei='';z.plaetze=0}if(z.anreise!=='mitfahrt')z.mitBei='';t.zusagen[o.who]=z;
@@ -392,12 +412,12 @@ const OPS={
  spielDel:(d,o)=>{d.spiele=(d.spiele||[]).filter(g=>g.id!==o.id)},
  sitz:(d,o)=>{d.spiele=d.spiele||[];if(!d.sitz)d.sitz=o.sitz},
  nachz:(d,o)=>{const z=d.sitz;if(!z||z.tafel.some(q=>q.id===o.id)||z.tuer.some(q=>q.id===o.id))return;const k=z.tafel.length<z.tuer.length?'tafel':z.tuer.length<z.tafel.length?'tuer':o.seite;z[k].push({id:o.id,name:o.name})}};
-const defFor=p=>p.startsWith('bestellungen/')?{positionen:[]}:p.startsWith('spiele/')?{spiele:[]}:p==='bestellhistorie.json'||p==='nutzung.json'?{personen:{}}:p==='bemerkungen.json'?{eintraege:[]}:p==='inventar.json'?INV_START():p==='termine.json'?{termine:[]}:{};
+const defFor=p=>p.startsWith('bestellungen/')?{positionen:[]}:p.startsWith('spiele/')?{spiele:[]}:p==='bestellhistorie.json'||p==='nutzung.json'||p==='minispiel.json'?{personen:{}}:p==='bemerkungen.json'?{eintraege:[]}:p==='inventar.json'?INV_START():p==='termine.json'?{termine:[]}:{};
 function overlay(path,data){const ops=OUT.list.filter(x=>x.path===path);if(!ops.length)return data;const d=clone(data??defFor(path));ops.forEach(x=>{try{OPS[x.op.t](d,x.op)}catch(_){}});return d}
-function lokal(path){if(path==='termine.json')return S.termine;if(path==='bemerkungen.json')return S.bem;if(path==='inventar.json')return S.inv;if(path==='bestellhistorie.json')return S.bh;
+function lokal(path){if(path==='minispiel.json')return S.mini;if(path==='termine.json')return S.termine;if(path==='bemerkungen.json')return S.bem;if(path==='inventar.json')return S.inv;if(path==='bestellhistorie.json')return S.bh;
  if(path.startsWith('bestellungen/'))return S.bestFor===path.slice(13,-5)?S.best:null;
  if(path.startsWith('spiele/')){const tid=path.slice(7,-5);return S.spielCache[tid]=S.spielCache[tid]||{spiele:[]}}return null}
-function setLokal(path,d){if(path==='inventar.json')S.inv=d;else if(path==='bemerkungen.json')S.bem=d;else if(path==='termine.json')S.termine=d;else if(path==='bestellhistorie.json')S.bh=d;else if(path.startsWith('bestellungen/')){if(S.bestFor===path.slice(13,-5))S.best=d}else if(path.startsWith('spiele/'))S.spielCache[path.slice(7,-5)]=d}
+function setLokal(path,d){if(path==='minispiel.json')S.mini=d;else if(path==='inventar.json')S.inv=d;else if(path==='bemerkungen.json')S.bem=d;else if(path==='termine.json')S.termine=d;else if(path==='bestellhistorie.json')S.bh=d;else if(path.startsWith('bestellungen/')){if(S.bestFor===path.slice(13,-5))S.best=d}else if(path.startsWith('spiele/'))S.spielCache[path.slice(7,-5)]=d}
 function enqueue(path,op,msg,delay=4000){OUT.list.push({id:'o'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),path,op,msg});lsSet('kt_outbox',JSON.stringify(OUT.list));
  const l=lokal(path);if(l)OPS[op.t](l,op);syncAnzeige();clearTimeout(OUT.timer);OUT.timer=setTimeout(flushOutbox,delay)}
 async function flushOutbox(){clearTimeout(OUT.timer);OUT.timer=null;if(OUT.busy)return OUT.busy;if(!OUT.list.length)return;
@@ -534,7 +554,7 @@ function render(){const m=$('#main');if(!m)return;
    Nicht beim Tippen in Felder, in seitlich scrollbaren Leisten, offenen Fenstern oder dem Rundgang. */
 let WISCH=null;
 const querScrollbar=el=>{for(let e=el;e&&e!==document.body;e=e.parentElement){if(e.scrollWidth>e.clientWidth+4){const o=getComputedStyle(e).overflowX;if(o==='auto'||o==='scroll')return true}}return false};
-document.addEventListener('touchstart',e=>{WISCH=null;if(e.touches.length!==1||$('#sheet')||$('#tour')||$('.guthol')||!$('#app nav'))return;
+document.addEventListener('touchstart',e=>{WISCH=null;if(e.touches.length!==1||$('#sheet')||$('#tour')||$('.guthol')||$('#mini')||!$('#app nav'))return;
  const t=e.touches[0],el=e.target;if(el.closest('input,textarea,select,[contenteditable],nav,header,.noswipe')||querScrollbar(el))return;
  if(t.clientX<18&&!matchMedia('(display-mode: standalone)').matches&&!navigator.standalone)return; // Browser-eigene Zurück-Geste am Rand nicht stören
  WISCH={x:t.clientX,y:t.clientY,t:Date.now()}},{passive:true});
@@ -543,7 +563,18 @@ document.addEventListener('touchend',e=>{if(!WISCH)return;const t=e.changedTouch
  if(S.tab==='mehr'&&S.sub){if(dx>0){S.sub=null;render();scrollTo(0,0);wischAnim(1)}return}
  const i=TABS.findIndex(([k])=>k===S.tab),n=i+(dx<0?1:-1);if(i<0||n<0||n>=TABS.length)return;go(TABS[n][0]);wischAnim(dx<0?-1:1)},{passive:true});
 function wischAnim(r){const m=$('#main');if(!m||matchMedia('(prefers-reduced-motion: reduce)').matches)return;m.classList.remove('wl','wr');void m.offsetWidth;m.classList.add(r<0?'wl':'wr');setTimeout(()=>m.classList.remove('wl','wr'),260)}
-function navZustand(){document.body.classList.toggle('unten',scrollY>12)}
+function navZustand(){if(SPERRE!=null)return;document.body.classList.toggle('unten',scrollY>12)}
+/* Fenster (Sheets, Rundgang, Abschluss-Animation): solange offen, steht die App dahinter still – erst das Fenster erledigen. */
+let SPERRE=null;
+function modalSperre(){const auf=!!($('#sheet')||$('#tour')||$('.guthol')||$('#mini'));const b=document.body;
+ if(auf&&SPERRE==null){SPERRE=scrollY;document.documentElement.classList.add('modal')}
+ else if(!auf&&SPERRE!=null){SPERRE=null;document.documentElement.classList.remove('modal');navZustand()}}
+/* Wischen/Scrollen hinter dem Fenster blockieren – im Fenster selbst darf gescrollt werden */
+document.addEventListener('touchmove',e=>{if(SPERRE==null)return;const sc=e.target.closest&&e.target.closest('#sheet .sh,#tour .tk');if(!sc||sc.scrollHeight<=sc.clientHeight)e.preventDefault()},{passive:false});
+new MutationObserver(modalSperre).observe(document.body,{childList:true});
+/* Tastatur auf dem iPhone: Fenster bleibt am sichtbaren unteren Rand (über der Tastatur) statt mit der Seite zu verrutschen */
+function vvSetzen(){const v=window.visualViewport;if(!v)return;const r=document.documentElement.style;r.setProperty('--vvb',Math.max(0,Math.round(innerHeight-v.height-v.offsetTop))+'px');r.setProperty('--vvh',Math.round(v.height)+'px')}
+if(window.visualViewport){visualViewport.addEventListener('resize',vvSetzen);visualViewport.addEventListener('scroll',vvSetzen);vvSetzen()}
 addEventListener('scroll',()=>{if(!navZustand._r){navZustand._r=requestAnimationFrame(()=>{navZustand._r=0;navZustand()})}},{passive:true});
 function rerender(){const y=scrollY;render();scrollTo(0,y)}
 let afterHooks=[];function after(){const h=afterHooks;afterHooks=[];h.forEach(f=>f())}
@@ -908,6 +939,80 @@ act.terminSpeichern=()=>{const f=S.tf;if(!f.datum)return toast('Bitte ein Datum 
 act.terminLoeschen=id=>{closeSheet();ask('Diesen Termin löschen?','Löschen',()=>save('termine.json',d=>{d.termine=d.termine.filter(t=>t.id!==id||isKegeln(t));return d},'Termin gelöscht').then(d=>{S.termine=d;S.selT=null;rerender()}),true)};
 
 /* ---------------- STARTSEITE ---------------- */
+/* ---------------- MINISPIEL „Ein Wurf“ ----------------
+   Neun Kegel als Raute, eine Kugel. Antippen oder nach oben wischen = Wurf. Der Zufall entscheidet:
+   Pudel (15 %), 1–8 Holz, Kranz (8 Holz, König bleibt stehen – 6 %), Alle Neune (10 %).
+   Ergebnisse landen in minispiel.json (Statistik & Bestenliste). Beim App-Start höchstens alle 3 Stunden,
+   abschaltbar im Profil, jederzeit über die Startseite. */
+const MINI_AN=()=>lsGet('kt_mini')!=='0';
+function miniWurfZiehen(){const r=Math.random()*100;if(r<15)return{typ:'pudel',holz:0};if(r<25)return{typ:'neun',holz:9};if(r<31)return{typ:'kranz',holz:8};
+ const g=[[1,5],[2,6],[3,8],[4,9],[5,10],[6,11],[7,11],[8,9]];let x=Math.random()*69;for(const[h,w]of g){if((x-=w)<0)return{typ:'holz',holz:h}}return{typ:'holz',holz:5}}
+const MINI_TXT={neun:['🎉','Alle Neune!','Gut Holz – alles abgeräumt!'],kranz:['👑','Kranz!','Acht um den König – der bleibt stehen.'],pudel:['🐩','Haha – ein Pudel!','0,10 € in die Kasse … war nur Spaß.']};
+const miniHolzTxt=h=>h>=7?['💪',h+' Holz','Stark geworfen!']:h>=4?['👍',h+' Holz','Solide – da geht noch was.']:['😬',h+' Holz','Naja … nächstes Mal mehr.'];
+function minispiel(manuell){if($('#mini'))return;const reduziert=matchMedia('(prefers-reduced-motion: reduce)').matches;lsSet('kt_mini_ts',String(Date.now()));
+ const box=document.createElement('div');box.id='mini';box.setAttribute('role','dialog');box.setAttribute('aria-label','Minispiel');
+ box.innerHTML=`<canvas></canvas><div class="mi-top"><b>🎳 Ein Wurf – was wird’s?</b><button class="mi-skip" onclick="miniZu()">${manuell?'Schließen':'Überspringen'}</button></div>
+  <div class="mi-hint">Antippen oder nach oben wischen</div><div class="mi-erg" hidden></div>`;
+ document.body.appendChild(box);
+ const cv=box.querySelector('canvas'),ctx=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1),W=innerWidth,H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+ const akz=getComputedStyle(document.documentElement).getPropertyValue('--gelb').trim()||'#FFD400';
+ const sz=Math.min(W*.15,H*.11,92),cx=W/2,cy=H*.3,dx=sz*.56,dy=sz*.3;
+ const pins=[];for(let r=0;r<3;r++)for(let c=0;c<3;c++)pins.push({r,c,x:cx+(c-r)*dx,y:cy+(c+r-2)*dy,front:4-(c+r),koenig:r===1&&c===1,fall:false,rot:0,vx:0,vy:0,vr:0,a:1,wob:0});
+ pins.sort((a,b)=>a.y-b.y);
+ const bahnL=cx-dx*2-sz*.55,bahnR=cx+dx*2+sz*.55,startY=H*.86,ball={x:cx,y:startY,r:sz*.3};
+ const kegel=(p)=>{ctx.save();ctx.globalAlpha=p.a;ctx.translate(p.x,p.y);ctx.rotate(p.rot+Math.sin(p.wob)*.08*Math.min(1,p.wob/3));const s=sz;
+  ctx.beginPath();ctx.moveTo(-s*.13,0);ctx.bezierCurveTo(-s*.24,-s*.22,-s*.2,-s*.46,-s*.07,-s*.6);ctx.bezierCurveTo(-s*.03,-s*.66,-s*.13,-s*.8,-s*.08,-s*.92);
+  ctx.arc(0,-s*.9,s*.09,Math.PI*1.1,Math.PI*1.9);ctx.bezierCurveTo(s*.13,-s*.8,s*.03,-s*.66,s*.07,-s*.6);ctx.bezierCurveTo(s*.2,-s*.46,s*.24,-s*.22,s*.13,0);ctx.closePath();
+  ctx.fillStyle=p.koenig?'#fff6d6':'#fafafa';ctx.fill();ctx.strokeStyle='rgba(0,0,0,.4)';ctx.lineWidth=Math.max(1,s*.02);ctx.stroke();
+  ctx.fillStyle=p.koenig?akz:'#d7263d';ctx.fillRect(-s*.075,-s*.72,s*.15,s*.035);ctx.fillRect(-s*.07,-s*.665,s*.14,s*.025);ctx.restore()};
+ const kugel=(x,y,r,rot)=>{ctx.save();ctx.translate(x,y);ctx.rotate(rot);const g=ctx.createRadialGradient(-r*.35,-r*.35,r*.1,0,0,r);g.addColorStop(0,'#8a93a6');g.addColorStop(.55,'#3a4152');g.addColorStop(1,'#1b1e26');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,r,0,7);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.fillStyle='rgba(0,0,0,.7)';[[-.25,-.3],[.15,-.38],[-.02,-.08]].forEach(([a,b])=>{ctx.beginPath();ctx.arc(a*r,b*r,r*.11,0,7);ctx.fill()});ctx.restore()};
+ const bahn=()=>{ctx.fillStyle='rgba(255,255,255,.05)';ctx.fillRect(bahnL,0,bahnR-bahnL,H);ctx.fillStyle='rgba(0,0,0,.25)';ctx.fillRect(bahnL-sz*.35,0,sz*.35,H);ctx.fillRect(bahnR,0,sz*.35,H);
+  ctx.strokeStyle='rgba(255,255,255,.12)';ctx.setLineDash([4,10]);ctx.beginPath();ctx.moveTo(cx,cy+dy*3);ctx.lineTo(cx,H);ctx.stroke();ctx.setLineDash([])};
+ let phase='warten',t0=0,erg=null,ziel=null,konf=[],raf=0,last=performance.now();
+ const zeichnen=now=>{const dt=Math.min(.05,(now-last)/1000);last=now;ctx.clearRect(0,0,W,H);bahn();
+  if(phase==='rollt'){const p=Math.min(1,(now-t0)/950),e=1-Math.pow(1-p,1.6);ball.y=startY-(startY-ziel.y)*e;ball.x=cx+(ziel.x-cx)*Math.pow(p,1.3);ball.r=sz*(.3-.1*e);
+   if(erg.typ==='pudel')pins.forEach(k=>{if(Math.abs(k.y-ball.y)<sz*.6)k.wob+=dt*14});
+   if(p>=1){phase='fallen';t0=now;treffen()}}
+  else if(phase==='fallen'||phase==='fertig'){ball.y-=dt*sz*4;ball.r*=.99;
+   pins.forEach(k=>{if(k.fall){k.vy+=sz*12*dt;k.x+=k.vx*dt;k.y+=k.vy*dt;k.rot+=k.vr*dt;k.a=Math.max(0,k.a-dt*.7)}else if(k.wob)k.wob=Math.max(0,k.wob-dt*6)});
+   if(phase==='fallen'&&now-t0>650){phase='fertig';ergebnis()}}
+  pins.forEach(kegel);if(ball.y>-ball.r)kugel(ball.x,ball.y,ball.r,(startY-ball.y)/(ball.r||1));
+  konf.forEach(k=>{k.vy+=200*dt;k.x+=k.vx*dt;k.y+=k.vy*dt;k.rot+=k.vr*dt;ctx.save();ctx.translate(k.x,k.y);ctx.rotate(k.rot);ctx.fillStyle=k.c;ctx.fillRect(-k.s/2,-k.s/4,k.s,k.s/2);ctx.restore()});konf=konf.filter(k=>k.y<H+20);
+  if($('#mini'))raf=requestAnimationFrame(zeichnen)};
+ function treffen(){if(erg.typ==='pudel')return;
+  let liste=[...pins];if(erg.typ==='kranz')liste=pins.filter(k=>!k.koenig);
+  else if(erg.typ==='holz')liste=[...pins].sort((a,b)=>(Math.abs(a.x-ziel.x)/dx+a.front*.55)-(Math.abs(b.x-ziel.x)/dx+b.front*.55)).slice(0,erg.holz);
+  liste.forEach(k=>{k.fall=true;const s=Math.sign(k.x-ziel.x)||(Math.random()<.5?-1:1);k.vx=s*sz*(1.5+Math.random()*2.5);k.vy=-sz*(1.2+Math.random()*2);k.vr=s*(3+Math.random()*5)});vib()}
+ function ergebnis(){const [i,t,u]=MINI_TXT[erg.typ]||miniHolzTxt(erg.holz),gut=erg.typ==='neun'||erg.typ==='kranz'||erg.holz>=7,el=box.querySelector('.mi-erg');
+  if(erg.typ==='neun'||erg.typ==='kranz')for(let n=0;n<70;n++)konf.push({x:Math.random()*W,y:-20-Math.random()*H*.3,vx:(Math.random()-.5)*80,vy:60+Math.random()*120,rot:Math.random()*6,vr:(Math.random()-.5)*8,s:6+Math.random()*8,c:['#d7263d',akz,'#fff','#1b1b1f'][n%4]});
+  const st=miniStat(S.me);el.className='mi-erg '+(erg.typ==='pudel'?'schlecht':gut?'gut':'');el.hidden=false;
+  el.innerHTML=`<div class="mi-i">${i}</div><b>${t}</b><span>${u}</span><small>Deine Bilanz: ${st.w} ${st.w===1?'Wurf':'Würfe'} · ${st.neun}× Alle Neune · ${st.pudel}× Pudel</small><button class="btn p" onclick="miniZu()">${manuell?'Fertig':'Weiter zur App'}</button>`;
+  box.querySelector('.mi-hint').hidden=true;if(!manuell)setTimeout(()=>{if($('#mini')&&!box.dataset.tippt)miniZu()},4200)}
+ const werfen=()=>{if(phase!=='warten')return;if(S.mini===undefined)S.mini=overlay('minispiel.json',{personen:{}});erg=miniWurfZiehen();phase='rollt';t0=performance.now();
+  const seite=Math.random()<.5?-1:1;ziel=erg.typ==='pudel'?{x:seite<0?bahnL-sz*.17:bahnR+sz*.17,y:-sz}:{x:cx+(erg.typ==='neun'?(Math.random()-.5)*dx*.3:erg.typ==='kranz'?seite*dx*.25:seite*dx*(1.4-erg.holz*.13)*(.6+Math.random()*.5)),y:cy+dy*2};
+  box.querySelector('.mi-hint').textContent=erg.typ==='pudel'?'Oh oh …':'Und …';
+  enqueue('minispiel.json',{t:'miniWurf',who:S.me,typ:erg.typ,holz:erg.holz,ts:new Date().toISOString()},'Minispiel',15000);
+  if(reduziert){treffen();phase='fertig';ergebnis()}};
+ let y0=null;box.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
+ box.addEventListener('touchend',e=>{if(y0!=null&&y0-e.changedTouches[0].clientY>40&&!e.target.closest('button'))werfen();y0=null},{passive:true});
+ box.addEventListener('click',e=>{if(e.target.closest('button'))return;if(phase==='warten')werfen();else if(phase==='fertig'){box.dataset.tippt='1'}});
+ raf=requestAnimationFrame(zeichnen)}
+function miniZu(){const b=$('#mini');if(!b)return;b.classList.add('aus');setTimeout(()=>{b.remove();if(S.tab==='start')rerender()},250)}
+/* Statistik aus minispiel.json + noch nicht hochgeladene Würfe dieses Geräts */
+function miniStat(id){const P=(S.mini?.personen||{})[id]||{};return{w:P.w||0,holz:P.holz||0,neun:P.neun||0,kranz:P.kranz||0,pudel:P.pudel||0}}
+function miniLaden(){if(S.mini===undefined&&!S.miniLaden){S.miniLaden=true;Store.get('minispiel.json').then(r=>{S.mini=r.data||{personen:{}}}).catch(()=>{S.mini=S.mini||overlay('minispiel.json',{personen:{}})}).finally(()=>{S.miniLaden=false;if(!$('#mini')&&(S.tab==='start'||S.sub==='profil'))rerender()})}}
+function miniBeimStart(){if(!S.me||!MINI_AN()||!lsGet('kt_tour')||/[?&]u=/.test(location.search))return;if(Date.now()-(+lsGet('kt_mini_ts')||0)<3*3600e3)return;if(S.tab==='abend')return;setTimeout(()=>minispiel(false),350)}
+function miniKarte(){const st=miniStat(S.me);
+ return`<button class="mini-k" onclick="minispiel(true)"><span class="mi-ic">🎳</span><span class="g"><b>Minispiel: Ein Wurf</b><span class="small muted">${st.w?`${st.w} Würfe · ${st.neun}× Alle Neune · ${st.pudel}× Pudel`:'Wirf eine Kugel – Alle Neune oder Pudel?'}</span></span><span class="go">Werfen</span></button>`}
+function miniProfil(){const st=miniStat(S.me),P=S.mini?.personen||{};
+ const top=Object.entries(P).filter(([k,v])=>M(k)&&v.w).sort((a,b)=>(b[1].neun-a[1].neun)||(b[1].holz/b[1].w-a[1].holz/a[1].w)).slice(0,5);
+ return`<div class="card"><h3>🎳 Minispiel</h3>
+  <label class="row" style="margin:0;gap:10px;cursor:pointer"><input type="checkbox" ${MINI_AN()?'checked':''} onchange="lsSet('kt_mini',this.checked?'1':'0');toast(this.checked?'Minispiel beim Start an':'Minispiel beim Start aus')" style="width:auto;min-height:0"><span class="f">Beim Öffnen der App einen Wurf anbieten <span class="muted small">(höchstens alle 3 Std.)</span></span></label>
+  <div class="tiles" style="margin-top:12px"><div class="tile"><div class="k">Würfe</div><div class="v">${st.w}</div><div class="s">Ø ${st.w?(st.holz/st.w).toFixed(1).replace('.',','):'–'} Holz</div></div><div class="tile"><div class="k">🎉 Alle Neune</div><div class="v">${st.neun}</div><div class="s">👑 Kranz: ${st.kranz}</div></div><div class="tile"><div class="k">🐩 Pudel</div><div class="v">${st.pudel}</div><div class="s">${st.w?Math.round(st.pudel/st.w*100)+' %':'–'}</div></div></div>
+  ${top.length?`<div class="sec" style="margin-top:12px">Bestenliste (meiste Alle Neune)</div><ul class="l">${top.map(([k,v],i)=>`<li><span class="av">${i+1}</span><div class="g"><b>${esc(nameOf(k))}</b><div class="muted small">${v.neun}× Alle Neune · Ø ${(v.holz/v.w).toFixed(1).replace('.',',')} Holz · ${v.w} Würfe</div></div></li>`).join('')}</ul>`:''}
+  <button class="btn w" style="margin-top:12px" onclick="minispiel(true)">🎳 Jetzt einen Wurf wagen</button></div>`}
+
 /* ---------- Vereinsgegenstände & Verleih (inventar.json) ---------- */
 const INV_START=()=>({gegenstaende:[{id:'beamer',emoji:'📽️',name:'Beamer (groß)',lager:'bei Ortelt',ort:'bei Ortelt',leihe:null,verlauf:[]},{id:'soundbox',emoji:'🔊',name:'Soundbox (Musikbox)',lager:'bei Ortelt',ort:'bei Ortelt',leihe:null,verlauf:[]},{id:'starlink',emoji:'🛰️',name:'Starlink-Antenne',lager:'bei Ortelt',ort:'bei Ortelt',leihe:null,verlauf:[]}]});
 function invLaden(){if(S.inv===undefined&&!S.invLaden){S.invLaden=true;afterHooks.push(()=>Store.get('inventar.json').then(r=>{S.inv=r.data||overlay('inventar.json',INV_START())}).catch(()=>{S.inv=S.inv||INV_START()}).finally(()=>{S.invLaden=false;if(S.tab==='start'||S.sub==='inventar')rerender()}))}}
@@ -959,8 +1064,14 @@ function pinnwand(){
  const rest=iso=>{const h=(new Date(iso)-Date.now())/36e5;return h<1?'läuft gleich ab':h<24?'noch '+Math.ceil(h)+' Std.':'noch '+Math.ceil(h/24)+' Tage'};
  return`<div class="sec">📌 Pinnwand${L.length?' ('+L.length+')':''}</div><div class="card pinn">
   ${L.length?L.map(x=>`<div class="bem"><div class="bem-k"><span class="pill">${BEM_KAT[x.kat]?.[0]||'💬'} ${BEM_KAT[x.kat]?.[1]||''}</span><span class="muted small">${esc(nameOf(x.von))} · ${rel(x.ts)}</span>${x.von===S.me||isAdmin()?`<button class="bem-x" aria-label="Bemerkung löschen" onclick="act.bemDel('${x.id}')">✕</button>`:''}</div>
-   <div class="bem-t">${esc(x.text)}</div><div class="muted small">${rest(x.bis)}</div></div>`).join(''):`<p class="muted small" style="margin:0 0 4px">Noch nichts angepinnt. Hinweise, Wünsche für die App oder Allgemeines – für alle sichtbar.</p>`}
+   <div class="bem-t">${esc(x.text)}</div><div class="bem-f"><span class="muted small f">${rest(x.bis)}</span>${daumen(x)}</div></div>`).join(''):`<p class="muted small" style="margin:0 0 4px">Noch nichts angepinnt. Hinweise, Wünsche für die App oder Allgemeines – für alle sichtbar.</p>`}
   <button class="btn w" style="margin-top:10px" onclick="act.bemNeu()">+ Bemerkung anpinnen</button></div>`}
+/* Daumen: jedes Mitglied einmal hoch ODER runter; nochmal tippen nimmt es zurück. Eigene Einträge kann man nicht bewerten. */
+function daumen(x){const V=x.votes||{},hoch=Object.values(V).filter(v=>v>0).length,runter=Object.values(V).filter(v=>v<0).length,mein=V[S.me]||0,eigen=x.von===S.me;
+ const wer=v=>Object.entries(V).filter(([,w])=>w===v).map(([k])=>nameOf(k)).join(', ');
+ return`<span class="daumen">${[[1,'👍',hoch],[-1,'👎',runter]].map(([v,i,n])=>`<button class="dm ${mein===v?'on':''}" ${eigen?'disabled':''} title="${esc(wer(v)||'noch niemand')}" aria-label="${v>0?'Daumen hoch':'Daumen runter'} (${n})" onclick="act.bemVote('${x.id}',${v})">${i}<b>${n||''}</b></button>`).join('')}</span>`}
+act.bemVote=(id,v)=>{const e=S.bem?.eintraege?.find(x=>x.id===id);if(!e||e.von===S.me)return;const neu=(e.votes?.[S.me]||0)===v?0:v;
+ enqueue('bemerkungen.json',{t:'bemVote',id,who:S.me,v:neu},'Bewertung',2500);rerender();vib()};
 act.bemNeu=(kat='allg',tage='7')=>{S.bemF={kat,tage};const f=()=>sheet(`<h3>📌 Bemerkung anpinnen</h3><p class="muted small" style="margin-top:0">Sichtbar für alle auf der Startseite – verschwindet automatisch.</p>
  <label>Art</label><div class="chips wrap">${Object.entries(BEM_KAT).map(([k,[i,l]])=>`<button class="chip ${S.bemF.kat===k?'on':''}" onclick="S.bemF.kat='${k}';act._bemF()">${i} ${l}</button>`).join('')}</div>
  <label>Text</label><textarea id="bem-t" rows="4" maxlength="500" placeholder="${S.bemF.kat==='app'?'Was soll die App besser können?':S.bemF.kat==='hinweis'?'z. B. Samstag 15 Min. später, Parkplatz gesperrt …':'Was möchtest du allen sagen?'}">${esc(S.bemF.text||'')}</textarea>
@@ -1011,6 +1122,7 @@ function vStart(){
  const kost=aktive().filter(q=>konto(q.id).saldo>200);if(kost.length)h+=`<li><span style="font-size:22px">🎭</span><div class="g"><b>Kostüm-Alarm</b><div class="small muted">über 200 € offen: ${kost.map(q=>esc(q.spitzname)).join(', ')}</div></div></li>`;
  const kon=S.kasse.konten||[];if(kon.length){const ks=kon.reduce((a,x)=>a+num(x.betrag),0);h+=`<li style="cursor:pointer" onclick="S.tab='mehr';S.sub='kassenstand';shell();render()"><span style="font-size:22px">🏦</span><div class="g"><b>Vereinskasse</b><div class="small muted">${eur(ks)} auf den Konten${S.kasse.kontenStand?' · Stand '+fmtD(S.kasse.kontenStand,{day:'2-digit',month:'2-digit'}):''}</div></div><span class="muted">›</span></li>`}
  h+=`</ul></div>`;
+ miniLaden();h+=miniKarte();
  h+=`<button class="anl-link" onclick="S.tab='mehr';S.sub='anleitung';lsSet('kt_tab','mehr');shell();render();scrollTo(0,0)">📖 Neu hier? <u>So funktioniert die App</u> ›</button>
   <button class="anl-link upd-link" onclick="act.updateSuchen()">🔄 <u>Auf Updates prüfen</u> · Version ${APP_VERSION}</button>`;
  return h;
@@ -1444,8 +1556,9 @@ const ANL=[
  ['essen','🍽️','Essen bestellen',ILL.essen()+`<ol class="steps"><li>Reiter <b>Essen</b> öffnen – der nächste Abend ist schon gewählt.</li><li><b>Nummer</b> von der Samos-Karte eintippen, das Gericht erscheint automatisch. Sonderwunsch dazu, <b>+ Hinzufügen</b>.</li><li>Für andere bestellen: oben bei <b>„Für“</b> die Person wählen.</li><li>Deine häufigsten Bestellungen erscheinen als <b>⚡ Favoriten</b> – ein Tipp genügt.</li><li>Unten steht die fertige Bestellliste zum Vorlesen oder Teilen.</li></ol>`],
  ['abend','🎳','Kegelabend erfassen (Strichliste)',`<p class="small" style="margin-top:0"><b>Nur ein Gerät führt die Tafel</b> – am besten ein Handy oder Tablet quer auf dem Tisch. Alle anderen sehen den Stand.</p>`+ILL.strich()+`<ol class="steps"><li>Reiter <b>Abend</b> → <b>Strichliste starten</b>.</li><li>Unter <b>👥 Anwesend</b> abhaken, wer da ist; Gäste unten mit Namen hinzufügen.</li><li><b>Sitzordnung auslosen</b> – sie steht dann für den ganzen Abend (Teamspiele: Tafelseite gegen Türseite). Wer später kommt, wird über „Nachzügler zuordnen“ ergänzt.</li><li>Strafe <b>links</b> wählen (Pudel, Glöckchen, Alle Neune …), Spieler <b>rechts</b> antippen. Vertippt? <b>− Korrektur</b> einschalten und nochmal tippen.</li><li>Gespielte Spiele unter <b>🏆 Spiele heute</b> eintragen – Platzierungen und verlorene Teamspiele rechnet die Tafel selbst.</li><li>Am Ende <b>Rechnung Samos</b> (Gesamtbetrag + Trinkgeld) eintragen und <b>Abend abschließen</b>. Danach kommt der WhatsApp-Bericht zum Teilen.</li></ol>
   <p class="small muted">Kein Empfang auf der Bahn? Kein Problem – siehe „Ohne Empfang“.</p>`],
- ['pinnwand','📌','Pinnwand',`<ol class="steps"><li>Auf <b>Start</b> unter 📌 Pinnwand auf <b>+ Bemerkung anpinnen</b> tippen.</li><li>Art wählen: <b>💡 App-Wunsch</b>, <b>💬 Allgemein</b> oder <b>📢 Hinweis</b>.</li><li>Wie lange sichtbar: <b>24 Std.</b>, <b>1 Woche</b> oder <b>1 Monat</b> – danach verschwindet sie von selbst.</li><li>Eigene Bemerkungen mit ✕ wieder entfernen.</li></ol>`],
+ ['pinnwand','📌','Pinnwand',`<ol class="steps"><li>Auf <b>Start</b> unter 📌 Pinnwand auf <b>+ Bemerkung anpinnen</b> tippen.</li><li>Art wählen: <b>💡 App-Wunsch</b>, <b>💬 Allgemein</b> oder <b>📢 Hinweis</b>.</li><li>Wie lange sichtbar: <b>24 Std.</b>, <b>1 Woche</b> oder <b>1 Monat</b> – danach verschwindet sie von selbst.</li><li>Bemerkungen der anderen mit <b>👍</b> oder <b>👎</b> bewerten – nochmal tippen nimmt die Bewertung zurück.</li><li>Eigene Bemerkungen mit ✕ wieder entfernen.</li></ol>`],
  ['inventar','📦','Vereinsgegenstände ausleihen',`<ol class="steps"><li><b>Mehr → Vereinsgegenstände & Verleih</b>: Beamer, Soundbox, Starlink-Antenne & Co. – mit Lagerort.</li><li><b>Ausleihen</b> antippen, Person und Rückgabe (1 Tag bis 1 Monat) wählen.</li><li>Wer etwas hat, sieht es auf seiner <b>Startseite</b> – kurz vor Ablauf mit „Bring die Sachen zurück!“.</li><li>Zurückgebracht? <b>✓ Zurückgegeben</b> tippen und sagen, wo es jetzt liegt.</li></ol>`],
+ ['minispiel','🎳','Minispiel „Ein Wurf“',`<ol class="steps"><li>Beim Öffnen der App (höchstens alle 3 Std.) oder jederzeit über <b>🎳 Minispiel</b> unten auf der Startseite.</li><li><b>Antippen</b> oder <b>nach oben wischen</b> – die Kugel rollt. Alle Neune, Kranz, ein paar Holz … oder ein Pudel.</li><li>Keine Lust? <b>Überspringen</b>. Ganz abschalten: <b>Mehr → Profil → Minispiel</b>.</li><li>Deine Bilanz und die Bestenliste stehen im Profil.</li></ol>`],
  ['spiele','🎲','Spiele',`<ol class="steps"><li>Reiter <b>Spiele</b>: Ideen und Regeln für Einzel- und Teamspiele.</li><li>Eigene Spiele über <b>Eigenes Spiel anlegen</b> eintragen – mit Regeln und Strafe.</li><li>Ergebnisse trägt man am Abend im Reiter <b>Abend</b> unter „Spiele heute“ ein.</li></ol>`],
  ['kasse','💶','Kasse & mein Konto',ILL.konto()+`<ol class="steps"><li>Dein Kontostand steht auf <b>Start</b>. Antippen öffnet die Kasse – dort deinen Namen antippen, dann siehst du jede einzelne Buchung.</li><li><b>Mehr → Kasse</b> zeigt alle Mitgliederkonten, <b>Kassenstand</b> das Vereinsvermögen.</li><li>Regeln: ${eur(S.verein?.wochenbeitrag??5)} pro Woche ohne Termin, ${eur(S.verein?.pauschaleAusfall??15)} wenn ein Termin ausfällt, wer fehlt, zahlt die höchste Strafe des Abends.</li></ol>`],
  ['statistik','📊','Statistiken',`<ol class="steps"><li><b>Mehr → Statistiken</b>: Pudelkönig, Kranzkönig, Treueste Seele & Co. – für jedes Jahr seit 2017.</li><li>Oben das Jahr wählen, Balken antippen für Details.</li></ol>`],
@@ -1508,7 +1621,7 @@ function vProfil(){const m=M(S.me);
  return`<div class="card"><div class="row"><div class="av">${ini(m?.spitzname)}</div><div class="f"><b>${esc(m?.vorname||'')} ${esc(m?.nachname||'')}</b><div class="muted small">„${esc(m?.spitzname||'')}“ ${(m?.rollen||[]).map(r=>`<span class="pill y">${r}</span>`).join(' ')}</div></div></div>
  <p class="muted small">${Store.isDemo()?'Demo-Modus – Daten nur in diesem Browser.':'Verbunden mit '+OWNER+' / '+REPO+'.'}</p>
  <div class="row wrap"><button class="btn f" onclick="act.wechsel()">Person wechseln</button><button class="btn f" onclick="act.abmelden()">Abmelden</button></div></div>
- <div class="card"><h3>🎨 Darstellung</h3><p class="muted small" style="margin-top:0">Gilt nur für dieses Gerät – jeder wählt selbst. Schnell umschalten: 🌙/☀️ oben rechts.</p>
+ ${(miniLaden(),miniProfil())}<div class="card"><h3>🎨 Darstellung</h3><p class="muted small" style="margin-top:0">Gilt nur für dieses Gerät – jeder wählt selbst. Schnell umschalten: 🌙/☀️ oben rechts.</p>
  <label>Stil</label><div class="stilwahl">${Object.entries(STILE).map(([k,t])=>`<button class="${stilWahl()===k?'on':''}" onclick="act.stil('${k}')"><div class="pv" style="${STIL_PV[k][0]}">${STIL_PV[k][1].map(c=>`<i style="background:${c};height:${c===STIL_PV[k][1][0]?40:24}px"></i>`).join('')}</div><div class="tx"><b>${t.name}</b><span>${t.sub}</span></div></button>`).join('')}</div>
  <label style="margin-top:14px">Farbwelt</label><div class="stilwahl">${Object.entries(FARBEN).map(([k,t])=>`<button class="${farbeWahl()===k?'on':''}" onclick="act.farbe('${k}')"><div class="pv" style="background:${k==='rw'?'#DC052D':'#0A0A0A'}"><i style="background:${k==='rw'?'#fff':'#FFD400'};height:40px"></i><i style="background:${k==='rw'?'#0066B2':'#FFD400'};height:24px"></i><i style="background:${k==='rw'?'#fff':'#333'};height:24px"></i></div><div class="tx"><b>${t.name}</b><span>${t.sub}</span></div></button>`).join('')}</div></div>
  <div class="card"><h3>Meine Kontaktdaten</h3><p class="muted small" style="margin-top:0">Bitte aktuell halten – z. B. nach einem Umzug. Sehen können das nur du und die Admins.</p>${kontaktForm(S.me,'pk')}
@@ -1660,6 +1773,7 @@ async function boot(){
  if(/[?&]u=/.test(location.search)){history.replaceState(null,'',location.pathname);setTimeout(()=>toast('✓ Aktualisiert auf '+APP_VERSION+(APP_NEU?' – '+APP_NEU:''),5000),400)}
  setTimeout(()=>updatePruefen(true),2500);setTimeout(nutzungMelden,4000);
  if(!lsGet('kt_tour'))setTimeout(()=>rundgang(0),600);
+ miniLaden();miniBeimStart();
 }
 act.updateSuchen=async()=>{toast('Suche nach Updates …');const e=await updatePruefen(true);
  if(e==='neu'){scrollTo({top:0,behavior:'smooth'});toast('✨ Version '+UPD.neu.v+' ist da – oben auf „Jetzt aktualisieren“ tippen',5000)}
