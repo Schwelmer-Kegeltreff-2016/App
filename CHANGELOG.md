@@ -1,12 +1,27 @@
 # Änderungsliste – Schwelmer Kegeltreff App
 
 ## 1.4.0 · 25.11.2026
+- **🔔 Mitteilungen (Push)** auf iPhone (ab iOS 16.4, als Home-Bildschirm-App) und Android: Mehr → Profil → „Mitteilungen
+  erlauben“, je Person abschaltbar: Noch nicht abgestimmt (3 Tage vorher), Fahrgemeinschaft, Pinnwand, Termine,
+  Kegeltag (aus), Verleih, Abend abgerechnet (aus). Zahl am App-Symbol, Antippen öffnet die passende Stelle,
+  Test-Mitteilung. Abo je Gerät in `push.json`; Versand per GitHub-Ablauf in App-Daten (`mitteilungen/senden.cjs`,
+  `.github/workflows/mitteilungen.yml`, Secret `VAPID_PRIVATE`). `sw.js` v5 (push, notificationclick, Badge).
+  „Aktualisieren“ meldet den Service Worker nicht mehr ab, wenn ein Abo besteht (sonst wäre es weg).
 - Samos-Rechnung nach den Regeln des Kassenwarts, in zwei Töpfen:
   - **Topf 1 Getränke & Co.** (Gesamt − Essen + Trinkgeld − Schnapsrunden) → durch alle Anwesenden.
   - **Topf 2 Essen** (Essen − Zuschläge) → nur durch die, die gegessen haben („Wer hat mitgegessen?“ zum Antippen).
-  - **Teures Essen:** Preis eintragen, die Person zahlt nur den Teil über 20 € extra (25 € → 5 € extra).
+  - **Teures Essen:** Preis eintragen (mehrere Zeilen je Person werden addiert), die Person zahlt nur den Teil über 20 € extra (25 € → 5 €).
   - **Schnapsrunden** (z. B. Geburtstag) zahlt allein, wer sie ausgibt.
   - „Aus Bestellung übernehmen“ setzt Esser/Nicht-Esser und teures Essen (Summe je Person) aus der Essensbestellung.
+- **📷 Kassenzettel fotografieren:** Texterkennung direkt auf dem Handy (tesseract.js, beim ersten Mal ca. 10 MB von
+  jsDelivr, danach gespeichert). Liest „Total“, trennt Essen (Steuer B, 7 %) von Getränken/Kegelbahn (A, 19 %) – abgesichert
+  über die Zeilen NETTO/MWST 19 % – und listet Gerichte über 20 € zum Zuordnen. Das Foto wird nicht hochgeladen.
+- **Grenze „teures Essen“ einstellbar** (Admin: Mehr → Strafenkatalog & Grenzen, `verein.teuerSchwelle`, Standard 20 €).
+  Beim Abschließen wird die Grenze im Abend gespeichert (`rechnung.schw`), spätere Änderungen gelten nur für offene Abende.
+- **Fahrgemeinschaften:** Fahrer setzen Leute selbst ins Auto („🚗 Nehme ich mit“ bei Suchenden, „+ Mitfahrer einsteigen
+  lassen“ mit Auswahl: zuerst Suchende – wer abgeholt werden will, ganz oben –, dann Zugesagte ohne Mitfahrt, dann Offene)
+  und können Mitfahrer wieder aussteigen lassen. Mitfahrer: „🏠 Bitte zu Hause abholen“ (Fahrer sieht dann die Adresse aus
+  dem Profil mit Karten-Link), Fahrer: „🏠 Ich hole auch zu Hause ab“.
   - WhatsApp-Bericht, Strafenkatalog und Anleitung angepasst. Abende vor 1.4 werden unverändert nach altem Verfahren gerechnet.
 
 ## 1.3.2 · 25.11.2026

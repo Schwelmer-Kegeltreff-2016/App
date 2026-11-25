@@ -5,8 +5,10 @@
    Versions-Prüfung (?vcheck=…): nur Netz, nie aus dem Speicher – sonst würde die App sich selbst als „aktuell“ melden.
    Bilder & Co.: aus dem Speicher, im Hintergrund aktualisiert. Schriften: einmal geladen, danach aus dem Speicher.
    Vereinsdaten (api.github.com) laufen NICHT hierüber – die verwaltet die App selbst.
-   v3: Fehler behoben, durch den beim Öffnen immer die alte gespeicherte Version kam. */
-const CACHE = 'kegeltreff-app-v4';
+   v3: Fehler behoben, durch den beim Öffnen immer die alte gespeicherte Version kam.
+   v5: Mitteilungen (Push): anzeigen, Zahl am App-Symbol, Antippen öffnet die richtige Stelle. */
+const CACHE = 'kegeltreff-app-v5';
+const BADGE = 'kegeltreff-badge';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'logo.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -15,9 +17,41 @@ self.addEventListener('install', e => {
     .then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== CACHE).map(x => caches.delete(x)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== CACHE && x !== BADGE).map(x => caches.delete(x)))).then(() => self.clients.claim()));
 });
-self.addEventListener('message', e => { if (e.data === 'skipWaiting') self.skipWaiting(); });
+self.addEventListener('message', e => {
+  if (e.data === 'skipWaiting') self.skipWaiting();
+  if (e.data === 'badge0') e.waitUntil(badgeSetzen(0));
+});
+
+/* ---------- Mitteilungen ---------- */
+async function badgeLesen() { try { const r = await (await caches.open(BADGE)).match('n'); return r ? +(await r.text()) || 0 : 0; } catch (_) { return 0; } }
+async function badgeSetzen(n) {
+  try { await (await caches.open(BADGE)).put('n', new Response(String(n))); } catch (_) {}
+  try { if (n > 0 && self.navigator.setAppBadge) await self.navigator.setAppBadge(n); else if (self.navigator.clearAppBadge) await self.navigator.clearAppBadge(); } catch (_) {}
+}
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (_) { d = { body: e.data ? e.data.text() : '' }; }
+  e.waitUntil((async () => {
+    await badgeSetzen((await badgeLesen()) + 1);
+    await self.registration.showNotification(d.title || 'Schwelmer Kegeltreff', {
+      body: d.body || '', icon: 'icon-192.png', badge: 'icon-192.png', lang: 'de',
+      tag: d.tag || undefined, renotify: !!d.tag, data: { url: d.url || './' }
+    });
+  })());
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = new URL((e.notification.data && e.notification.data.url) || './', self.registration.scope).href;
+  const go = new URL(url).searchParams.get('go');
+  e.waitUntil((async () => {
+    await badgeSetzen(0);
+    const list = await clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of list) if (c.url.startsWith(self.registration.scope)) { if (go) c.postMessage({ go }); return c.focus(); }
+    return clients.openWindow(url);
+  })());
+});
 
 const frisch = url => fetch(new Request(url, { cache: 'no-store', credentials: 'same-origin' }));
 

@@ -30,7 +30,7 @@ Wuppertal-Langerfeld, etwa alle 5 Wochen samstags 18 Uhr). Ersetzt das Excel-Kas
 | Datei | Zweck |
 |---|---|
 | `index.html` | **die komplette App** (HTML + CSS + JS in einer Datei, ~260 KB, ~1800 Zeilen) |
-| `sw.js` | Service Worker (Offline-Start, Updates, iPhone-Kalender). Cache-Name `kegeltreff-app-vN` |
+| `sw.js` | Service Worker (Offline-Start, Updates, iPhone-Kalender, Mitteilungen). Cache-Name `kegeltreff-app-vN`, Zähler fürs App-Symbol in Cache `kegeltreff-badge` |
 | `manifest.webmanifest`, `logo.png`, `icon-192.png`, `icon-512.png` | App-Icon / „Zum Home-Bildschirm“ |
 | `README.md` | Kurzbeschreibung für GitHub |
 | `CLAUDE.md`, `CHANGELOG.md` | diese Beschreibung, Versionsliste |
@@ -38,8 +38,8 @@ Wuppertal-Langerfeld, etwa alle 5 Wochen samstags 18 Uhr). Ersetzt das Excel-Kas
 ### Daten in `App-Daten/data/`
 | Datei | Inhalt |
 |---|---|
-| `verein.json` | Name, Ort, `rhythmusWochen` 5, `wochenbeitrag` 5, `pauschaleAusfall` 15, `startSaldoStichtag`, `strafen[]`, `mitglieder[]` (id, spitzname, vorname, nachname, nr, eintritt, aktiv, rollen, startSaldo, figurVergessenGesamt, schnapsrundenBezahlt), `admin` {salt, iter, hash} |
-| `termine.json` | `termine[]`: id (=Datum bei Kegelterminen), datum, uhrzeit, status (geplant/ausgefallen/abgeschlossen), art/emoji für Sondertermine, `zusagen{id:{status ja/vl/nein, anreise, plaetze, mit, …}}`, nach Abschluss `abrechnung`, `stats`, `strafen`, `figur`, `gaeste`, `abwesend`, `spieleErg`; `inStartSaldo` = alter Abend aus Excel |
+| `verein.json` | Name, Ort, `rhythmusWochen` 5, `wochenbeitrag` 5, `pauschaleAusfall` 15, `teuerSchwelle` 20 (Admin einstellbar), `startSaldoStichtag`, `strafen[]`, `mitglieder[]` (id, spitzname, vorname, nachname, nr, eintritt, aktiv, rollen, startSaldo, figurVergessenGesamt, schnapsrundenBezahlt), `admin` {salt, iter, hash} |
+| `termine.json` | `termine[]`: id (=Datum bei Kegelterminen), datum, uhrzeit, status (geplant/ausgefallen/abgeschlossen), art/emoji für Sondertermine, `zusagen{id:{status ja/vl/nein, anreise, plaetze, mitBei, abholen, holtAb, …}}`, nach Abschluss `abrechnung`, `stats`, `strafen`, `figur`, `gaeste`, `abwesend`, `spieleErg`; `inStartSaldo` = alter Abend aus Excel |
 | `abende/<datum>.json` | laufende Strichliste eines Abends |
 | `spiele/<datum>.json` | Sitzordnung (`sitz` Tafelseite/Türseite) + Spiele-Ergebnisse des Abends |
 | `bestellungen/<datum>.json` | Essensbestellungen des Abends |
@@ -55,6 +55,8 @@ Wuppertal-Langerfeld, etwa alle 5 Wochen samstags 18 Uhr). Ersetzt das Excel-Kas
 | `bemerkungen.json` | Pinnwand-Einträge (kat app/allg/hinweis, `bis` max. 30 Tage, `votes{id:±1}`) |
 | `inventar.json` | Vereinsgegenstände (Beamer, Soundbox, Starlink …) mit `lager`, `ort`, `leihe{wer,seit,bis,tage,notiz}`, `verlauf[]` |
 | `minispiel.json` | Minispiel-Statistik je Person (w, holz, neun, kranz, pudel) |
+| `push.json` | Mitteilungen: `geraete{k:{who,sub,ua,ts}}` (Push-Abo je Gerät), `prefs{who:{thema:bool}}`, `tests[]` |
+| `push-log.json` | nur vom GitHub-Ablauf geschrieben: bereits verschickte Erinnerungen (`gesendet{schlüssel:datum}`, 60 Tage) |
 
 Fehlende Dateien entstehen beim ersten Speichern von selbst (Standardinhalt in `defFor()`).
 
@@ -93,8 +95,14 @@ ANLEITUNG & RUNDGANG, MEHR, Einrichtung, DARSTELLUNG.
   berechnet in `topfRechnung()`:
   Topf 1 = (gesamt − essen) − Schnapsrunden + Trinkgeld → durch alle Anwesenden (Gäste inkl.);
   Topf 2 = essen − Zuschläge → durch alle, die gegessen haben. Teures Essen: Preis je Person, Zuschlag = Preis − 20 €
-  (`verein.teuerSchwelle`) zahlt die Person; Schnapsrunde zahlt der Spender. Alte Abende ohne `v:2` → altes Verfahren
+  (`verein.teuerSchwelle`, beim Abschließen in `rechnung.schw` eingefroren) zahlt die Person; Schnapsrunde zahlt der Spender. Alte Abende ohne `v:2` → altes Verfahren
   (Gesamt + Trinkgeld − teures Essen komplett, durch alle). Rundung je Person auf Cent (Summe kann um Cent abweichen).
+  Teures Essen wird **je Person summiert**, dann Zuschlag = Summe − 20 €.
+- **Kassenzettel-Foto** (`act.bonFoto` → `bonErkennen` → `bonLesen`): Bild auf ~1200–2200 px skalieren, `bonAufbereiten`
+  (farbiger Hintergrund weiß, Otsu-Schwelle), tesseract.js 7.0.0 (`deu`, PSM 6) lazy von jsDelivr (`OCR`-Objekt, Pfade
+  überschreibbar für Tests). Samos-Kasse: Speisen = Steuerklasse **B**, Getränke/Kegelbahn = **A**. Essen = Total − (NETTO 19 % +
+  MWST 19 %), wenn MwSt zum Netto passt; sonst Summe der A-Positionen bzw. B-Positionen. Getestet mit echtem Zettel
+  (Total 540,30 / Essen 167,30) inkl. schief/klein/dunkel. Foto wird nie hochgeladen.
 - Kontostand: `startSaldo` (Excel-Stichtag 08.11.2026, positiv = offen) + Wochenbeiträge + Abende + Buchungen.
   Anzeige: grün = Guthaben, rot = zu überweisen.
 - Statistik: Pokale nach Schnitt pro Abend (mind. 2 Abende, wenn N ≥ 4); „Pudelkönig“ = **wenigste** Pudel;
@@ -106,9 +114,9 @@ ANLEITUNG & RUNDGANG, MEHR, Einrichtung, DARSTELLUNG.
 - Erst-Einrichtung des Passworts nur für Mitglieder mit Rolle `admin` (Max, Ortelt). Vergessen → in `verein.json`
   den Abschnitt `admin` löschen und neu festlegen.
 - **Nur mit Passwort** (Liste im Sicherheitsnetz vor `boot()`): Abend zurücksetzen, Buchungen, Ausgaben, Kassenstand,
-  Mitglieder, Kegeltermine/Serien/Ausfall, Speisekarte, Einladungslink, Kontakte-Import, Gegenstand löschen,
+  Mitglieder, Kegeltermine/Serien/Ausfall, Speisekarte, Einladungslink, Kontakte-Import, Gegenstand löschen, Grenze teures Essen,
   Sitzordnung zurücksetzen, Zusagen für andere.
-- **Für alle:** Zusagen, Essen, Strichliste führen, **Abend abschließen und wieder öffnen**, Sondertermine, eigene
+- **Für alle:** Zusagen, Fahrer setzt andere in sein Auto / lässt sie aussteigen (`act.einsteigen`, `act.rauslassen`), Essen, Strichliste führen, **Abend abschließen und wieder öffnen**, Sondertermine, eigene
   Spiele, Pinnwand, Verleih, Profil. Gesperrte Knöpfe bleiben sichtbar (🔒) und fragen nach dem Passwort.
 
 ## 6. Design
@@ -132,8 +140,8 @@ ANLEITUNG & RUNDGANG, MEHR, Einrichtung, DARSTELLUNG.
 - Jede Lieferung: `APP_VERSION` hochzählen und `APP_NEU` (eine Zeile „Was ist neu“) setzen. Die App prüft
   `index.html?vcheck=…` beim Start, beim Zurückholen (max. alle 2 Min.), alle 10 Min. und per Knopf
   „🔄 Auf Updates prüfen“ (Startseite unten, Mehr). Neuere Version → gelber Hinweis „Jetzt aktualisieren“:
-  lädt offene Eingaben hoch, meldet den SW ab, leert den Cache, lädt mit `?u=<version>` neu.
-- `sw.js` (aktuell v4): Seiten **network-first am HTTP-Cache vorbei** (`new Request(url,{cache:'no-store'})` – NIE
+  lädt offene Eingaben hoch, meldet den SW ab (**nicht**, wenn ein Push-Abo besteht – dann nur `update()`), leert den Cache, lädt mit `?u=<version>` neu.
+- `sw.js` (aktuell v5): Seiten **network-first am HTTP-Cache vorbei** (`new Request(url,{cache:'no-store'})` – NIE
   `fetch(navigateRequest, init)`, das wirft auf Navigationsanfragen und lieferte früher immer die alte Version!),
   5 s Timeout → gespeicherte Version, frische im Hintergrund nachladen. `?vcheck` nur Netz. `kalender.ics?d=<base64url>`
   erzeugt eine echte .ics-Datei (iPhone-Kalender). `sw.js` nur ändern, wenn nötig, dann Cache-Namen hochzählen.
@@ -169,3 +177,26 @@ abschaltbar im Profil, nicht im Reiter Abend), Admin (Übersicht „Wer nutzt di
 - Vollständige 2025-Excel (Pudel Aug–Dez fehlen im Detail).
 - Laptop/Tablet-Ansicht: Seitenmenü und mehrspaltige Seiten (bisher eine Spalte in der Mitte).
 - Token-Ablaufdatum im Blick behalten; monatliche ZIP-Sicherung von `App-Daten` empfohlen.
+
+## 12. Fahrgemeinschaften
+- Zusage-Felder: `anreise` selbst/mitfahrt/…, Fahrer `plaetze` + `holtAb`, Mitfahrer `mitBei` + `abholen`. Op `zusage` setzt
+  `mitBei/abholen` zurück, wenn Anreise ≠ mitfahrt, und `holtAb`, wenn ≠ selbst; fällt ein Fahrer weg, werden seine Mitfahrer wieder „suchend“.
+- Fahrer darf die Zusage anderer ändern (nur ins eigene Auto setzen / herausnehmen), mit Platz-Prüfung.
+- Adresse (aus `kontakte.json`) sieht ein Fahrer nur, wenn der Mitfahrer `abholen` gewählt hat und in seinem Auto sitzt.
+
+## 13. Mitteilungen (Push)
+- App: Abschnitt `MITTEILUNGEN` in `index.html`. `MITT` = Themen mit Voreinstellung (abstimmen, fahrt, pinnwand, termine,
+  verleih an; kegeltag, abrechnung aus). Profil-Karte `mitteilungenKarte()`, `act.pushAn/pushAus/pushPref/pushTest`,
+  `pushPruefen()` (beim Start, ordnet das Gerät der aktuellen Person zu, meldet verlorene Abos still neu an).
+  Antippen → `?go=<reiter|unterseite>` → `gehe()`; läuft die App schon, schickt der SW `postMessage({go})`.
+- **VAPID:** öffentlicher Schlüssel steht in `index.html` (`VAPID_PUB`) und in `senden.cjs`:
+  `BN00qq-k0jGVypudHpvPojBEfANo8w4sv3A1TmKfSo5lhS4ZfC7Qeer9Epz7YFW0JnpN7_-AMjXImMMGZKNiEH8`
+  Der private Schlüssel liegt **nur** als GitHub-Secret `VAPID_PRIVATE` in App-Daten (nie in ein Repo/Dokument!).
+  Neues Schlüsselpaar ⇒ alle müssen Mitteilungen neu erlauben.
+- **Versand** (Repo App-Daten): `mitteilungen/senden.cjs` + `.github/workflows/mitteilungen.yml`.
+  Auslöser: Push auf `data/termine.json|bemerkungen.json|push.json` (vergleicht `github.event.before` mit neu) und
+  zeitgesteuert `17 6,16 * * *` UTC (Erinnerungen: abstimmen 1–3 Tage vorher einmalig, Kegeltag morgens, Verleih
+  morgen/heute/überfällig alle 3 Tage). Akteur = Spitzname vor „:“ in der Commit-Nachricht bzw. `von` im Eintrag →
+  bekommt keine eigene Mitteilung. 404/410 vom Push-Dienst ⇒ Gerät aus `push.json` entfernt.
+- Testen: `DRY_RUN=1 DATA_DIR=… BEFORE_DIR=… EVENT=push|schedule HEUTE=JJJJ-MM-TT STUNDE=8 node mitteilungen/senden.cjs`.
+- iPhone: nur als Home-Bildschirm-App (iOS ≥ 16.4); Erlaubnis nur nach Tippen. Android: Badge meist nur Punkt.
