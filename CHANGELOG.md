@@ -1,5 +1,20 @@
 # Änderungsliste – Schwelmer Kegeltreff App
 
+## 1.4.0 · 25.11.2026
+- Samos-Rechnung nach den Regeln des Kassenwarts, in zwei Töpfen:
+  - **Topf 1 Getränke & Co.** (Gesamt − Essen + Trinkgeld − Schnapsrunden) → durch alle Anwesenden.
+  - **Topf 2 Essen** (Essen − Zuschläge) → nur durch die, die gegessen haben („Wer hat mitgegessen?“ zum Antippen).
+  - **Teures Essen:** Preis eintragen, die Person zahlt nur den Teil über 20 € extra (25 € → 5 € extra).
+  - **Schnapsrunden** (z. B. Geburtstag) zahlt allein, wer sie ausgibt.
+  - „Aus Bestellung übernehmen“ setzt Esser/Nicht-Esser und teures Essen (Summe je Person) aus der Essensbestellung.
+  - WhatsApp-Bericht, Strafenkatalog und Anleitung angepasst. Abende vor 1.4 werden unverändert nach altem Verfahren gerechnet.
+
+## 1.3.2 · 25.11.2026
+- iPhone: Fenster (z. B. „Gegenstand hinzufügen“) hängen nicht mehr fest. Ursache: Schloss das Fenster bei offener
+  Tastatur, blieb die Ansicht verschoben und Tipps landeten daneben. Jetzt wird die Seite hinter dem Fenster fest
+  gesperrt (body fixed), die Tastatur vor dem Schließen eingeklappt und die Ansicht danach zurückgerückt.
+- Formular „Gegenstand“: Beschriftungen „Symbol“ und „Name“ auf einer Höhe.
+
 ## 1.3.1 · 25.11.2026
 - Fehler behoben: Eine später eingereihte Meldung (z. B. Minispiel-Wurf) verzögerte das Hochladen eiliger Änderungen um bis zu 15 Sekunden.
 - Projektbeschreibung (`CLAUDE.md`), Änderungsliste und Testpaket angelegt.

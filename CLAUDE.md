@@ -1,6 +1,6 @@
 # Schwelmer Kegeltreff – App · Projektbeschreibung für Claude
 
-> Stand: Version **1.3.1** (25.11.2026). Diese Datei ist das Gedächtnis des Projekts.
+> Stand: Version **1.4.0** (25.11.2026). Diese Datei ist das Gedächtnis des Projekts.
 > Bei jeder größeren Änderung hier mitpflegen. Sie enthält **keine** persönlichen Daten oder Zugangsdaten
 > und darf deshalb im öffentlichen Repo `App` liegen.
 
@@ -89,7 +89,12 @@ ANLEITUNG & RUNDGANG, MEHR, Einrichtung, DARSTELLUNG.
 - Teamspiele immer **Tafelseite gegen Türseite** (Sitzordnung einmal pro Abend auslosen, Nachzügler kommen auf die kleinere Seite).
 - **Abwesende Mitglieder zahlen die höchste Strafe des Abends** (der Anwesenden).
 - **Wochenbeitrag 5 €** pro Woche; **15 € Pauschale** pro ausgefallenem Termin (Juli–Sep Samos geschlossen).
-- Samos-Rechnung: Gesamt + Trinkgeld durch alle; teure Einzelgerichte (> 20 €) per Extra-Knopf dem Einzelnen.
+- Samos-Rechnung (ab 1.4, `rechnung.v=2`: gesamt, essen, trinkgeld, extras[{pid,betrag}], runden[{pid,betrag}], ohneEssen[]),
+  berechnet in `topfRechnung()`:
+  Topf 1 = (gesamt − essen) − Schnapsrunden + Trinkgeld → durch alle Anwesenden (Gäste inkl.);
+  Topf 2 = essen − Zuschläge → durch alle, die gegessen haben. Teures Essen: Preis je Person, Zuschlag = Preis − 20 €
+  (`verein.teuerSchwelle`) zahlt die Person; Schnapsrunde zahlt der Spender. Alte Abende ohne `v:2` → altes Verfahren
+  (Gesamt + Trinkgeld − teures Essen komplett, durch alle). Rundung je Person auf Cent (Summe kann um Cent abweichen).
 - Kontostand: `startSaldo` (Excel-Stichtag 08.11.2026, positiv = offen) + Wochenbeiträge + Abende + Buchungen.
   Anzeige: grün = Guthaben, rot = zu überweisen.
 - Statistik: Pokale nach Schnitt pro Abend (mind. 2 Abende, wenn N ≥ 4); „Pudelkönig“ = **wenigste** Pudel;
@@ -115,7 +120,9 @@ ANLEITUNG & RUNDGANG, MEHR, Einrichtung, DARSTELLUNG.
 - **Keine offiziellen Vereinslogos** (BVB/FCB) – nur Farben und Sprüche; eigenes Wappen `logo.png`.
 - Mobile first. Untere Leiste immer volle Breite, beim Scrollen nur per `transform` niedriger (keine Höhenänderung –
   sonst springt sie auf dem iPhone). Fenster (`#sheet`) sitzen über Leiste und Tastatur (`--vvb` aus `visualViewport`),
-  dahinter ist die Seite gesperrt (`html.modal`).
+  dahinter ist die Seite gesperrt (`html.modal` + `body` position:fixed mit `top:-scrollY`, `modalSperre()`).
+  `closeSheet()` nimmt vorher den Fokus weg (Tastatur zu), `focusout` rückt die iPhone-Ansicht zurück – sonst
+  „hängt“ die App nach dem Schließen eines Fensters mit Eingabefeld.
 - Strichliste: links Strafarten (`.katnav`), rechts Spieler-Kacheln (`.tap`), Tafel unten eingeklappt; Querformat
   auf Handy/Tablet ist der Haupt-Einsatzfall am Abend.
 - Wischgesten: links/rechts = Reiter wechseln, auf Unterseiten rechts = zurück.

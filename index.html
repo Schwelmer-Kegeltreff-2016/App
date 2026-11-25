@@ -286,8 +286,8 @@ body.unten nav button span{opacity:0}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='1.3.1';
-const APP_NEU='Minispiel „Ein Wurf“ mit Bestenliste; Eingaben werden schneller hochgeladen';
+const APP_VERSION='1.4.0';
+const APP_NEU='Samos-Rechnung neu: Getränke- und Essens-Topf, Nicht-Esser, Zuschlag über 20 €, Schnapsrunden; iPhone-Fenster hängen nicht mehr';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -304,7 +304,7 @@ const ini=n=>String(n||'?').replace(/[^A-Za-zÄÖÜäöü]/g,'').slice(0,2).toUp
 function toast(msg,ms=2400){document.querySelectorAll('.toast').forEach(t=>t.remove());const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),ms)}
 function vib(){try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}}
 function sheet(html){closeSheet();const d=document.createElement('div');d.id='sheet';d.innerHTML=`<div class="bg" onclick="closeSheet()"></div><div class="sh"><div class="grip"></div>${html}</div>`;document.body.appendChild(d)}
-function closeSheet(){$('#sheet')?.remove()}
+function closeSheet(){const sh=$('#sheet'),ae=document.activeElement;if(sh&&ae&&sh.contains(ae))ae.blur();sh?.remove()}
 function ask(text,okLabel,fn,danger){window._askFn=fn;sheet(`<h3>${esc(text)}</h3><div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn f ${danger?'d':'p'}" onclick="closeSheet();window._askFn()">${esc(okLabel)}</button></div>`)}
 
 const DEFAULT_STRAFEN=[
@@ -502,6 +502,13 @@ function berechneAbend(abend,verein){
   s+=num(p.spiele)+(auto[p.id]||0);res[p.id]={strafe:r2(s),spieleAuto:r2(auto[p.id]||0)}}
  const max=Math.max(0,...pres.filter(p=>!p.gast).map(p=>res[p.id].strafe));
  const R=abend.rechnung||{},n=pres.length||1,pids=new Set(pres.map(p=>p.id));
+ if(rechnungV2(R)){const z=topfRechnung(R,pres,verein);
+  for(const p of abend.spieler){
+   if(p.anwesend){const r=res[p.id],x=z.je[p.id];Object.assign(r,{anteil:r2(x.topf1+x.topf2),topf1:x.topf1,topf2:x.topf2,isst:x.isst,extra:x.zuschlag+x.runde,zuschlag:x.zuschlag,runde:x.runde,essen:num(p.essen),sonstiges:num(p.sonstiges)});
+    r.gesamt=r2(r.strafe+x.topf1+x.topf2+x.zuschlag+x.runde+r.essen+r.sonstiges)}
+   else if(!p.gast)res[p.id]={abwesend:true,strafe:r2(max),gesamt:r2(max)}}
+  return{res,max:r2(max),tot,anteil:z.anteil1,gesamt:z.gesamt,exSum:z.zSum+z.rSum,n,v2:z}}
+ /* altes Verfahren (Abende vor Version 1.4): teures Essen komplett beim Einzelnen, Rest durch alle */
  const ex=(R.extras||[]).filter(e=>pids.has(e.pid)&&num(e.betrag)>0),exSum=ex.reduce((a,e)=>a+num(e.betrag),0);
  const gesamt=num(R.gesamt??R.getraenke),anteil=(Math.max(0,gesamt-exSum)+num(R.trinkgeld))/n;
  for(const p of abend.spieler){
@@ -510,6 +517,21 @@ function berechneAbend(abend,verein){
   else if(!p.gast)res[p.id]={abwesend:true,strafe:r2(max),gesamt:r2(max)}}
  return{res,max:r2(max),tot,anteil,gesamt,exSum,n};
 }
+/* Samos-Rechnung (ab 1.4) in zwei Töpfen:
+   Topf 1 = alles außer Essen (Getränke, Kegelbahn …) + Trinkgeld − Schnapsrunden  → durch alle Anwesenden
+   Topf 2 = Essen − Zuschläge (Anteil über 20 € je Esser)                          → durch alle, die gegessen haben
+   Schnapsrunde zahlt der Spender, den Zuschlag der Teuer-Esser. */
+const rechnungV2=R=>R&&(R.v===2||R.essen!=null||R.runden!=null||R.ohneEssen!=null);
+function topfRechnung(R,pres,verein){const schw=verein?.teuerSchwelle??20,pids=new Set(pres.map(p=>p.id)),ohne=new Set(R.ohneEssen||[]);
+ const esser=pres.filter(p=>!ohne.has(p.id)),gesamt=num(R.gesamt),essen=Math.min(num(R.essen),gesamt||num(R.essen)),tg=num(R.trinkgeld);
+ const teuer=(R.extras||[]).filter(e=>pids.has(e.pid)&&!ohne.has(e.pid)&&num(e.betrag)>schw).map(e=>({...e,zuschlag:r2(num(e.betrag)-schw)}));
+ const runden=(R.runden||[]).filter(e=>pids.has(e.pid)&&num(e.betrag)>0);
+ const zSum=r2(teuer.reduce((a,e)=>a+e.zuschlag,0)),rSum=r2(runden.reduce((a,e)=>a+num(e.betrag),0));
+ const getr=Math.max(0,gesamt-essen),topf1=Math.max(0,getr-rSum)+tg,topf2=Math.max(0,essen-zSum);
+ const n=pres.length||1,anteil1=topf1/n,anteil2=esser.length?topf2/esser.length:0,je={};
+ for(const p of pres){const isst=!ohne.has(p.id);je[p.id]={isst,topf1:anteil1,topf2:isst?anteil2:0,
+  zuschlag:r2(teuer.filter(e=>e.pid===p.id).reduce((a,e)=>a+e.zuschlag,0)),runde:r2(runden.filter(e=>e.pid===p.id).reduce((a,e)=>a+num(e.betrag),0))}}
+ return{schw,gesamt,essen,getr,tg,teuer,runden,zSum,rSum,topf1,topf2,n,nEsser:esser.length,anteil1,anteil2,je,essenOhneEsser:topf2>0&&!esser.length}}
 function spieleAuto(tid,verein){const g=S.spielCache?.[tid]?.spiele||[],a={},pl=verein?.platzStrafe??0.10,tb=(verein?.strafen||DEFAULT_STRAFEN).find(x=>x.id==='team')?.betrag??1;
  for(const x of g){if(x.strafen===false){const m=x.manuell;if(!m)continue;
    if(m.modus==='je')for(const[id,v]of Object.entries(m.betraege||{}))a[id]=(a[id]||0)+num(v);
@@ -569,8 +591,10 @@ function navZustand(){if(SPERRE!=null)return;document.body.classList.toggle('unt
 /* Fenster (Sheets, Rundgang, Abschluss-Animation): solange offen, steht die App dahinter still – erst das Fenster erledigen. */
 let SPERRE=null;
 function modalSperre(){const auf=!!($('#sheet')||$('#tour')||$('.guthol')||$('#mini'));const b=document.body;
- if(auf&&SPERRE==null){SPERRE=scrollY;document.documentElement.classList.add('modal')}
- else if(!auf&&SPERRE!=null){SPERRE=null;document.documentElement.classList.remove('modal');navZustand()}}
+ if(auf&&SPERRE==null){SPERRE=scrollY;const st=b.style;st.position='fixed';st.top=-SPERRE+'px';st.left='0';st.right='0';st.width='100%';document.documentElement.classList.add('modal')}
+ else if(!auf&&SPERRE!=null){const y=SPERRE;SPERRE=null;const st=b.style;st.position=st.top=st.left=st.right=st.width='';document.documentElement.classList.remove('modal');scrollTo(0,y);vvSetzen();navZustand()}}
+/* iPhone: Schließt die Tastatur in einem Fenster, bleibt die Ansicht sonst verschoben (Tipps landen daneben) → zurückrücken */
+document.addEventListener('focusout',()=>setTimeout(()=>{const ae=document.activeElement;if(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName))return;if(SPERRE!=null)scrollTo(0,0);vvSetzen()},120));
 /* Wischen/Scrollen hinter dem Fenster blockieren – im Fenster selbst darf gescrollt werden */
 document.addEventListener('touchmove',e=>{if(SPERRE==null)return;const sc=e.target.closest&&e.target.closest('#sheet .sh,#tour .tk');if(!sc||sc.scrollHeight<=sc.clientHeight)e.preventDefault()},{passive:false});
 new MutationObserver(modalSperre).observe(document.body,{childList:true});
@@ -578,7 +602,7 @@ new MutationObserver(modalSperre).observe(document.body,{childList:true});
 function vvSetzen(){const v=window.visualViewport;if(!v)return;const r=document.documentElement.style;r.setProperty('--vvb',Math.max(0,Math.round(innerHeight-v.height-v.offsetTop))+'px');r.setProperty('--vvh',Math.round(v.height)+'px')}
 if(window.visualViewport){visualViewport.addEventListener('resize',vvSetzen);visualViewport.addEventListener('scroll',vvSetzen);vvSetzen()}
 addEventListener('scroll',()=>{if(!navZustand._r){navZustand._r=requestAnimationFrame(()=>{navZustand._r=0;navZustand()})}},{passive:true});
-function rerender(){const y=scrollY;render();scrollTo(0,y)}
+function rerender(){if(SPERRE!=null){render();return}const y=scrollY;render();scrollTo(0,y)}
 let afterHooks=[];function after(){const h=afterHooks;afterHooks=[];h.forEach(f=>f())}
 const terminOpts=(sel,filter=()=>true)=>kegelTermine().filter(filter).map(t=>`<option value="${t.id}" ${t.id===sel?'selected':''}>${fmtD(t.datum)}${t.status==='ausgefallen'?' (ausgefallen)':t.status==='abgeschlossen'?' ✓':''}</option>`).join('');
 const act={};
@@ -673,7 +697,7 @@ act.fuerAndere=(tid,who)=>{const z=T(tid).zusagen?.[who]||{};
 
 /* ---------------- ABEND / STRICHLISTE ---------------- */
 function neuerAbend(t){const z=t.zusagen||{};
- return{id:t.id,gefuehrtVon:S.me,gestartet:new Date().toISOString(),rechnung:{gesamt:'',trinkgeld:'',extras:[]},
+ return{id:t.id,gefuehrtVon:S.me,gestartet:new Date().toISOString(),rechnung:{v:2,gesamt:'',essen:'',trinkgeld:'',extras:[],runden:[],ohneEssen:[]},
   spieler:aktive().map(m=>({id:m.id,name:m.spitzname,anwesend:z[m.id]?.status==='ja',counts:{},spiele:'',essen:'',sonstiges:''}))}}
 async function ladeAbend(tid){S.abendFor=tid;S.abend=null;S.abendLoading=true;try{const [r,g]=await Promise.all([Store.get(`abende/${tid}.json`),Store.get(`spiele/${tid}.json`)]);S.abend=r.data;S.abendSha=r.sha;
   if(lsGet('kt_abend_dirty')===tid){try{const bk=JSON.parse(lsGet('kt_abend_backup'));if(bk?.id===tid)S.abend=bk}catch(_){}}S.spielCache[tid]=g.data||{spiele:[]}}finally{S.abendLoading=false}rerender()}
@@ -741,20 +765,39 @@ act.gast=()=>{const n=$('#gastname').value.trim();if(!n)return;S.abend.spieler.p
 act.tap=i=>{const p=S.abend.spieler[i];p.counts=p.counts||{};const v=(p.counts[S.kat]||0)+(S.minus?-1:1);if(v<0)return;p.counts[S.kat]=v;
  if(S.kat==='figur'&&!S.minus&&!p.gast){const s=strafen().find(x=>x.id==='figur'),n=figurGesamt(p.id,S.abend.id)+v;if(s?.schnapsJedesMal&&n%s.schnapsJedesMal===0)toast(`🥃 ${p.name}: Figur zum ${n}. Mal vergessen – Runde Schnaps!`,5000)}
  vib();abendChanged()};
-function renderRechnung(){const el=$('#rechnung');if(!el||!S.abend)return;const a=S.abend,R=a.rechnung;R.extras=R.extras||[];
- const pres=a.spieler.filter(p=>p.anwesend),c=berechneAbend(a,S.verein),schw=S.verein.teuerSchwelle??20,eu=v=>esc(String(v??'').replace('.',','));
- el.innerHTML=`<div class="row" style="margin-top:6px"><div class="f"><label>Rechnung gesamt €</label><input inputmode="decimal" placeholder="Essen + Getränke" value="${eu(R.gesamt??R.getraenke)}" onchange="S.abend.rechnung.gesamt=this.value.replace(',','.');delete S.abend.rechnung.getraenke;abendChanged(false);renderRechnung()"></div>
- <div class="f"><label>Trinkgeld €</label><input inputmode="decimal" value="${eu(R.trinkgeld)}" onchange="S.abend.rechnung.trinkgeld=this.value.replace(',','.');abendChanged(false);renderRechnung()"></div></div>
- <label>Teures Essen (zahlt die Person allein)</label>
- ${R.extras.map((e,i)=>`<div class="row" style="margin-bottom:6px"><select class="f" onchange="S.abend.rechnung.extras[${i}].pid=this.value;abendChanged(false);renderRechnung()"><option value="">– Person –</option>${pres.map(p=>`<option value="${p.id}" ${p.id===e.pid?'selected':''}>${esc(p.name)}</option>`).join('')}</select>
-  <input style="width:110px" inputmode="decimal" placeholder="€" value="${eu(e.betrag)}" onchange="S.abend.rechnung.extras[${i}].betrag=this.value.replace(',','.');abendChanged(false);renderRechnung()"><button class="x" onclick="S.abend.rechnung.extras.splice(${i},1);abendChanged(false);renderRechnung()">✕</button></div>`).join('')}
- <div class="row wrap"><button class="btn s" onclick="S.abend.rechnung.extras.push({pid:'',betrag:''});renderRechnung()">+ Teures Essen</button><button class="btn s" onclick="act.teuerAusBestellung()">Aus Bestellung (über ${eur(schw)})</button></div>
- <div class="banner" style="margin:12px 0 0">${c.gesamt||num(R.trinkgeld)?`(${eur(c.gesamt)}${c.exSum?' − '+eur(c.exSum)+' teures Essen':''} + ${eur(num(R.trinkgeld))} Trinkgeld) ÷ ${c.n} = <b>${eur(c.anteil)} je Person</b>`:'Rechnung und Trinkgeld werden gleichmäßig auf alle Anwesenden (inkl. Gäste) verteilt. Nur teures Essen trägt die Person selbst.'}</div>`}
+function renderRechnung(){const el=$('#rechnung');if(!el||!S.abend)return;const a=S.abend,R=a.rechnung;
+ if(!rechnungV2(R)){R.v=2;if(R.gesamt==null&&R.getraenke!=null){R.gesamt=R.getraenke;delete R.getraenke}}
+ R.extras=R.extras||[];R.runden=R.runden||[];R.ohneEssen=R.ohneEssen||[];
+ const pres=a.spieler.filter(p=>p.anwesend),c=berechneAbend(a,S.verein),z=c.v2,schw=z.schw,eu=v=>esc(String(v??'').replace('.',','));
+ const ch="abendChanged(false);renderRechnung()",pOpt=sel=>`<option value="">– Person –</option>${pres.map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.name)}</option>`).join('')}`;
+ const zeile=(liste,i,e,ph)=>`<div class="row" style="margin-bottom:6px"><select class="f" onchange="S.abend.rechnung.${liste}[${i}].pid=this.value;${ch}">${pOpt(e.pid)}</select>
+  <input style="width:96px" inputmode="decimal" placeholder="${ph}" value="${eu(e.betrag)}" onchange="S.abend.rechnung.${liste}[${i}].betrag=this.value.replace(',','.');${ch}"><button class="x" aria-label="Entfernen" onclick="S.abend.rechnung.${liste}.splice(${i},1);${ch}">✕</button></div>`;
+ const nm=id=>esc(pres.find(p=>p.id===id)?.name||'?');
+ el.innerHTML=`<div class="row" style="margin-top:6px;align-items:flex-end"><div class="f"><label>Gesamt €</label><input inputmode="decimal" placeholder="alles" value="${eu(R.gesamt)}" onchange="S.abend.rechnung.gesamt=this.value.replace(',','.');${ch}"></div>
+ <div class="f"><label>davon Essen €</label><input inputmode="decimal" placeholder="nur Speisen" value="${eu(R.essen)}" onchange="S.abend.rechnung.essen=this.value.replace(',','.');${ch}"></div>
+ <div class="f"><label>Trinkgeld €</label><input inputmode="decimal" value="${eu(R.trinkgeld)}" onchange="S.abend.rechnung.trinkgeld=this.value.replace(',','.');${ch}"></div></div>
+ <label>🍽️ Wer hat mitgegessen? <span class="muted" style="font-weight:400">(antippen = hat nichts gegessen)</span></label>
+ <div class="chips wrap">${pres.map(p=>{const isst=!R.ohneEssen.includes(p.id);return`<button class="chip ${isst?'on':''}" aria-pressed="${isst}" onclick="act.rEsser('${p.id}')">${isst?'🍽️':'🚫'} ${esc(p.name)}</button>`}).join('')}</div>
+ <label>🍖 Teures Essen <span class="muted" style="font-weight:400">(Preis eintragen – nur der Teil über ${eur(schw)} geht auf die Person)</span></label>
+ ${R.extras.map((e,i)=>zeile('extras',i,e,'Preis €')+(num(e.betrag)>schw&&e.pid?`<div class="small muted" style="margin:-2px 0 8px 4px">→ ${nm(e.pid)} zahlt ${eur(num(e.betrag)-schw)} extra, ${eur(schw)} gehen in den Essens-Topf${R.ohneEssen.includes(e.pid)?' <b style="color:var(--rot)">– ist aber als „hat nichts gegessen“ markiert!</b>':''}</div>`:num(e.betrag)>0?`<div class="small muted" style="margin:-2px 0 8px 4px">nicht über ${eur(schw)} – zählt ganz normal zum Essens-Topf</div>`:'')).join('')}
+ <div class="row wrap"><button class="btn s" onclick="S.abend.rechnung.extras.push({pid:'',betrag:''});renderRechnung()">+ Teures Essen</button><button class="btn s" onclick="act.teuerAusBestellung()">Aus Bestellung übernehmen</button></div>
+ <label>🥃 Schnapsrunden <span class="muted" style="font-weight:400">(zahlt allein, wer sie ausgibt – z. B. Geburtstag)</span></label>
+ ${R.runden.map((e,i)=>zeile('runden',i,e,'€')).join('')}
+ <button class="btn s" onclick="S.abend.rechnung.runden.push({pid:'',betrag:''});renderRechnung()">+ Schnapsrunde</button>
+ <div class="banner" style="margin:12px 0 0">${z.gesamt||z.tg?`<div><b>Topf 1 · Getränke & Co.</b> (alle ${z.n})<br>${eur(z.getr)}${z.rSum?' − '+eur(z.rSum)+' Schnapsrunde'+(z.runden.length>1?'n':''):''}${z.tg?' + '+eur(z.tg)+' Trinkgeld':''} = ${eur(z.topf1)} ÷ ${z.n} = <b>${eur(z.anteil1)} je Person</b></div>
+  <div style="margin-top:8px"><b>Topf 2 · Essen</b> (${z.nEsser} Esser)<br>${z.essen?`${eur(z.essen)}${z.zSum?' − '+eur(z.zSum)+' Zuschlag teures Essen':''} = ${eur(z.topf2)} ÷ ${z.nEsser||0} = <b>${eur(z.anteil2)} je Esser</b>`:'<span class="muted">noch kein Essensbetrag – dann läuft alles über Topf 1</span>'}</div>
+  ${z.essenOhneEsser?'<div style="margin-top:6px;color:var(--rot)"><b>⚠ Essen eingetragen, aber niemand hat gegessen.</b></div>':''}
+  ${z.teuer.length||z.runden.length?`<div style="margin-top:8px"><b>Zahlen zusätzlich allein</b><br>${[...z.teuer.map(e=>`🍖 ${nm(e.pid)}: ${eur(e.zuschlag)}`),...z.runden.map(e=>`🥃 ${nm(e.pid)}: ${eur(num(e.betrag))}`)].join('<br>')}</div>`:''}`
+  :'Rechnung eintragen: <b>Gesamtbetrag</b> und <b>davon Essen</b>. Getränke & Co. teilen sich alle, das Essen nur die, die gegessen haben. Bei teurem Essen zahlt die Person nur den Teil über '+eur(schw)+' selbst, Schnapsrunden der Spender.'}</div>`}
+act.rEsser=pid=>{const R=S.abend.rechnung;R.ohneEssen=R.ohneEssen||[];const i=R.ohneEssen.indexOf(pid);if(i<0)R.ohneEssen.push(pid);else R.ohneEssen.splice(i,1);abendChanged(false);renderRechnung()};
 act.teuerAusBestellung=async()=>{await loadKarte();const b=(await Store.get(`bestellungen/${S.abend.id}.json`)).data,schw=S.verein.teuerSchwelle??20;
- const pres=S.abend.spieler.filter(p=>p.anwesend),neu=(b?.positionen||[]).filter(x=>num(x.preis)>schw).map(x=>({pid:(pres.find(p=>p.id===x.fuer||p.name===x.fuerName)||{}).id||'',betrag:String(x.preis),text:(x.nr?x.nr+' ':'')+x.gericht})).filter(e=>e.pid);
- if(!neu.length)return toast(`Keine Gerichte über ${eur(schw)} in der Bestellung (Preise nötig)`);
- const R=S.abend.rechnung;R.extras=(R.extras||[]).filter(e=>e.pid||num(e.betrag));for(const e of neu)if(!R.extras.some(x=>x.pid===e.pid&&num(x.betrag)===num(e.betrag)))R.extras.push(e);
- toast(`${neu.length} teure${neu.length===1?'s':''} Essen übernommen`);abendChanged(false);renderRechnung()};
+ const pres=S.abend.spieler.filter(p=>p.anwesend),pos=b?.positionen||[],pidVon=x=>(pres.find(p=>p.id===x.fuer||p.name===x.fuerName)||{}).id||'';
+ if(!pos.length)return toast('Für heute gibt es noch keine Essensbestellung');
+ const summe={};for(const x of pos){const id=pidVon(x);if(id&&num(x.preis)>0)summe[id]=(summe[id]||0)+num(x.preis)}
+ const R=S.abend.rechnung,besteller=new Set(pos.map(pidVon).filter(Boolean));
+ R.ohneEssen=pres.filter(p=>!besteller.has(p.id)).map(p=>p.id);
+ const neu=Object.entries(summe).filter(([,v])=>v>schw);R.extras=(R.extras||[]).filter(e=>e.pid&&!summe[e.pid]&&num(e.betrag));for(const[pid,v]of neu)R.extras.push({pid,betrag:String(r2(v))});
+ toast(`Übernommen: ${besteller.size} Esser${neu.length?`, ${neu.length}× teures Essen`:''}${Object.keys(summe).length?'':' (ohne Preise – teures Essen bitte von Hand)'}`,4000);abendChanged(false);renderRechnung()};
 act.abschliessen=async()=>{if(lsGet('kt_abend_dirty')){await speichereAbend();if(lsGet('kt_abend_dirty'))return toast('📴 Zum Abschließen braucht es kurz Internet – die Strichliste ist sicher auf diesem Gerät gespeichert.',5000)}
  await flushOutbox();const c=berechneAbend(S.abend,S.verein),ab=S.abend.spieler.filter(p=>c.res[p.id]?.abwesend),tp=S.abend.spieler.filter(p=>!p.gast&&c.res[p.id]&&!c.res[p.id].abwesend&&c.max>0&&c.res[p.id].strafe===c.max);ask(`Abend ${fmtD(S.abend.id)} abschließen? Höchste Strafe: ${eur(c.max)}${tp.length?' ('+tp.map(p=>p.name).join(', ')+')':''}.${ab.length?` ${ab.length} Abwesende bekommen je ${eur(c.max)}: ${ab.map(p=>p.name).join(', ')}.`:''} Danach wird auf die Konten gebucht.`,'Abschließen',async()=>{
  const a=S.abend,{res}=berechneAbend(a,S.verein);
@@ -1048,7 +1091,7 @@ act.invZurueck=id=>{const g=S.inv.gegenstaende.find(x=>x.id===id),lager=g.lager|
   <div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn p f" onclick="act.invZurueckGo('${id}')">Speichern</button></div>`)};
 act.invZurueckGo=id=>{const ort=($('#inv-o').value||'').trim()||'bei Ortelt';closeSheet();enqueue('inventar.json',{t:'invZurueck',id,ort,ts:new Date().toISOString()},'Zurückgegeben',1500);rerender();toast('✓ Danke! Liegt jetzt '+ort)};
 act.invForm=id=>{const g=id?S.inv.gegenstaende.find(x=>x.id===id):{emoji:'📦',name:'',lager:'bei Ortelt',notiz:''};
- sheet(`<h3>${id?'Gegenstand bearbeiten':'Gegenstand hinzufügen'}</h3><div class="row"><div style="flex:0 0 72px"><label>Symbol</label><input id="iv-e" value="${esc(g.emoji||'📦')}" maxlength="4" style="text-align:center;font-size:22px"></div><div class="f"><label>Name</label><input id="iv-n" value="${esc(g.name)}" placeholder="z. B. Bierzeltgarnitur"></div></div>
+ sheet(`<h3>${id?'Gegenstand bearbeiten':'Gegenstand hinzufügen'}</h3><div class="row" style="align-items:flex-end"><div style="flex:0 0 72px"><label>Symbol</label><input id="iv-e" value="${esc(g.emoji||'📦')}" maxlength="4" style="text-align:center;font-size:22px"></div><div class="f"><label>Name</label><input id="iv-n" value="${esc(g.name)}" placeholder="z. B. Bierzeltgarnitur"></div></div>
   <label>Lagerort (wenn nicht ausgeliehen)</label><input id="iv-l" value="${esc(g.lager||'')}" placeholder="z. B. bei Ortelt">
   <label>Notiz (optional)</label><input id="iv-x" value="${esc(g.notiz||'')}" placeholder="z. B. Kabel & Fernbedienung in der Tasche">
   <div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn p f" onclick="act.invSave('${id||''}')">Speichern</button></div>
@@ -1205,7 +1248,10 @@ act.bericht=async tid=>{const t=T(tid);if(!t)return;setSync('⏳');
  const sm=t.strafen||{};if(Object.keys(sm).length){const pr=Object.entries(sm).filter(([id])=>!t.abwesend?.includes(id)).sort((a,b)=>a[1]-b[1]),tot=Object.values(sm).reduce((a,b)=>a+b,0)+gst.reduce((a,g)=>a+(g.strafe||0),0);
   L.push('',`💸 ${B('Strafen')} (gesamt ${eur(tot)})`);pr.forEach(([id,v],i)=>L.push(`${i===0?'😇 ':''}${nameOf(id)}: ${eur(v)}`));gst.forEach(g=>L.push(`${g.name} (Gast): ${eur(g.strafe||0)}`));
   if(t.abwesend?.length)L.push(`Abwesende zahlen die höchste Strafe: ${eur(Math.max(...Object.values(sm)))}`)}
- if(ab?.rechnung){const c=berechneAbend(ab,S.verein);if(c.gesamt||num(ab.rechnung.trinkgeld)){L.push('',`🧾 ${B('Samos')}`,`Rechnung ${eur(c.gesamt)} + Trinkgeld ${eur(num(ab.rechnung.trinkgeld))}${c.exSum?' − teures Essen '+eur(c.exSum):''} → ${eur(c.anteil)} pro Person`);
+ if(ab?.rechnung){const c=berechneAbend(ab,S.verein);if(c.v2&&(c.gesamt||c.v2.tg)){const z=c.v2;L.push('',`🧾 ${B('Samos')}`,`Rechnung ${eur(z.gesamt)}${z.essen?` (Essen ${eur(z.essen)})`:''}${z.tg?' + Trinkgeld '+eur(z.tg):''}`,
+   `🍺 Getränke & Co.: ${eur(z.anteil1)} pro Person`);if(z.essen)L.push(`🍽️ Essen: ${eur(z.anteil2)} pro Esser${z.n>z.nEsser?` (${z.n-z.nEsser} ohne Essen)`:''}`);
+   z.teuer.forEach(e=>L.push(`🍖 ${nm(e.pid)}: +${eur(e.zuschlag)} (teures Essen)`));z.runden.forEach(e=>L.push(`🥃 ${nm(e.pid)}: Schnapsrunde ${eur(num(e.betrag))}`))}
+ else if(c.gesamt||num(ab.rechnung.trinkgeld)){L.push('',`🧾 ${B('Samos')}`,`Rechnung ${eur(c.gesamt)} + Trinkgeld ${eur(num(ab.rechnung.trinkgeld))}${c.exSum?' − teures Essen '+eur(c.exSum):''} → ${eur(c.anteil)} pro Person`);
   (ab.rechnung.extras||[]).filter(e=>num(e.betrag)>0).forEach(e=>L.push(`🍖 ${nm(e.pid)}: teures Essen ${eur(num(e.betrag))}`))}}
  const abr=Object.entries(t.abrechnung||{}).sort((a,b)=>nameOf(a[0]).localeCompare(nameOf(b[0]),'de'));
  if(abr.length){L.push('',`💶 ${B('Wird aufs Konto gebucht')} (Strafe + Anteil Samos)`);abr.forEach(([id,v])=>L.push(`${nameOf(id)}: ${eur(v)}`));gst.forEach(g=>L.push(`${g.name} (Gast): ${eur(g.betrag)}`))}
@@ -1556,7 +1602,7 @@ const ANL=[
  ['start','📱','Als App aufs Handy',`<ol class="steps"><li><b>iPhone:</b> Link in <b>Safari</b> öffnen → unten <b>Teilen</b> (Viereck mit Pfeil) → <b>„Zum Home-Bildschirm“</b>.</li><li><b>Android:</b> Link in <b>Chrome</b> öffnen → oben <b>⋮</b> → <b>„App installieren“</b> bzw. „Zum Startbildschirm hinzufügen“.</li><li>Ab jetzt die App über das Kegel-Symbol starten. Beim ersten Mal dich selbst aus der Liste wählen – fertig.</li></ol>`],
  ['termine','📅','Zusagen & Fahrgemeinschaft',ILL.zusage()+`<ol class="steps"><li>Auf <b>Start</b> oder unter <b>Termine</b> beim Abend <b>Dabei</b>, <b>Unsicher</b> oder <b>Nicht dabei</b> antippen.</li><li>Unter <b>Anreise & Details</b> angeben, wie du hinkommst.</li><li>Optional eine Bemerkung, z. B. „komme später“.</li><li><b>📅 In den Kalender</b>: iPhone → „Hinzufügen“ bestätigen; Android → Google Kalender öffnet sich fertig ausgefüllt.</li></ol>`+ILL.anreise()+`<p class="small muted">Besondere Termine (Konzert, Kegelfahrt) legt jeder selbst unter Termine → <b>+ Termin</b> an.</p>`],
  ['essen','🍽️','Essen bestellen',ILL.essen()+`<ol class="steps"><li>Reiter <b>Essen</b> öffnen – der nächste Abend ist schon gewählt.</li><li><b>Nummer</b> von der Samos-Karte eintippen, das Gericht erscheint automatisch. Sonderwunsch dazu, <b>+ Hinzufügen</b>.</li><li>Für andere bestellen: oben bei <b>„Für“</b> die Person wählen.</li><li>Deine häufigsten Bestellungen erscheinen als <b>⚡ Favoriten</b> – ein Tipp genügt.</li><li>Unten steht die fertige Bestellliste zum Vorlesen oder Teilen.</li></ol>`],
- ['abend','🎳','Kegelabend erfassen (Strichliste)',`<p class="small" style="margin-top:0"><b>Nur ein Gerät führt die Tafel</b> – am besten ein Handy oder Tablet quer auf dem Tisch. Alle anderen sehen den Stand.</p>`+ILL.strich()+`<ol class="steps"><li>Reiter <b>Abend</b> → <b>Strichliste starten</b>.</li><li>Unter <b>👥 Anwesend</b> abhaken, wer da ist; Gäste unten mit Namen hinzufügen.</li><li><b>Sitzordnung auslosen</b> – sie steht dann für den ganzen Abend (Teamspiele: Tafelseite gegen Türseite). Wer später kommt, wird über „Nachzügler zuordnen“ ergänzt.</li><li>Strafe <b>links</b> wählen (Pudel, Glöckchen, Alle Neune …), Spieler <b>rechts</b> antippen. Vertippt? <b>− Korrektur</b> einschalten und nochmal tippen.</li><li>Gespielte Spiele unter <b>🏆 Spiele heute</b> eintragen – Platzierungen und verlorene Teamspiele rechnet die Tafel selbst.</li><li>Am Ende <b>Rechnung Samos</b> (Gesamtbetrag + Trinkgeld) eintragen und <b>Abend abschließen</b>. Danach kommt der WhatsApp-Bericht zum Teilen.</li></ol>
+ ['abend','🎳','Kegelabend erfassen (Strichliste)',`<p class="small" style="margin-top:0"><b>Nur ein Gerät führt die Tafel</b> – am besten ein Handy oder Tablet quer auf dem Tisch. Alle anderen sehen den Stand.</p>`+ILL.strich()+`<ol class="steps"><li>Reiter <b>Abend</b> → <b>Strichliste starten</b>.</li><li>Unter <b>👥 Anwesend</b> abhaken, wer da ist; Gäste unten mit Namen hinzufügen.</li><li><b>Sitzordnung auslosen</b> – sie steht dann für den ganzen Abend (Teamspiele: Tafelseite gegen Türseite). Wer später kommt, wird über „Nachzügler zuordnen“ ergänzt.</li><li>Strafe <b>links</b> wählen (Pudel, Glöckchen, Alle Neune …), Spieler <b>rechts</b> antippen. Vertippt? <b>− Korrektur</b> einschalten und nochmal tippen.</li><li>Gespielte Spiele unter <b>🏆 Spiele heute</b> eintragen – Platzierungen und verlorene Teamspiele rechnet die Tafel selbst.</li><li>Am Ende <b>Rechnung Samos</b> eintragen: Gesamtbetrag, <b>davon Essen</b> und Trinkgeld. Wer nichts gegessen hat, antippen; teures Essen (nur der Teil über 20 € zählt extra) und Schnapsrunden der richtigen Person zuordnen. Dann <b>Abend abschließen</b>. Danach kommt der WhatsApp-Bericht zum Teilen.</li></ol>
   <p class="small muted">Kein Empfang auf der Bahn? Kein Problem – siehe „Ohne Empfang“.</p>`],
  ['pinnwand','📌','Pinnwand',`<ol class="steps"><li>Auf <b>Start</b> unter 📌 Pinnwand auf <b>+ Bemerkung anpinnen</b> tippen.</li><li>Art wählen: <b>💡 App-Wunsch</b>, <b>💬 Allgemein</b> oder <b>📢 Hinweis</b>.</li><li>Wie lange sichtbar: <b>24 Std.</b>, <b>1 Woche</b> oder <b>1 Monat</b> – danach verschwindet sie von selbst.</li><li>Bemerkungen der anderen mit <b>👍</b> oder <b>👎</b> bewerten – nochmal tippen nimmt die Bewertung zurück.</li><li>Eigene Bemerkungen mit ✕ wieder entfernen.</li></ol>`],
  ['inventar','📦','Vereinsgegenstände ausleihen',`<ol class="steps"><li><b>Mehr → Vereinsgegenstände & Verleih</b>: Beamer, Soundbox, Starlink-Antenne & Co. – mit Lagerort.</li><li><b>Ausleihen</b> antippen, Person und Rückgabe (1 Tag bis 1 Monat) wählen.</li><li>Wer etwas hat, sieht es auf seiner <b>Startseite</b> – kurz vor Ablauf mit „Bring die Sachen zurück!“.</li><li>Zurückgebracht? <b>✓ Zurückgegeben</b> tippen und sagen, wo es jetzt liegt.</li></ol>`],
@@ -1631,7 +1677,7 @@ function vProfil(){const m=M(S.me);
  <div class="card"><h3>Als App installieren</h3><p class="small" style="margin:0"><b>iPhone:</b> Safari → Teilen → „Zum Home-Bildschirm“<br><b>Android:</b> Chrome → ⋮ → „App installieren“</p></div>`}
 function vStrafen(){return`<div class="card"><table>${strafen().map((s,i)=>`<tr><td>${esc(s.name)}${s.art==='andere'?'<div class="muted small">zahlen alle anderen</div>':''}${s.schnapsJedesMal?`<div class="muted small">jedes ${s.schnapsJedesMal}. Mal zusätzlich eine Runde Schnaps</div>`:''}</td><td style="width:100px">${isAdmin()?`<input inputmode="decimal" value="${String(s.betrag).replace('.',',')}" onchange="act.strafe(${i},this.value)">`:eur(s.betrag)}</td></tr>`).join('')}
  <tr><td>Platzierung Einzelspiel (2. bis Letzter)</td><td>0,10 € je Platz</td></tr><tr><td>Mehr als 200 € Rückstand</td><td>Kostüm 🎭</td></tr></table></div>
- <div class="card"><h3>Beiträge (Satzung § 3)</h3><table><tr><td>Woche ohne Termin</td><td>${eur(S.verein.wochenbeitrag??5)}</td></tr><tr><td>Termin ausgefallen</td><td>${eur(S.verein.pauschaleAusfall??15)}</td></tr><tr><td>Abwesend beim Termin</td><td>höchste Strafe des Abends</td></tr><tr><td>Anwesend</td><td>Strafen + gleicher Anteil an Samos-Rechnung und Trinkgeld; teures Essen (über 20 €) zahlt jeder selbst</td></tr><tr><td>Gäste</td><td>wie Anwesende, keine Wochenbeiträge</td></tr></table></div>`}
+ <div class="card"><h3>Beiträge (Satzung § 3)</h3><table><tr><td>Woche ohne Termin</td><td>${eur(S.verein.wochenbeitrag??5)}</td></tr><tr><td>Termin ausgefallen</td><td>${eur(S.verein.pauschaleAusfall??15)}</td></tr><tr><td>Abwesend beim Termin</td><td>höchste Strafe des Abends</td></tr><tr><td>Anwesend</td><td>Strafen + Anteil Getränke & Co. (durch alle) + Anteil Essen (durch alle, die gegessen haben); bei Essen über 20 € zahlt die Person nur den Teil darüber selbst; Schnapsrunden zahlt der Spender</td></tr><tr><td>Gäste</td><td>wie Anwesende, keine Wochenbeiträge</td></tr></table></div>`}
 function vAdmin(){
  if(!adminOffen()){
   if(!adminCfg())return`<div class="card hero"><h2 style="margin-top:0">🔒 Admin-Bereich</h2><p>Es ist noch kein Admin-Passwort festgelegt.</p>${darfEinrichten()?`<button class="btn p w" onclick="act.adminSetzen()">Admin-Passwort jetzt festlegen</button>`:`<p class="muted small" style="margin-bottom:0">Das kann nur ein Mitglied mit der Rolle „admin“.</p>`}</div>`;
