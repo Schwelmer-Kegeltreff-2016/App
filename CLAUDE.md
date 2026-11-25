@@ -1,6 +1,6 @@
 # Schwelmer Kegeltreff – App · Projektbeschreibung für Claude
 
-> Stand: Version **1.4.0** (25.11.2026). Diese Datei ist das Gedächtnis des Projekts.
+> Stand: Version **1.4.1** (25.11.2026). Diese Datei ist das Gedächtnis des Projekts.
 > Bei jeder größeren Änderung hier mitpflegen. Sie enthält **keine** persönlichen Daten oder Zugangsdaten
 > und darf deshalb im öffentlichen Repo `App` liegen.
 
@@ -52,7 +52,7 @@ Wuppertal-Langerfeld, etwa alle 5 Wochen samstags 18 Uhr). Ersetzt das Excel-Kas
 | `excel-kontakte.json` | Kontaktdaten aus Excel, einmalig per Admin-Knopf übernehmen (füllt nur leere Felder) |
 | `spielekatalog.json` | eigene Spiele |
 | `nutzung.json` | wer die App wann/mit welchem Gerät/welcher Version geöffnet hat (Admin-Übersicht) |
-| `bemerkungen.json` | Pinnwand-Einträge (kat app/allg/hinweis, `bis` max. 30 Tage, `votes{id:±1}`) |
+| `bemerkungen.json` | Pinnwand-Einträge (kat app/allg/hinweis, `bis` max. 30 Tage, `votes{id:±1}`, `fotos[]` = Dateinamen auf Zweig `fotos`) |
 | `inventar.json` | Vereinsgegenstände (Beamer, Soundbox, Starlink …) mit `lager`, `ort`, `leihe{wer,seit,bis,tage,notiz}`, `verlauf[]` |
 | `minispiel.json` | Minispiel-Statistik je Person (w, holz, neun, kranz, pudel) |
 | `push.json` | Mitteilungen: `geraete{k:{who,sub,ua,ts}}` (Push-Abo je Gerät), `prefs{who:{thema:bool}}`, `tests[]` |
@@ -200,3 +200,12 @@ abschaltbar im Profil, nicht im Reiter Abend), Admin (Übersicht „Wer nutzt di
   bekommt keine eigene Mitteilung. 404/410 vom Push-Dienst ⇒ Gerät aus `push.json` entfernt.
 - Testen: `DRY_RUN=1 DATA_DIR=… BEFORE_DIR=… EVENT=push|schedule HEUTE=JJJJ-MM-TT STUNDE=8 node mitteilungen/senden.cjs`.
 - iPhone: nur als Home-Bildschirm-App (iOS ≥ 16.4); Erlaubnis nur nach Tippen. Android: Badge meist nur Punkt.
+
+## 14. Pinnwand-Fotos
+- Max. 2 pro Eintrag (`FOTO_MAX`), Canvas auf 720 px, JPEG q 0,6 (bis ~110 KB Base64 runter auf q 0,3) → ca. 30–60 KB.
+- Ablage: App-Daten, **Zweig `fotos`**, Pfad `fotos/<eintrag-id>-<n>.jpg` (Contents API mit `branch`/`ref`). Der Zweig wird
+  beim ersten Foto aus `main` angelegt (`fotoZweig()`); `fotos.cjs` im Ablauf ersetzt ihn 2× täglich durch einen Commit
+  ohne Vorgänger mit nur den Fotos sichtbarer Einträge (+ Fotos jünger als 3 Std.), `--force-with-lease`.
+- Anzeige: `img[data-foto]` → `fotosNachladen()` (afterHook) → `fotoHol()` (Speicher → Cache `kegeltreff-fotos` → API).
+  Löschen des Eintrags → `fotoWeg()`. Upload nur online, vor dem Eintrag; Eintrag selbst über die Warteschlange.
+- Flutlicht: `.chip.on` gelb (Regel steht vor `.hero .chip.on`, damit der Kopfbereich seine Farbe behält).

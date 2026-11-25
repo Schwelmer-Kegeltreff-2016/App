@@ -1,5 +1,14 @@
 # Änderungsliste – Schwelmer Kegeltreff App
 
+## 1.4.1 · 25.11.2026
+- **📷 Fotos auf der Pinnwand:** bis zu 2 Fotos pro Eintrag, auf dem Handy auf max. 720 px / ca. 50 KB verkleinert.
+  Gespeichert in App-Daten auf dem Zweig `fotos` (Ordner `fotos/`), nicht im normalen Datenverlauf. Der GitHub-Ablauf
+  baut den Zweig 2× täglich ohne Verlauf neu auf und behält nur Fotos sichtbarer Einträge (`mitteilungen/fotos.cjs`).
+  Löschen eines Eintrags löscht die Fotos sofort mit. Antippen zeigt das Foto groß. Nur mit Internet.
+- Pinnwand-Fenster: Auswahl (Art, Dauer) schaltet direkt um, ohne dass das Fenster neu aufgebaut wird; darunter steht
+  „Verschwindet am … um … Uhr“. Nach dem Anpinnen: „sichtbar bis …“.
+- **Dunkles Design (Flutlicht):** ausgewählte Auswahl-Knöpfe waren kaum zu erkennen (Kontrast 1,1:1) → jetzt gelb.
+
 ## 1.4.0 · 25.11.2026
 - **🔔 Mitteilungen (Push)** auf iPhone (ab iOS 16.4, als Home-Bildschirm-App) und Android: Mehr → Profil → „Mitteilungen
   erlauben“, je Person abschaltbar: Noch nicht abgestimmt (3 Tage vorher), Fahrgemeinschaft, Pinnwand, Termine,

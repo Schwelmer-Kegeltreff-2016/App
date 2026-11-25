@@ -75,6 +75,7 @@ label{display:block;font-size:13px;color:var(--ink2);margin:10px 0 4px;font-weig
 .chips.wrap{flex-wrap:wrap;overflow:visible}
 .chip{flex:0 0 auto;border:0;border-radius:99px;padding:9px 14px;background:var(--chip);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
 .chip.on{background:var(--dark);color:#fff}.chip.an{background:var(--gruenbg);color:var(--gruen)}
+[data-stil=flutlicht] .chip.on{background:var(--gelb);color:var(--on-accent);box-shadow:0 0 0 2px var(--ink)}
 .hero .chip{background:rgba(255,255,255,.12);color:#fff}.hero .chip.on{background:var(--hero-accent);color:var(--hero-accent-ink)}
 .hero .btn.p,.hero .seg .vl{background:var(--hero-accent);color:var(--hero-accent-ink)}
 .dchip{flex:0 0 auto;border:0;border-radius:16px;padding:8px 12px;background:var(--card);box-shadow:0 0 0 1px var(--linie);text-align:center;cursor:pointer;min-width:74px}
@@ -186,7 +187,9 @@ details.faq{border-bottom:1px solid var(--linie);padding:10px 0}details.faq:last
 @media (prefers-reduced-motion:reduce){.tipp{animation:none}}
 .pinn .bem{padding:10px 0;border-bottom:1px solid var(--linie)}.pinn .bem:first-child{padding-top:0}
 .pinn .bem-k{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pinn .bem-k .muted{flex:1}
-.pinn .bem-t{margin:6px 0 4px;white-space:pre-line;font-size:15px;line-height:1.45;overflow-wrap:anywhere}
+.pinn .fotos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:6px 0}.foto{border:0;padding:0;border-radius:12px;overflow:hidden;background:var(--chip);aspect-ratio:4/3;cursor:pointer}.foto img{width:100%;height:100%;object-fit:cover;display:block}.foto.fehlt::after{content:'Foto abgelaufen';font-size:12px;color:var(--muted)}
+.fotos-neu{display:flex;gap:8px;flex-wrap:wrap}.foto-k{position:relative;width:96px;height:96px;border-radius:12px;overflow:hidden;background:var(--chip);display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:28px;color:var(--ink2);cursor:pointer}.foto-k img{width:100%;height:100%;object-fit:cover}.foto-k .x{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:0}.foto-k span{position:absolute;left:4px;bottom:4px;font-size:10px;background:rgba(0,0,0,.55);color:#fff;border-radius:6px;padding:1px 5px}.foto-k small{font-size:12px}.foto-k.neu{border:2px dashed var(--linie)}
+.bem-t{margin:6px 0 4px;white-space:pre-line;font-size:15px;line-height:1.45;overflow-wrap:anywhere}
 .pinn .bem-x{border:0;background:var(--chip);color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;flex:0 0 auto}
 .leih{border-left:0;box-shadow:inset 0 0 0 2px var(--gelb3)}.leih.faellig{box-shadow:inset 0 0 0 2px var(--rot);background:var(--rotbg)}
 .inv .inv-e{font-size:32px;line-height:1;width:44px;text-align:center}.inv-st{display:block;width:fit-content;max-width:100%;margin-top:6px;font-size:13.5px;line-height:1.4;padding:5px 10px;border-radius:12px}
@@ -288,8 +291,8 @@ body.unten nav button span{opacity:0}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='1.4.0';
-const APP_NEU='🔔 Mitteilungen aufs Handy (Profil), Kassenzettel abfotografieren, neue Samos-Abrechnung, Fahrer setzen Mitfahrer ins Auto';
+const APP_VERSION='1.4.1';
+const APP_NEU='📷 Fotos auf der Pinnwand (max. 2 pro Eintrag), Auswahl-Knöpfe im dunklen Design gut sichtbar';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1223,24 +1226,73 @@ function pinnwand(){
  const rest=iso=>{const h=(new Date(iso)-Date.now())/36e5;return h<1?'läuft gleich ab':h<24?'noch '+Math.ceil(h)+' Std.':'noch '+Math.ceil(h/24)+' Tage'};
  return`<div class="sec">📌 Pinnwand${L.length?' ('+L.length+')':''}</div><div class="card pinn">
   ${L.length?L.map(x=>`<div class="bem"><div class="bem-k"><span class="pill">${BEM_KAT[x.kat]?.[0]||'💬'} ${BEM_KAT[x.kat]?.[1]||''}</span><span class="muted small">${esc(nameOf(x.von))} · ${rel(x.ts)}</span>${x.von===S.me||isAdmin()?`<button class="bem-x" aria-label="Bemerkung löschen" onclick="act.bemDel('${x.id}')">✕</button>`:''}</div>
-   <div class="bem-t">${esc(x.text)}</div><div class="bem-f"><span class="muted small f">${rest(x.bis)}</span>${daumen(x)}</div></div>`).join(''):`<p class="muted small" style="margin:0 0 4px">Noch nichts angepinnt. Hinweise, Wünsche für die App oder Allgemeines – für alle sichtbar.</p>`}
-  <button class="btn w" style="margin-top:10px" onclick="act.bemNeu()">+ Bemerkung anpinnen</button></div>`}
+   ${x.text?`<div class="bem-t">${esc(x.text)}</div>`:''}${x.fotos?.length?`<div class="fotos">${x.fotos.map(n=>`<button class="foto" onclick="act.fotoGross('${n}')" aria-label="Foto groß anzeigen"><img data-foto="${n}" alt="Foto von ${esc(nameOf(x.von))}" loading="lazy"></button>`).join('')}</div>`:''}<div class="bem-f"><span class="muted small f">${rest(x.bis)}</span>${daumen(x)}</div></div>`).join(''):`<p class="muted small" style="margin:0 0 4px">Noch nichts angepinnt. Hinweise, Wünsche für die App oder Allgemeines – für alle sichtbar.</p>`}
+  <button class="btn w" style="margin-top:10px" onclick="act.bemNeu()">+ Bemerkung / 📷 Foto anpinnen</button></div>`+(afterHooks.push(fotosNachladen),'')}
 /* Daumen: jedes Mitglied einmal hoch ODER runter; nochmal tippen nimmt es zurück. Eigene Einträge kann man nicht bewerten. */
 function daumen(x){const V=x.votes||{},hoch=Object.values(V).filter(v=>v>0).length,runter=Object.values(V).filter(v=>v<0).length,mein=V[S.me]||0,eigen=x.von===S.me;
  const wer=v=>Object.entries(V).filter(([,w])=>w===v).map(([k])=>nameOf(k)).join(', ');
  return`<span class="daumen">${[[1,'👍',hoch],[-1,'👎',runter]].map(([v,i,n])=>`<button class="dm ${mein===v?'on':''}" ${eigen?'disabled':''} title="${esc(wer(v)||'noch niemand')}" aria-label="${v>0?'Daumen hoch':'Daumen runter'} (${n})" onclick="act.bemVote('${x.id}',${v})">${i}<b>${n||''}</b></button>`).join('')}</span>`}
 act.bemVote=(id,v)=>{const e=S.bem?.eintraege?.find(x=>x.id===id);if(!e||e.von===S.me)return;const neu=(e.votes?.[S.me]||0)===v?0:v;
  enqueue('bemerkungen.json',{t:'bemVote',id,who:S.me,v:neu},'Bewertung',2500);rerender();vib()};
-act.bemNeu=(kat='allg',tage='7')=>{S.bemF={kat,tage};const f=()=>sheet(`<h3>📌 Bemerkung anpinnen</h3><p class="muted small" style="margin-top:0">Sichtbar für alle auf der Startseite – verschwindet automatisch.</p>
- <label>Art</label><div class="chips wrap">${Object.entries(BEM_KAT).map(([k,[i,l]])=>`<button class="chip ${S.bemF.kat===k?'on':''}" onclick="S.bemF.kat='${k}';act._bemF()">${i} ${l}</button>`).join('')}</div>
- <label>Text</label><textarea id="bem-t" rows="4" maxlength="500" placeholder="${S.bemF.kat==='app'?'Was soll die App besser können?':S.bemF.kat==='hinweis'?'z. B. Samstag 15 Min. später, Parkplatz gesperrt …':'Was möchtest du allen sagen?'}">${esc(S.bemF.text||'')}</textarea>
- <label>Sichtbar für</label><div class="chips wrap">${BEM_DAUER.map(([t,l])=>`<button class="chip ${S.bemF.tage===t?'on':''}" onclick="S.bemF.tage='${t}';act._bemF()">${l}</button>`).join('')}</div>
- <div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn p f" onclick="act.bemSave()">Anpinnen</button></div>`);
- act._bemF=()=>{S.bemF.text=$('#bem-t')?.value||'';f()};f();setTimeout(()=>$('#bem-t')?.focus(),80)};
-act.bemSave=()=>{const text=($('#bem-t').value||'').trim();if(!text)return toast('Bitte einen Text eingeben');
- const tage=Math.min(30,+S.bemF.tage||7),jetzt=new Date(),e={id:'b'+jetzt.getTime().toString(36)+Math.random().toString(36).slice(2,5),von:S.me,ts:jetzt.toISOString(),kat:S.bemF.kat,text:text.slice(0,500),bis:new Date(jetzt.getTime()+tage*864e5).toISOString()};
- S.bem=S.bem||{eintraege:[]};S.bemF=null;closeSheet();enqueue('bemerkungen.json',{t:'bemAdd',e},'Bemerkung angepinnt',1500);rerender();toast('📌 Angepinnt')};
-act.bemDel=id=>ask('Bemerkung von der Pinnwand nehmen?','Entfernen',()=>{enqueue('bemerkungen.json',{t:'bemDel',id},'Bemerkung entfernt',1500);rerender()},true);
+act.bemNeu=(kat='allg',tage='7')=>{S.bemF={kat,tage,fotos:[]};
+ sheet(`<h3>📌 Bemerkung anpinnen</h3><p class="muted small" style="margin-top:0">Sichtbar für alle auf der Startseite – verschwindet automatisch.</p>
+ <label>Art</label><div class="chips wrap" id="bem-k">${Object.entries(BEM_KAT).map(([k,[i,l]])=>`<button class="chip ${kat===k?'on':''}" aria-pressed="${kat===k}" onclick="act.bemWahl(this,'kat','${k}')">${i} ${l}</button>`).join('')}</div>
+ <label>Text</label><textarea id="bem-t" rows="4" maxlength="500" placeholder="${BEM_PH[kat]}"></textarea>
+ <label>📷 Fotos <span class="muted" style="font-weight:400">(höchstens ${FOTO_MAX}, werden stark verkleinert)</span></label>
+ <div id="bem-fotos" class="fotos-neu"></div>
+ <label>Sichtbar für</label><div class="chips wrap" id="bem-d">${BEM_DAUER.map(([t,l])=>`<button class="chip ${tage===t?'on':''}" aria-pressed="${tage===t}" onclick="act.bemWahl(this,'tage','${t}')">${l}</button>`).join('')}</div>
+ <div class="small muted" id="bem-bis" style="margin:6px 2px 0"></div>
+ <div class="row" style="margin-top:14px"><button class="btn f" onclick="closeSheet()">Abbrechen</button><button class="btn p f" id="bem-go" onclick="act.bemSave()">Anpinnen</button></div>`);
+ bemFotosZeigen();bemBis()};
+const BEM_PH={app:'Was soll die App besser können?',hinweis:'z. B. Samstag 15 Min. später, Parkplatz gesperrt …',allg:'Was möchtest du allen sagen?'};
+function bemBis(){const el=$('#bem-bis');if(!el||!S.bemF)return;const bis=new Date(Date.now()+(+S.bemF.tage||7)*864e5);
+ el.innerHTML=`✓ Verschwindet am <b>${bis.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})} um ${bis.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr</b>${S.bemF.fotos.length?' – mit den Fotos':''}`}
+/* Auswahl direkt umschalten (ohne das Fenster neu aufzubauen – sonst springt es auf dem iPhone) */
+act.bemWahl=(btn,feld,wert)=>{if(!S.bemF)return;S.bemF[feld]=wert;btn.parentNode.querySelectorAll('.chip').forEach(c=>{const an=c===btn;c.classList.toggle('on',an);c.setAttribute('aria-pressed',an)});
+ if(feld==='kat'){const t=$('#bem-t');if(t)t.placeholder=BEM_PH[wert]||''}bemBis();vib()};
+function bemFotosZeigen(){const el=$('#bem-fotos');if(!el||!S.bemF)return;const F=S.bemF.fotos;
+ el.innerHTML=F.map((f,i)=>`<div class="foto-k"><img src="${f.url}" alt="Foto ${i+1}"><button class="x" aria-label="Foto entfernen" onclick="act.bemFotoWeg(${i})">✕</button><span>${Math.round(f.bytes/1024)} KB</span></div>`).join('')
+  +(F.length<FOTO_MAX?`<label class="foto-k neu" role="button">${S.bemF.laedt?'<span class="spin">🎳</span>':'＋<small>Foto</small>'}<input type="file" accept="image/*" ${FOTO_MAX-F.length>1?'multiple':''} hidden onchange="act.bemFoto(this)"></label>`:'');bemBis()}
+act.bemFoto=async inp=>{const files=[...(inp.files||[])];inp.value='';if(!files.length||!S.bemF)return;const F=S.bemF.fotos;
+ if(files.length>FOTO_MAX-F.length)toast(`Höchstens ${FOTO_MAX} Fotos pro Eintrag – die ersten werden genommen`);
+ S.bemF.laedt=true;bemFotosZeigen();
+ try{for(const f of files.slice(0,FOTO_MAX-F.length)){const r=await fotoVerkleinern(f);if(S.bemF)S.bemF.fotos.push(r)}}catch(e){toast('⚠ Foto nicht lesbar: '+(e.message||e))}
+ if(S.bemF){S.bemF.laedt=false;bemFotosZeigen()}};
+act.bemFotoWeg=i=>{S.bemF?.fotos.splice(i,1);bemFotosZeigen()};
+act.bemSave=async()=>{const text=($('#bem-t').value||'').trim(),F=S.bemF.fotos||[];if(!text&&!F.length)return toast('Bitte einen Text eingeben oder ein Foto wählen');
+ const tage=Math.min(30,+S.bemF.tage||7),jetzt=new Date(),id='b'+jetzt.getTime().toString(36)+Math.random().toString(36).slice(2,5);
+ const e={id,von:S.me,ts:jetzt.toISOString(),kat:S.bemF.kat,text:text.slice(0,500),bis:new Date(jetzt.getTime()+tage*864e5).toISOString()};
+ if(F.length){if(!navigator.onLine&&!Store.isDemo())return toast('📴 Fotos brauchen Internet – bitte gleich nochmal');
+  const btn=$('#bem-go');if(btn){btn.disabled=true;btn.textContent='Lade Fotos hoch …'}
+  try{e.fotos=[];for(let i=0;i<F.length;i++){const n=`${id}-${i+1}.jpg`;await fotoHoch(n,F[i].b64,`${meName()}: Foto für Pinnwand`);FOTO_MEM[n]=F[i].url;e.fotos.push(n)}}
+  catch(err){if(btn){btn.disabled=false;btn.textContent='Anpinnen'}return toast('⚠ Foto-Upload fehlgeschlagen: '+(err.message||err),5000)}}
+ S.bem=S.bem||{eintraege:[]};S.bemF=null;closeSheet();enqueue('bemerkungen.json',{t:'bemAdd',e},'Bemerkung angepinnt'+(F.length?` (${F.length} Foto${F.length>1?'s':''})`:''),1500);rerender();
+ toast(`📌 Angepinnt – sichtbar bis ${new Date(e.bis).toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'})}`,3500)};
+/* ---------- Fotos: stark verkleinert, liegen im Daten-Repo auf dem eigenen Zweig „fotos“, der jede Nacht
+   neu aufgebaut wird – abgelaufene Fotos verschwinden dabei samt Verlauf. Nur mit Internet. ---------- */
+const FOTO_MAX=2,FOTO_PX=720,FOTO_BR='fotos',FOTO_MEM={};
+async function fotoVerkleinern(file){const img=await bildLaden(file),f=Math.min(1,FOTO_PX/Math.max(img.width,img.height));
+ const cv=document.createElement('canvas');cv.width=Math.round(img.width*f);cv.height=Math.round(img.height*f);const cx=cv.getContext('2d');cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(img,0,0,cv.width,cv.height);img.close?.();
+ let q=.6,url=cv.toDataURL('image/jpeg',q);while(url.length>110000&&q>.3){q-=.1;url=cv.toDataURL('image/jpeg',q)}
+ const b64=url.split(',')[1];return{url,b64,bytes:Math.round(b64.length*3/4)}}
+const ghApi=p=>`https://api.github.com/repos/${OWNER}/${REPO}/${p}`;
+async function fotoZweig(){if(S.fotoZweig)return;const h=Store.hdr();let r=await fetch(ghApi('git/ref/heads/'+FOTO_BR),{headers:h});
+ if(r.status===404){const m=await fetch(ghApi('git/ref/heads/'+BRANCH),{headers:h});if(!m.ok)throw await apiErr(m);const sha=(await m.json()).object.sha;
+  r=await fetch(ghApi('git/refs'),{method:'POST',headers:{...h,'Content-Type':'application/json'},body:JSON.stringify({ref:'refs/heads/'+FOTO_BR,sha})});if(!r.ok&&r.status!==422)throw await apiErr(r)}
+ else if(!r.ok)throw await apiErr(r);S.fotoZweig=true}
+async function fotoHoch(name,b64,msg){if(Store.isDemo()){FOTO_MEM[name]='data:image/jpeg;base64,'+b64;return}
+ await fotoZweig();let r;try{r=await fetch(ghApi('contents/fotos/'+name),{method:'PUT',headers:{...Store.hdr(),'Content-Type':'application/json'},body:JSON.stringify({message:msg,content:b64,branch:FOTO_BR})})}catch(_){throw offErr()}
+ if(!r.ok)throw await apiErr(r)}
+async function fotoHol(name){if(FOTO_MEM[name])return FOTO_MEM[name];if(Store.isDemo())return null;
+ try{const c=await caches.open('kegeltreff-fotos'),hit=await c.match(name);if(hit){return FOTO_MEM[name]=await hit.text()}}catch(_){}
+ const r=await fetch(ghApi('contents/fotos/'+name+'?ref='+FOTO_BR),{headers:Store.hdr()});if(!r.ok)return null;const j=await r.json();
+ const url='data:image/jpeg;base64,'+String(j.content||'').replace(/\s/g,'');FOTO_MEM[name]=url;try{(await caches.open('kegeltreff-fotos')).put(name,new Response(url))}catch(_){}return url}
+async function fotoWeg(name){if(Store.isDemo()){delete FOTO_MEM[name];return}try{const h=Store.hdr(),r=await fetch(ghApi('contents/fotos/'+name+'?ref='+FOTO_BR),{headers:h});if(!r.ok)return;const sha=(await r.json()).sha;
+ await fetch(ghApi('contents/fotos/'+name),{method:'DELETE',headers:{...h,'Content-Type':'application/json'},body:JSON.stringify({message:meName()+': Foto entfernt',sha,branch:FOTO_BR})});(await caches.open('kegeltreff-fotos')).delete(name)}catch(_){}}
+/* nach dem Zeichnen: Vorschaubilder nachladen */
+function fotosNachladen(){document.querySelectorAll('img[data-foto]:not([src])').forEach(img=>{const n=img.dataset.foto;fotoHol(n).then(u=>{if(u)img.src=u;else img.closest('.foto')?.classList.add('fehlt')}).catch(()=>img.closest('.foto')?.classList.add('fehlt'))})}
+act.fotoGross=n=>{const u=FOTO_MEM[n];if(!u)return;sheet(`<img src="${u}" alt="Foto" style="width:100%;border-radius:14px;display:block"><button class="btn w" style="margin-top:12px" onclick="closeSheet()">Schließen</button>`)};
+act.bemDel=id=>ask('Bemerkung von der Pinnwand nehmen?','Entfernen',()=>{const f=S.bem?.eintraege?.find(x=>x.id===id)?.fotos||[];enqueue('bemerkungen.json',{t:'bemDel',id},'Bemerkung entfernt',1500);f.forEach(fotoWeg);rerender()},true);
 function vStart(){
  const m=M(S.me),t=naechsterTermin(),sd=naechsterSonder(),k=konto(S.me),Y=todayISO().slice(0,4),hh=new Date().getHours();
  if(!S.hist&&!S.histLoading){S.histLoading=true;afterHooks.push(()=>loadHist().then(()=>{S.histLoading=false;if(S.tab==='start')rerender()}).catch(()=>{S.histLoading=false}))}
