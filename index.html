@@ -111,7 +111,8 @@ details>summary::-webkit-details-marker{display:none}
 details>summary::after{content:"›";transform:rotate(90deg);font-size:22px;color:var(--muted);transition:transform .15s}
 details[open]>summary::after{transform:rotate(270deg)}
 .cat{margin:12px 0 4px;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2)}
-.dish{display:flex;gap:10px;padding:10px 2px;border-bottom:1px solid var(--linie);cursor:pointer;align-items:flex-start}
+.dish{display:flex;gap:10px;padding:10px 2px;border-bottom:1px solid var(--linie);cursor:pointer;align-items:flex-start}.dish.getr{cursor:default}.stern{flex:0 0 auto;border:0;background:none;font-size:24px;line-height:1;width:40px;height:40px;margin:-8px -6px -8px 0;color:var(--ink2);cursor:pointer;border-radius:50%}.stern.an{color:#E0A800}[data-stil=flutlicht] .stern.an{color:var(--gelb)}.dish.getr .nr{background:var(--chip)}
+.kgr{border-bottom:1px solid var(--linie)}.kgr-k{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:10px;width:100%;padding:13px 2px;cursor:pointer;font-size:15px}.kgr-k b{flex:1}.kgr-k .pf{display:inline-block;width:14px;transition:transform .15s;color:var(--ink2)}.kgr.auf .kgr-k .pf{transform:rotate(90deg)}.kgr-i{padding:0 0 8px 6px}.kgr-i .dish:last-child{border-bottom:0}.kgr.fav .kgr-k b{color:var(--ink)}.kgr.fav{background:var(--gelb2);border-radius:12px;padding:0 10px;margin:4px 0 6px;border-bottom:0}
 .dish .nr{min-width:38px;font-weight:800;background:var(--gelb2);border-radius:8px;text-align:center;padding:2px 0}.dish .pr{white-space:nowrap;font-weight:700}
 .banner{background:var(--gelb2);border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:10px}
 .drv{border-radius:16px;background:var(--tapbg);padding:12px;margin-bottom:8px}
@@ -291,8 +292,8 @@ body.unten nav button span{opacity:0}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='1.4.1';
-const APP_NEU='📷 Fotos auf der Pinnwand (max. 2 pro Eintrag), Auswahl-Knöpfe im dunklen Design gut sichtbar';
+const APP_VERSION='1.4.2';
+const APP_NEU='🍽️ Neue Samos-Karte mit Preisen, Kategorien zum Aufklappen, ⭐ eigene Favoriten per Stern';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -415,6 +416,7 @@ const OPS={
  zusageDel:(d,o)=>{const t=d.termine?.find(x=>x.id===o.tid);if(!t?.zusagen)return;delete t.zusagen[o.who];for(const k in t.zusagen)if(t.zusagen[k].mitBei===o.who)t.zusagen[k].mitBei=''},
  bestAdd:(d,o)=>{d.positionen=d.positionen||[];if(!d.positionen.some(p=>p.id===o.pos.id))d.positionen.push(o.pos)},
  bestDel:(d,o)=>{d.positionen=(d.positionen||[]).filter(p=>p.id!==o.id)},
+ stern:(d,o)=>{d.sterne=d.sterne||{};const l=d.sterne[o.pid]=(d.sterne[o.pid]||[]).filter(k=>k!==o.k);if(o.an)l.push(o.k)},
  bhAdd:(d,o)=>{d.personen=d.personen||{};const l=d.personen[o.pid]=d.personen[o.pid]||[];if(!l.some(e=>e.pos===o.e.pos))l.push(o.e);d.personen[o.pid]=l.slice(-40)},
  bhDel:(d,o)=>{for(const k in d.personen||{})d.personen[k]=d.personen[k].filter(e=>e.pos!==o.pos)},
  spielAdd:(d,o)=>{d.spiele=d.spiele||[];if(!d.spiele.some(g=>g.id===o.g.id))d.spiele.push(o.g)},
@@ -1005,7 +1007,10 @@ function vEssen(){
  const g=S.karte.gerichte||[],pos=S.best.positionen||[],ef=S.ef;ef.fuer=ef.fuer||S.me;
  let h=kopf+`<div class="card"><h3>Bestellen</h3>
  <label>Für</label><select onchange="S.ef.fuer=this.value;rerender()">${aktive().map(m=>`<option value="${m.id}" ${ef.fuer===m.id?'selected':''}>${esc(m.spitzname)}</option>`).join('')}<option value="gast" ${ef.fuer==='gast'?'selected':''}>Gast …</option></select>
- ${(()=>{const tb=topBestellungen(ef.fuer);return tb.length?`<div class="muted small" style="margin:10px 0 6px">⚡ Schnell hinzufügen – ${ef.fuer===S.me?'deine':esc(nameOf(ef.fuer))+'s'} Favoriten</div><div class="chips wrap">${tb.map((e,i)=>`<button class="chip" style="font-size:13px;padding:7px 11px;font-weight:600;background:var(--gelb2);white-space:normal;text-align:left" onclick="act.schnell('${tid}',${i})">+ ${e.nr?'<b>'+esc(e.nr)+'</b> ':''}${esc(e.gericht)}${e.wunsch?` <span class="muted" style="font-weight:400">· ${esc(e.wunsch)}</span>`:''}${e.n>1?` <span class="muted" style="font-weight:400">${e.n}×</span>`:''}</button>`).join('')}</div>`:''})()}
+ ${(()=>{const st=sternGerichte(ef.fuer),stK=new Set(st.map(sternKey)),tb=topBestellungen(ef.fuer).filter(e=>e.wunsch||!stK.has(e.nr?String(e.nr):'n:'+e.gericht)),wer=ef.fuer===S.me?'deine':esc(nameOf(ef.fuer))+'s';
+  const chip='font-size:13px;padding:7px 11px;font-weight:600;background:var(--gelb2);color:var(--ink);white-space:normal;text-align:left';
+  return st.length||tb.length?`<div class="muted small" style="margin:10px 0 6px">⚡ Schnell hinzufügen – ${wer} Favoriten</div><div class="chips wrap">${st.map((x,i)=>`<button class="chip" style="${chip}" onclick="act.schnellStern('${tid}',${i})">⭐ ${x.nr?'<b>'+esc(x.nr)+'</b> ':''}${esc(x.name)}</button>`).join('')}${tb.map((e,i)=>`<button class="chip" style="${chip}" onclick="act.schnell('${tid}',${topBestellungen(ef.fuer).indexOf(e)})">+ ${e.nr?'<b>'+esc(e.nr)+'</b> ':''}${esc(e.gericht)}${e.wunsch?` <span class="muted" style="font-weight:400">· ${esc(e.wunsch)}</span>`:''}${e.n>1?` <span class="muted" style="font-weight:400">${e.n}×</span>`:''}</button>`).join('')}</div>`
+  :ef.fuer===S.me?`<div class="muted small" style="margin:10px 0 0">💡 Tipp: Markiere unten in der Speisekarte deine Lieblingsgerichte mit ☆ – dann stehen sie hier zum schnellen Antippen.</div>`:''})()}
  <div class="row"><div style="flex:0 0 92px"><label>Nr.</label><input id="e-nr" inputmode="numeric" value="${esc(ef.nr||'')}" oninput="act.nrEingabe(this.value)"></div>
  <div class="f"><label>Gericht</label><input id="e-name" list="dl-g" value="${esc(ef.name||'')}" oninput="S.ef.name=this.value"></div></div>
  <datalist id="dl-g">${g.map(x=>`<option value="${esc(x.name)}">${x.nr?esc(x.nr)+' · ':''}${x.preis?eur(x.preis):''}</option>`).join('')}</datalist>
@@ -1015,14 +1020,27 @@ function vEssen(){
  h+=`<div class="sec">Bestellungen (${pos.length})</div><div class="card">${pos.length?`<ul class="l">${Object.keys(per).sort((a,b)=>a.localeCompare(b,'de')).map(n=>per[n].map(p=>`<li><div class="av s">${ini(n)}</div><div class="g"><b>${esc(n)}</b> · ${p.nr?'<b>'+esc(p.nr)+'</b> ':''}${esc(p.gericht)}${p.wunsch?`<div class="small muted">↳ ${esc(p.wunsch)}</div>`:''}</div>${p.preis?`<span class="small">${eur(p.preis)}</span>`:''}${p.von===S.me||p.fuer===S.me||isAdmin()?`<button class="x" onclick="act.posLoeschen('${tid}','${p.id}')">✕</button>`:''}</li>`).join('')).join('')}</ul>`:'<p class="muted" style="margin:0">Noch nichts bestellt.</p>'}</div>`;
  if(pos.length){const txt=sammelText(T(tid),pos);
   h+=`<div class="card"><details><summary>📝 Sammelbestellung fürs Samos</summary><pre class="order">${esc(txt)}</pre></details><div class="row" style="margin-top:8px"><button class="btn f" onclick="act.kopieren()">📋 Kopieren</button><button class="btn f" onclick="act.teilen()">📤 Teilen</button></div></div>`}
- h+=`<div class="sec">Speisekarte</div><div class="card"><input id="ksearch" placeholder="🔍 Nummer oder Gericht suchen" value="${esc(S.kq||'')}" oninput="S.kq=this.value;renderKarte()"><div id="karte"></div><p class="muted small">${esc(S.karte.stand||'')}</p></div>`;
+ h+=`<div class="sec">Speisekarte</div><div class="card"><input id="ksearch" placeholder="🔍 Nummer, Gericht oder Zutat suchen (z. B. Gyros)" value="${esc(S.kq||'')}" oninput="S.kq=this.value;renderKarte()"><div id="karte"></div><p class="muted small">${esc(S.karte.stand||'')}</p></div>`;
  afterHooks.push(renderKarte);
  return h;
 }
+/* Speisekarte: Kategorien eingeklappt (Zustand nur bis zum Schließen der App), oben „Kegel-Favoriten“,
+   Getränke separat und nur zum Nachschauen. Mit Suche: alle Treffer aufgeklappt. */
+const KARTE_OFFEN=new Set();
 function renderKarte(){const el=$('#karte');if(!el)return;const g=S.karte.gerichte||[],q=(S.kq||'').toLowerCase().trim();
- const fl=g.filter(x=>!q||String(x.nr)===q||(x.nr+' '+x.name+' '+(x.beschreibung||'')).toLowerCase().includes(q));let cat='';
- el.innerHTML=fl.map(x=>{const c=x.kategorie!==cat?`<div class="cat">${esc(cat=x.kategorie)}</div>`:'';
-  return c+`<div class="dish" onclick="act.waehle(${g.indexOf(x)})"><span class="nr">${esc(x.nr||'–')}</span><div style="flex:1"><b>${esc(x.name)}</b>${x.beschreibung?`<div class="small muted">${esc(x.beschreibung)}</div>`:''}</div><span class="pr">${x.preis?eur(x.preis):''}</span></div>`}).join('')||'<p class="muted">Nichts gefunden.</p>'}
+ const st=new Set(meineSterne(S.me));
+ const zeile=x=>{const i=g.indexOf(x),getr=x.getraenk,an=st.has(sternKey(x));return`<div class="dish${getr?' getr':''}" ${getr?'':`onclick="act.waehle(${i})" role="button"`}><span class="nr">${esc(x.nr||(getr?'🥤':'–'))}</span><div style="flex:1"><b>${esc(x.name)}</b>${x.beschreibung?`<div class="small muted">${esc(x.beschreibung)}</div>`:''}</div><span class="pr">${x.preis!=null&&x.preis!==''?eur(x.preis):'<span class="muted small">?</span>'}</span>${getr?'':`<button class="stern${an?' an':''}" aria-pressed="${an}" aria-label="${an?'Kein Favorit mehr':'Als Favorit merken'}: ${esc(x.name)}" onclick="act.stern(${i},event)">${an?'★':'☆'}</button>`}</div>`};
+ if(q){const fl=g.filter(x=>String(x.nr)===q||(x.nr+' '+x.name+' '+(x.beschreibung||'')+' '+x.kategorie).toLowerCase().includes(q));let cat='';
+  el.innerHTML=fl.map(x=>(x.kategorie!==cat?`<div class="cat">${esc(cat=x.kategorie)}</div>`:'')+zeile(x)).join('')||'<p class="muted">Nichts gefunden.</p>';return}
+ const gruppen=[],idx={};
+ const fav=sternGerichte(S.me);gruppen.push({k:'⭐ Meine Favoriten',l:fav,fav:true});
+ for(const x of g){const k=x.kategorie||'Sonstiges';if(!(k in idx)){idx[k]=gruppen.length;gruppen.push({k,l:[],getr:!!x.getraenk})}gruppen[idx[k]].l.push(x)}
+ let getrKopf=false;
+ el.innerHTML=gruppen.map(gr=>{const offen=KARTE_OFFEN.has(gr.k),preise=gr.l.map(x=>+x.preis).filter(v=>v>0),von=preise.length?Math.min(...preise):0,bis=preise.length?Math.max(...preise):0;
+  const kopf=gr.getr&&!getrKopf?(getrKopf=true,'<div class="cat" style="margin-top:18px">🍺 Getränke <span style="font-weight:400;text-transform:none;letter-spacing:0">– nur zum Nachschauen, bestellt wird am Tisch</span></div>'):'';
+  return kopf+`<div class="kgr${offen?' auf':''}${gr.fav?' fav':''}"><button class="kgr-k" aria-expanded="${offen}" onclick="act.karteKat(this)" data-k="${esc(gr.k)}"><span class="pf">▸</span><b>${esc(gr.k)}</b><span class="muted small">${gr.l.length}${von?` · ${von===bis?eur(von):eur(von)+'–'+eur(bis)}`:''}</span></button>
+   ${offen?`<div class="kgr-i">${gr.l.length?gr.l.map(zeile).join(''):'<p class="muted small" style="margin:4px 0 10px">Noch keine Favoriten. Tippe in der Karte rechts auf ☆ – deine Favoriten siehst nur du, und sie stehen oben beim Bestellen zum schnellen Antippen.</p>'}</div>`:''}</div>`}).join('')}
+act.karteKat=btn=>{const k=btn.dataset.k;if(KARTE_OFFEN.has(k))KARTE_OFFEN.delete(k);else KARTE_OFFEN.add(k);renderKarte();vib()};
 function sammelText(t,pos){const grp={};
  pos.forEach(p=>{const k=(p.nr?p.nr+' ':'')+p.gericht;(grp[k]=grp[k]||[]).push(p)});
  const keys=Object.keys(grp).sort((a,b)=>(parseInt(a)||999)-(parseInt(b)||999)||a.localeCompare(b,'de'));
@@ -1041,6 +1059,13 @@ async function addPos(tid,o){
  if(M(p.fuer))enqueue('bestellhistorie.json',{t:'bhAdd',pid:p.fuer,e:{pos:p.id,datum:tid,nr:p.nr,gericht:p.gericht,wunsch:p.wunsch}},`Bestellhistorie ${p.fuerName}`,1500);
  vib();toast(S.offline?'Hinzugefügt – wird hochgeladen, sobald Netz da ist':'Hinzugefügt ✓');rerender()}
 /* Top 3 je Person: häufigste Kombination aus Gericht + Sonderwunsch, bei Gleichstand die zuletzt bestellte */
+const sternKey=x=>x.nr?String(x.nr):'n:'+x.name;
+const meineSterne=pid=>S.bh?.sterne?.[pid]||[];
+const sternGerichte=pid=>{const g=S.karte?.gerichte||[];return meineSterne(pid).map(k=>g.find(x=>sternKey(x)===k)).filter(Boolean)};
+act.stern=(i,ev)=>{ev?.stopPropagation();const x=S.karte.gerichte[i];if(!x)return;const k=sternKey(x),an=!meineSterne(S.me).includes(k);
+ S.bh=S.bh||{personen:{}};enqueue('bestellhistorie.json',{t:'stern',pid:S.me,k,an},`Favorit ${an?'+':'–'} ${x.nr?x.nr+' ':''}${x.name}`,2500);
+ toast(an?`⭐ ${x.name} ist jetzt dein Favorit`:`☆ ${x.name} kein Favorit mehr`);vib();rerender()};
+act.schnellStern=(tid,i)=>{const fuer=S.ef.fuer||S.me,x=sternGerichte(fuer)[i];if(!x)return;addPos(tid,{fuer,fuerName:nameOf(fuer),nr:x.nr||'',gericht:x.name,wunsch:'',preis:x.preis??null})};
 function topBestellungen(pid){const l=S.bh?.personen?.[pid]||[],m={};
  l.forEach((e,i)=>{const k=(e.nr||'')+'|'+e.gericht+'|'+(e.wunsch||'');const x=m[k]=m[k]||{...e,n:0,last:0};x.n++;x.last=i;x.datum=e.datum});
  return Object.values(m).sort((a,b)=>b.n-a.n||b.last-a.last).slice(0,3)}
@@ -1767,7 +1792,7 @@ const ILL={
 const ANL=[
  ['start','📱','Als App aufs Handy',`<ol class="steps"><li><b>iPhone:</b> Link in <b>Safari</b> öffnen → unten <b>Teilen</b> (Viereck mit Pfeil) → <b>„Zum Home-Bildschirm“</b>.</li><li><b>Android:</b> Link in <b>Chrome</b> öffnen → oben <b>⋮</b> → <b>„App installieren“</b> bzw. „Zum Startbildschirm hinzufügen“.</li><li>Ab jetzt die App über das Kegel-Symbol starten. Beim ersten Mal dich selbst aus der Liste wählen – fertig.</li></ol>`],
  ['termine','📅','Zusagen & Fahrgemeinschaft',ILL.zusage()+`<ol class="steps"><li>Auf <b>Start</b> oder unter <b>Termine</b> beim Abend <b>Dabei</b>, <b>Unsicher</b> oder <b>Nicht dabei</b> antippen.</li><li>Unter <b>Anreise & Details</b> angeben, wie du hinkommst.</li><li><b>Mitfahrt gesucht?</b> „🙋 Fahre mit“ wählen – bei Bedarf <b>🏠 Bitte zu Hause abholen</b>. <b>Fahrer</b> wählen „🚗 Ich fahre“, stellen die Plätze ein und setzen Leute selbst ins Auto: <b>🚗 Nehme ich mit</b> bzw. <b>+ Mitfahrer einsteigen lassen</b> (wer sucht, steht oben). Wer abgeholt werden will, zeigt dem Fahrer seine Adresse aus dem Profil.</li><li>Optional eine Bemerkung, z. B. „komme später“.</li><li><b>📅 In den Kalender</b>: iPhone → „Hinzufügen“ bestätigen; Android → Google Kalender öffnet sich fertig ausgefüllt.</li></ol>`+ILL.anreise()+`<p class="small muted">Besondere Termine (Konzert, Kegelfahrt) legt jeder selbst unter Termine → <b>+ Termin</b> an.</p>`],
- ['essen','🍽️','Essen bestellen',ILL.essen()+`<ol class="steps"><li>Reiter <b>Essen</b> öffnen – der nächste Abend ist schon gewählt.</li><li><b>Nummer</b> von der Samos-Karte eintippen, das Gericht erscheint automatisch. Sonderwunsch dazu, <b>+ Hinzufügen</b>.</li><li>Für andere bestellen: oben bei <b>„Für“</b> die Person wählen.</li><li>Deine häufigsten Bestellungen erscheinen als <b>⚡ Favoriten</b> – ein Tipp genügt.</li><li>Unten steht die fertige Bestellliste zum Vorlesen oder Teilen.</li></ol>`],
+ ['essen','🍽️','Essen bestellen',ILL.essen()+`<ol class="steps"><li>Reiter <b>Essen</b> öffnen – der nächste Abend ist schon gewählt.</li><li><b>Nummer</b> von der Samos-Karte eintippen, das Gericht erscheint automatisch. Sonderwunsch dazu, <b>+ Hinzufügen</b>.</li><li>In der <b>Speisekarte</b> (Kategorien zum Aufklappen) markierst du deine Lieblingsgerichte mit <b>☆</b> – sie stehen dann oben unter „⚡ Schnell hinzufügen“ und in „⭐ Meine Favoriten“. Deine Sterne siehst nur du.</li><li>Für andere bestellen: oben bei <b>„Für“</b> die Person wählen.</li><li>Deine häufigsten Bestellungen erscheinen als <b>⚡ Favoriten</b> – ein Tipp genügt.</li><li>Unten steht die fertige Bestellliste zum Vorlesen oder Teilen.</li></ol>`],
  ['abend','🎳','Kegelabend erfassen (Strichliste)',`<p class="small" style="margin-top:0"><b>Nur ein Gerät führt die Tafel</b> – am besten ein Handy oder Tablet quer auf dem Tisch. Alle anderen sehen den Stand.</p>`+ILL.strich()+`<ol class="steps"><li>Reiter <b>Abend</b> → <b>Strichliste starten</b>.</li><li>Unter <b>👥 Anwesend</b> abhaken, wer da ist; Gäste unten mit Namen hinzufügen.</li><li><b>Sitzordnung auslosen</b> – sie steht dann für den ganzen Abend (Teamspiele: Tafelseite gegen Türseite). Wer später kommt, wird über „Nachzügler zuordnen“ ergänzt.</li><li>Strafe <b>links</b> wählen (Pudel, Glöckchen, Alle Neune …), Spieler <b>rechts</b> antippen. Vertippt? <b>− Korrektur</b> einschalten und nochmal tippen.</li><li>Gespielte Spiele unter <b>🏆 Spiele heute</b> eintragen – Platzierungen und verlorene Teamspiele rechnet die Tafel selbst.</li><li>Am Ende <b>Rechnung Samos</b>: am einfachsten <b>📷 Kassenzettel fotografieren</b> – Gesamt, Essen und Gerichte über 20 € werden erkannt (das Foto bleibt auf dem Handy). Sonst von Hand: Gesamtbetrag, <b>davon Essen</b> und Trinkgeld. Wer nichts gegessen hat, antippen; teures Essen (nur der Teil über 20 € zählt extra) und Schnapsrunden der richtigen Person zuordnen. Dann <b>Abend abschließen</b>. Danach kommt der WhatsApp-Bericht zum Teilen.</li></ol>
   <p class="small muted">Kein Empfang auf der Bahn? Kein Problem – siehe „Ohne Empfang“.</p>`],
  ['pinnwand','📌','Pinnwand',`<ol class="steps"><li>Auf <b>Start</b> unter 📌 Pinnwand auf <b>+ Bemerkung anpinnen</b> tippen.</li><li>Art wählen: <b>💡 App-Wunsch</b>, <b>💬 Allgemein</b> oder <b>📢 Hinweis</b>.</li><li>Wie lange sichtbar: <b>24 Std.</b>, <b>1 Woche</b> oder <b>1 Monat</b> – danach verschwindet sie von selbst.</li><li>Bemerkungen der anderen mit <b>👍</b> oder <b>👎</b> bewerten – nochmal tippen nimmt die Bewertung zurück.</li><li>Eigene Bemerkungen mit ✕ wieder entfernen.</li></ol>`],
@@ -1940,8 +1965,8 @@ function vVerwaltung(){if(!isAdmin())return'<div class="card">Nur für Admins.</
  <div class="card"><details><summary>📇 Kontaktliste</summary><div style="overflow-x:auto;margin-top:8px"><table><tr><th>Name</th><th>Telefon</th><th>E-Mail</th><th>Adresse</th><th>Geb.</th></tr>
  ${aktive().map(m=>{const k=S.kontakte.personen[m.id]||{};return`<tr><td>${esc(m.spitzname)}</td><td style="text-align:left">${k.telefon?`<a href="tel:${esc(k.telefon)}">${esc(k.telefon)}</a>`:'–'}</td><td style="text-align:left">${k.email?`<a href="mailto:${esc(k.email)}">${esc(k.email)}</a>`:'–'}</td><td style="text-align:left" class="small">${esc([k.strasse,[k.plz,k.ort].filter(Boolean).join(' ')].filter(Boolean).join(', '))||'–'}</td><td class="small">${k.geburtstag?fmtD(k.geburtstag,{day:'2-digit',month:'2-digit',year:'numeric'}):'–'}</td></tr>`}).join('')}</table></div>
  <p class="muted small">Jedes Mitglied pflegt seine Daten selbst unter Mehr → Profil.</p></details></div>
- <div class="card"><details><summary>🍽️ Speisekarte pflegen</summary><p class="muted small">Eine Zeile pro Gericht: <code>Nr;Gericht;Preis;Kategorie;Beschreibung</code>. Ersetzt die komplette Karte.</p>
- <textarea id="k-csv" rows="8" placeholder="60;Gyros;14,90;Grill;Pommes, Reis, Salat"></textarea><div class="row" style="margin-top:8px"><button class="btn f" onclick="act.karteExport()">Aktuelle Karte laden</button><button class="btn p f" onclick="act.karteImport()">Speichern</button></div></details></div>
+ <div class="card"><details><summary>🍽️ Speisekarte pflegen</summary><p class="muted small">Eine Zeile pro Gericht: <code>Nr;Gericht;Preis;Kategorie;Beschreibung;Merkmale</code> (Merkmal <code>getraenk</code> = nur zum Nachschauen, nicht bestellbar). Ersetzt die komplette Karte – am besten erst „Aktuelle Karte laden“ und dann ändern.</p>
+ <textarea id="k-csv" rows="8" placeholder="Nr;Name;Preis;Kategorie;Beschreibung;Merkmal – z. B. 74;Peloponnes-Teller;20,90;Gemischte Grillplatten;Bifteki, Gyros …  (Merkmal getraenk = nur zum Nachschauen)"></textarea><div class="row" style="margin-top:8px"><button class="btn f" onclick="act.karteExport()">Aktuelle Karte laden</button><button class="btn p f" onclick="act.karteImport()">Speichern</button></div></details></div>
  ${Store.isDemo()?'':`<div class="card"><h3>🔗 Einladungslink</h3><p class="muted small">Enthält den Zugangsschlüssel – nur privat in der WhatsApp-Gruppe teilen. Wer ihn öffnet, ist sofort verbunden.</p><button class="btn p w" onclick="act.invite()">Link erzeugen & kopieren</button></div>`}`}
 act.reload=async()=>{await flushOutbox();if(saveTimer)await speichereAbend();setSync('⏳');try{await loadAll();S.karte=null;S.hist=null;S.katalog=null;S.abendFor=null;S.bestFor=null;S.sp=null;setSync('');toast('Aktualisiert ✓');rerender()}catch(e){setSync('⚠');toast('⚠ '+e.message,5000)}};
 act.wechsel=()=>{lsDel('kt_me');S.me=null;S.pushSt=undefined;boot()};
@@ -1969,9 +1994,9 @@ act.mSave=id=>{const kv=kontaktLesen('mk');const v={spitzname:$('#m-sp').value.t
  if(id){saveKontakt(id,kv,'Kontaktdaten '+v.spitzname);return saveVerein(d=>Object.assign(d.mitglieder.find(x=>x.id===id),v),'Mitglied '+v.spitzname+' geändert')}
  const nid=v.spitzname.toLowerCase().replace(/ß/g,'ss').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/[^a-z0-9]+/g,'-');if(M(nid))return toast('Spitzname existiert schon');
  saveKontakt(nid,kv,"Kontaktdaten "+v.spitzname);saveVerein(d=>d.mitglieder.push({id:nid,...v,nr:Math.max(0,...d.mitglieder.map(m=>m.nr||0))+1,startSaldo:0,figurVergessenGesamt:0,schnapsrundenBezahlt:0}),'Mitglied '+v.spitzname+' aufgenommen')};
-act.karteExport=async()=>{await loadKarte(true);$('#k-csv').value=S.karte.gerichte.map(g=>[g.nr,g.name,g.preis!=null?String(g.preis).replace('.',','):'',g.kategorie,g.beschreibung].join(';')).join('\n')};
+act.karteExport=async()=>{await loadKarte(true);$('#k-csv').value=S.karte.gerichte.map(g=>[g.nr,g.name,g.preis!=null?String(g.preis).replace('.',','):'',g.kategorie,g.beschreibung,g.getraenk?'getraenk':''].join(';')).join('\n')};
 act.karteImport=()=>{const lines=$('#k-csv').value.split('\n').map(l=>l.trim()).filter(Boolean);if(!lines.length)return toast('Keine Zeilen');
- const gerichte=lines.map(l=>{const [nr,name,preis,kategorie,beschreibung]=l.split(';').map(s=>(s||'').trim());return{nr,name,preis:preis?r2(num(preis)):null,kategorie:kategorie||'Sonstiges',beschreibung:beschreibung||''}}).filter(g=>g.name);
+ const gerichte=lines.map(l=>{const [nr,name,preis,kategorie,beschreibung,merk]=l.split(';').map(s=>(s||'').trim());const g={nr,name,preis:preis?r2(num(preis)):null,kategorie:kategorie||'Sonstiges',beschreibung:beschreibung||''};if(/getr/i.test(merk||''))g.getraenk=true;return g}).filter(g=>g.name);
  ask(gerichte.length+' Gerichte speichern und die Karte ersetzen?','Speichern',async()=>{S.karte=await save('speisekarte.json',()=>({stand:'Gepflegt am '+fmtD(todayISO())+' von '+meName(),gerichte}),'Speisekarte aktualisiert');toast('Karte gespeichert ✓')})};
 act.invite=async()=>{const l=location.origin+location.pathname+'#k='+encodeURIComponent(Store.cfg.token);
  try{await navigator.clipboard.writeText(l);toast('Link kopiert ✓')}catch(_){sheet(`<h3>Link kopieren</h3><textarea rows="4" onclick="this.select()">${esc(l)}</textarea><button class="btn w" style="margin-top:10px" onclick="closeSheet()">Fertig</button>`)}};

@@ -1,6 +1,6 @@
 # Schwelmer Kegeltreff – App · Projektbeschreibung für Claude
 
-> Stand: Version **1.4.1** (25.11.2026). Diese Datei ist das Gedächtnis des Projekts.
+> Stand: Version **1.4.2** (25.11.2026). Diese Datei ist das Gedächtnis des Projekts.
 > Bei jeder größeren Änderung hier mitpflegen. Sie enthält **keine** persönlichen Daten oder Zugangsdaten
 > und darf deshalb im öffentlichen Repo `App` liegen.
 
@@ -46,8 +46,8 @@ Wuppertal-Langerfeld, etwa alle 5 Wochen samstags 18 Uhr). Ersetzt das Excel-Kas
 | `kasse.json` | `buchungen[]`, `konten`, `toepfe`, `ausgaben`, `gaesteStart`, `kontenStand`, `excelUebernommen` |
 | `excel-stand.json` | Kassenstand aus Excel (Konten, Töpfe, Gäste-Start) zum Übernehmen |
 | `historie.json` | alle Excel-Jahre 2017–2026: `abende`, `terminBetraege`, `jahreswerte`, `rekorde`, `saisons` (2020+2021 zusammen), `namen`, `mitglieder` |
-| `speisekarte.json` | ~100 Samos-Gerichte mit Nummer (noch ohne Preise) |
-| `bestellhistorie.json` | Favoriten je Person (Top 3 inkl. Sonderwunsch) |
+| `speisekarte.json` | Samos-Karte (Stand 25.11.2026): `gerichte[]` {nr, name, preis, kategorie, beschreibung, getraenk?} – 140 Gerichte, 61 Getränke, Kategorien in Kartenreihenfolge |
+| `bestellhistorie.json` | `personen{id:[…]}` Bestellhistorie (Top 3 inkl. Sonderwunsch), `sterne{id:[nr \| 'n:'+name]}` eigene Favoriten |
 | `kontakte.json` | Telefon, E-Mail, Adresse, Geburtstag je Mitglied |
 | `excel-kontakte.json` | Kontaktdaten aus Excel, einmalig per Admin-Knopf übernehmen (füllt nur leere Felder) |
 | `spielekatalog.json` | eigene Spiele |
@@ -173,7 +173,6 @@ abschaltbar im Profil, nicht im Reiter Abend), Admin (Übersicht „Wer nutzt di
 3. Arbeiten, testen, Dateien mit kurzer Upload-Anleitung liefern; `CLAUDE.md`/`CHANGELOG.md` mitpflegen.
 
 ## 11. Offene Punkte / Ideen
-- Samos-Speisekarte mit aktuellen Preisen (Fotos von Max stehen aus).
 - Vollständige 2025-Excel (Pudel Aug–Dez fehlen im Detail).
 - Laptop/Tablet-Ansicht: Seitenmenü und mehrspaltige Seiten (bisher eine Spalte in der Mitte).
 - Token-Ablaufdatum im Blick behalten; monatliche ZIP-Sicherung von `App-Daten` empfohlen.
@@ -209,3 +208,12 @@ abschaltbar im Profil, nicht im Reiter Abend), Admin (Übersicht „Wer nutzt di
 - Anzeige: `img[data-foto]` → `fotosNachladen()` (afterHook) → `fotoHol()` (Speicher → Cache `kegeltreff-fotos` → API).
   Löschen des Eintrags → `fotoWeg()`. Upload nur online, vor dem Eintrag; Eintrag selbst über die Warteschlange.
 - Flutlicht: `.chip.on` gelb (Regel steht vor `.hero .chip.on`, damit der Kopfbereich seine Farbe behält).
+
+## 15. Speisekarte
+- `renderKarte()`: ohne Suche Gruppen als einklappbare Köpfe (`KARTE_OFFEN`, nur im Speicher → beim App-Start alles zu);
+  erste Gruppe „⭐ Meine Favoriten“ = Sterne der eigenen Person; `getraenk`-Einträge ohne Stern und nicht antippbar.
+  Mit Suche: flache Trefferliste.
+- **Sterne** (`act.stern`, Op `stern` auf `bestellhistorie.json`, Schlüssel `sternKey()` = Nr. bzw. `n:`+Name): nur die
+  eigenen. „⚡ Schnell hinzufügen“ zeigt die Sterne der Person im Feld „Für“ (`sternGerichte`) + Top 3 aus der Historie
+  (ohne Doppelte). Vorgegebene Vereins-Favoriten gibt es nicht mehr (Max' Wunsch: jeder wählt selbst).
+- Karte ändern: Admin → „Speisekarte pflegen“ (CSV `Nr;Name;Preis;Kategorie;Beschreibung;Merkmal`) oder JSON in App-Daten.

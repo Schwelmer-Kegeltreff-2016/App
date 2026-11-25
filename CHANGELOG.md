@@ -1,5 +1,16 @@
 # Änderungsliste – Schwelmer Kegeltreff App
 
+## 1.4.2 · 25.11.2026
+- **Speisekarte neu** (`App-Daten/data/speisekarte.json`, von den Fotos der Samos-Karte): 140 Gerichte mit Nr. und Preis,
+  61 Getränke (ohne Nr., `getraenk:true`, nur zum Nachschauen).
+- **⭐ Eigene Favoriten:** rechts neben jedem Gericht ein Stern. Jeder markiert seine Gerichte selbst; sie stehen oben
+  unter „⚡ Schnell hinzufügen“ (vor den bisherigen Top-3 aus der Bestellhistorie) und in der Gruppe „⭐ Meine Favoriten“.
+  Gespeichert in `bestellhistorie.json` → `sterne{person:[nr|'n:'+name]}` (Op `stern`, offline-fähig).
+- Reiter Essen → Speisekarte: Kategorien beim Öffnen **eingeklappt** (Anzahl + Preisspanne im Kopf), „⭐ Meine Favoriten“
+  oben, Getränke darunter. Suche zeigt alle Treffer aufgeklappt. Bestellungen bekommen jetzt automatisch den Preis
+  → „Aus Bestellung übernehmen“ in der Abrechnung erkennt teures Essen.
+- Admin „Speisekarte pflegen“: 6. Spalte Merkmal (`getraenk`) bleibt beim Export/Import erhalten.
+
 ## 1.4.1 · 25.11.2026
 - **📷 Fotos auf der Pinnwand:** bis zu 2 Fotos pro Eintrag, auf dem Handy auf max. 720 px / ca. 50 KB verkleinert.
   Gespeichert in App-Daten auf dem Zweig `fotos` (Ordner `fotos/`), nicht im normalen Datenverlauf. Der GitHub-Ablauf
