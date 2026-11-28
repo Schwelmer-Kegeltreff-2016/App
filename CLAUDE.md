@@ -1,6 +1,6 @@
 # Schwelmer Kegeltreff – App · Projektbeschreibung für Claude
 
-> Stand: Version **1.4.2** (25.11.2026). Diese Datei ist das Gedächtnis des Projekts.
+> Stand: Version **1.4.3** (28.11.2026). Diese Datei ist das Gedächtnis des Projekts.
 > Bei jeder größeren Änderung hier mitpflegen. Sie enthält **keine** persönlichen Daten oder Zugangsdaten
 > und darf deshalb im öffentlichen Repo `App` liegen.
 
@@ -126,9 +126,12 @@ ANLEITUNG & RUNDGANG, MEHR, Einrichtung, DARSTELLUNG.
   `--ink`, `--card`, `--bg`, …). 🌙/☀️ oben schaltet Vereinsheim ↔ Flutlicht.
 - Schriften je Stil von Google Fonts (Plus Jakarta Sans / Space Grotesk / Barlow + Barlow Condensed), vom SW gecacht.
 - **Keine offiziellen Vereinslogos** (BVB/FCB) – nur Farben und Sprüche; eigenes Wappen `logo.png`.
-- Mobile first. Untere Leiste immer volle Breite, beim Scrollen nur per `transform` niedriger (keine Höhenänderung –
+- Mobile first. **Das Dokument scrollt nie** (`html,body{height:100%;overflow:hidden}`), gescrollt wird nur `#app`
+  (`position:fixed;inset:0;overflow-y:auto`) – sonst wandert die feste Leiste auf iOS 26 beim Scrollen mit (WebKit-Fehler).
+  Scrollposition immer über `appY()` / `appTop(sanft)` / `SCR().scrollTop`, **nie** `scrollY`/`window.scrollTo` für den Inhalt.
+  Untere Leiste immer volle Breite, beim Scrollen nur per `transform` niedriger (keine Höhenänderung –
   sonst springt sie auf dem iPhone). Fenster (`#sheet`) sitzen über Leiste und Tastatur (`--vvb` aus `visualViewport`),
-  dahinter ist die Seite gesperrt (`html.modal` + `body` position:fixed mit `top:-scrollY`, `modalSperre()`).
+  dahinter ist die Seite gesperrt (`html.modal` → `#app` overflow hidden, `modalSperre()` merkt/stellt die Position wieder her).
   `closeSheet()` nimmt vorher den Fokus weg (Tastatur zu), `focusout` rückt die iPhone-Ansicht zurück – sonst
   „hängt“ die App nach dem Schließen eines Fensters mit Eingabefeld.
 - Strichliste: links Strafarten (`.katnav`), rechts Spieler-Kacheln (`.tap`), Tafel unten eingeklappt; Querformat

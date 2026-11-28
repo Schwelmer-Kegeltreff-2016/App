@@ -1,5 +1,12 @@
 # Änderungsliste – Schwelmer Kegeltreff App
 
+## 1.4.3 · 28.11.2026
+- **iPhone (iOS 26): Untere Leiste löste sich beim Scrollen vom Rand und wanderte mit.** Ursache ist ein WebKit-Fehler
+  mit `position:fixed`, sobald das ganze Dokument scrollt. Lösung: Dokument (`html`,`body`) scrollt nie mehr, gescrollt
+  wird nur noch `#app` (`position:fixed; inset:0; overflow-y:auto`). Neue Helfer `SCR()`, `appY()`, `appTop(sanft)`
+  ersetzen `scrollY`/`scrollTo`. Fenster-Sperre (`modalSperre`) setzt nur noch `html.modal` (→ `#app` overflow hidden)
+  statt `body` auf fixed. Nach Tastatur-Schließen wird das Dokument immer auf 0 zurückgesetzt.
+
 ## 1.4.2 · 25.11.2026
 - **Speisekarte neu** (`App-Daten/data/speisekarte.json`, von den Fotos der Samos-Karte): 140 Gerichte mit Nr. und Preis,
   61 Getränke (ohne Nr., `getraenk:true`, nur zum Nachschauen).
