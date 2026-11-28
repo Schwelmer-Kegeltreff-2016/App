@@ -209,7 +209,13 @@ html,body{height:100%;overflow:hidden}
 html.modal #app{overflow:hidden}
 .schalter{flex:0 0 auto;width:46px;height:28px;border-radius:99px;background:var(--chip);box-shadow:inset 0 0 0 1px var(--linie);position:relative;transition:background .15s}.schalter::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}.schalter.on{background:var(--gelb)}.schalter.on::after{transform:translateX(18px)}
 .spin{display:inline-block;animation:spin 1.4s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-#sheet .bg{z-index:40}#sheet .sh{z-index:41;bottom:var(--vvb,0px);max-height:calc(var(--vvh,100dvh) * .9);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#sheet .bg{z-index:40}#sheet .sh{z-index:41;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+/* Fenster hängt am SICHTBAREN Bereich (visualViewport: --vvt oben, --vvh Höhe) statt am unteren Seitenrand.
+   iPhone verschiebt bei offener Tastatur die Ansicht – so sitzt das Fenster trotzdem direkt über der Tastatur. */
+#sheet{position:fixed;left:0;right:0;top:var(--vvt,0px);height:var(--vvh,100dvh);z-index:40;display:flex;flex-direction:column;justify-content:flex-end;pointer-events:none}
+#sheet .bg,#sheet .sh{pointer-events:auto}
+#sheet .sh{position:relative;left:auto;right:auto;bottom:auto;width:100%;max-height:90%;flex:0 1 auto}
+html.tastatur #sheet .sh{max-height:100%;padding-bottom:12px;border-radius:16px 16px 0 0}
 #tour{z-index:45}.guthol{z-index:60}
 .pinn .bem-f{display:flex;align-items:center;gap:8px;margin-top:2px}
 .daumen{display:flex;gap:6px}.dm{display:flex;align-items:center;gap:4px;border:0;background:var(--chip);color:var(--ink);border-radius:99px;min-height:34px;min-width:44px;padding:4px 10px;font-size:15px;cursor:pointer}
@@ -297,8 +303,8 @@ body.unten nav button span{opacity:0}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='1.4.4';
-const APP_NEU='📱 iPhone: Leiste bleibt unten, Stilwechsel ohne Hochspringen, Pinnwand-Textfeld nicht mehr unter der Tastatur';
+const APP_VERSION='1.4.5';
+const APP_NEU='⌨️ iPhone: Fenster (z. B. Pinnwand) sitzen jetzt direkt über der Tastatur';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -619,7 +625,7 @@ document.addEventListener('focusout',()=>setTimeout(()=>{const ae=document.activ
 document.addEventListener('touchmove',e=>{if(SPERRE==null)return;const sc=e.target.closest&&e.target.closest('#sheet .sh,#tour .tk');if(!sc||sc.scrollHeight<=sc.clientHeight)e.preventDefault()},{passive:false});
 new MutationObserver(modalSperre).observe(document.body,{childList:true});
 /* Tastatur auf dem iPhone: Fenster bleibt am sichtbaren unteren Rand (über der Tastatur) statt mit der Seite zu verrutschen */
-function vvSetzen(){const v=window.visualViewport;if(!v)return;const r=document.documentElement.style;r.setProperty('--vvb',Math.max(0,Math.round(innerHeight-v.height-v.offsetTop))+'px');r.setProperty('--vvh',Math.round(v.height)+'px')}
+function vvSetzen(){const v=window.visualViewport;if(!v)return;const r=document.documentElement.style;r.setProperty('--vvt',Math.max(0,Math.round(v.offsetTop))+'px');r.setProperty('--vvb',Math.max(0,Math.round(innerHeight-v.height-v.offsetTop))+'px');r.setProperty('--vvh',Math.round(v.height)+'px');document.documentElement.classList.toggle('tastatur',innerHeight-v.height>120)}
 if(window.visualViewport){visualViewport.addEventListener('resize',vvSetzen);visualViewport.addEventListener('scroll',vvSetzen);vvSetzen()}
 /* iPhone: Eingabefeld im Fenster nicht unter der Tastatur verschwinden lassen. Das Fenster selbst (.sh) scrollt das Feld
    in den sichtbaren Bereich – das iPhone versucht sonst die (gesperrte) Seite zu verschieben und das Feld bleibt verdeckt. */

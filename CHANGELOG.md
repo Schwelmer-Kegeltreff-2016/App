@@ -1,5 +1,12 @@
 # Änderungsliste – Schwelmer Kegeltreff App
 
+## 1.4.5 · 28.11.2026
+- **iPhone: Fenster sitzen jetzt direkt über der Tastatur** (Pinnwand-Textfeld war verdeckt). Das iPhone verschiebt beim
+  Antippen eines Felds die Ansicht (`visualViewport.offsetTop`); das Fenster hing bisher am unteren Seitenrand
+  (`bottom:var(--vvb)`) und lag dadurch unter der Tastatur. Neu: `#sheet` ist selbst ein fester Rahmen genau über dem
+  sichtbaren Bereich (`top:var(--vvt)`, `height:var(--vvh)`), `.sh` sitzt unten darin. Bei offener Tastatur
+  (`html.tastatur`) volle Höhe und kein Abstand für den Home-Balken.
+
 ## 1.4.4 · 28.11.2026
 - **Stil/Farbwelt wechseln springt nicht mehr nach oben.** `shell()` leert `#app`, dadurch ging die Scrollposition verloren,
   bevor `rerender()` sie merken konnte. Neu: `shellBleib()` merkt die Position vor `shell()` (genutzt bei Darstellung und Admin-Sperre).
