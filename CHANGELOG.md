@@ -1,5 +1,11 @@
 # Änderungsliste – Schwelmer Kegeltreff App
 
+## 1.4.4 · 28.11.2026
+- **Stil/Farbwelt wechseln springt nicht mehr nach oben.** `shell()` leert `#app`, dadurch ging die Scrollposition verloren,
+  bevor `rerender()` sie merken konnte. Neu: `shellBleib()` merkt die Position vor `shell()` (genutzt bei Darstellung und Admin-Sperre).
+- **Pinnwand (und alle Fenster): Eingabefeld nicht mehr unter der Tastatur.** `feldZeigen()` scrollt das Fenster (`#sheet .sh`)
+  so, dass das fokussierte Feld über der Tastatur steht (bei `focusin` nach 60/350/700 ms und bei `visualViewport`-resize).
+
 ## 1.4.3 · 28.11.2026
 - **iPhone (iOS 26): Untere Leiste löste sich beim Scrollen vom Rand und wanderte mit.** Ursache ist ein WebKit-Fehler
   mit `position:fixed`, sobald das ganze Dokument scrollt. Lösung: Dokument (`html`,`body`) scrollt nie mehr, gescrollt

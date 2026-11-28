@@ -297,8 +297,8 @@ body.unten nav button span{opacity:0}
    Schwelmer Kegeltreff – Vereins-App
    Code: öffentliches Repo „App“ (GitHub Pages) · Daten: privates Repo „App-Daten“ (data/*.json)
    ========================================================= */
-const APP_VERSION='1.4.3';
-const APP_NEU='📱 iPhone: Untere Leiste bleibt jetzt wirklich unten (kein Mitscrollen mehr)';
+const APP_VERSION='1.4.4';
+const APP_NEU='📱 iPhone: Leiste bleibt unten, Stilwechsel ohne Hochspringen, Pinnwand-Textfeld nicht mehr unter der Tastatur';
 const OWNER='Schwelmer-Kegeltreff-2016', REPO='App-Daten', BRANCH='main';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -486,7 +486,7 @@ async function pwHash(pw,saltB64,iter){const salt=Uint8Array.from(atob(saltB64),
  return btoa(String.fromCharCode(...new Uint8Array(bits)))}
 function adminAuf(){lsSet('kt_admin_bis',String(Date.now()+ADMIN_MIN*60000));ADMIN_WAR=true}
 document.addEventListener('pointerdown',()=>{if(adminOffen())adminAuf()},true);
-setInterval(()=>{if(ADMIN_WAR&&!adminOffen()){ADMIN_WAR=false;lsDel('kt_admin_bis');if(S.verein&&$('#app header')){closeSheet();shell();rerender();toast('🔒 Admin-Bereich automatisch gesperrt',4000)}}},15000);
+setInterval(()=>{if(ADMIN_WAR&&!adminOffen()){ADMIN_WAR=false;lsDel('kt_admin_bis');if(S.verein&&$('#app header')){closeSheet();shellBleib();toast('🔒 Admin-Bereich automatisch gesperrt',4000)}}},15000);
 const strafen=()=>S.verein?.strafen||DEFAULT_STRAFEN;
 const termineSorted=()=>[...(S.termine?.termine||[])].sort((a,b)=>a.datum.localeCompare(b.datum));
 const T=id=>S.termine?.termine.find(t=>t.id===id);
@@ -621,7 +621,17 @@ new MutationObserver(modalSperre).observe(document.body,{childList:true});
 /* Tastatur auf dem iPhone: Fenster bleibt am sichtbaren unteren Rand (über der Tastatur) statt mit der Seite zu verrutschen */
 function vvSetzen(){const v=window.visualViewport;if(!v)return;const r=document.documentElement.style;r.setProperty('--vvb',Math.max(0,Math.round(innerHeight-v.height-v.offsetTop))+'px');r.setProperty('--vvh',Math.round(v.height)+'px')}
 if(window.visualViewport){visualViewport.addEventListener('resize',vvSetzen);visualViewport.addEventListener('scroll',vvSetzen);vvSetzen()}
+/* iPhone: Eingabefeld im Fenster nicht unter der Tastatur verschwinden lassen. Das Fenster selbst (.sh) scrollt das Feld
+   in den sichtbaren Bereich – das iPhone versucht sonst die (gesperrte) Seite zu verschieben und das Feld bleibt verdeckt. */
+function feldZeigen(){const ae=document.activeElement;if(!ae||!/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))return;const sh=ae.closest('#sheet .sh');if(!sh)return;
+ const v=window.visualViewport,r=ae.getBoundingClientRect(),s=sh.getBoundingClientRect();
+ const unten=Math.min(s.bottom,v?v.offsetTop+v.height:innerHeight)-16,oben=Math.max(s.top,v?v.offsetTop:0)+16;
+ if(r.bottom>unten)sh.scrollTop+=Math.min(r.bottom-unten,r.top-oben);else if(r.top<oben)sh.scrollTop-=oben-r.top}
+document.addEventListener('focusin',e=>{if(!e.target.closest||!e.target.closest('#sheet'))return;[60,350,700].forEach(t=>setTimeout(()=>{vvSetzen();feldZeigen()},t))});
+if(window.visualViewport)visualViewport.addEventListener('resize',()=>requestAnimationFrame(feldZeigen));
 document.addEventListener('scroll',e=>{if(e.target!==SCR())return;if(!navZustand._r){navZustand._r=requestAnimationFrame(()=>{navZustand._r=0;navZustand()})}},{passive:true,capture:true});
+/* Kopf + Leiste neu zeichnen, ohne nach oben zu springen (shell() leert #app → Scrollposition ginge sonst verloren) */
+function shellBleib(){const y=appY();shell();render();const a=SCR();if(a)a.scrollTop=y}
 function rerender(){if(SPERRE!=null){render();return}const y=appY();render();const a=SCR();if(a)a.scrollTop=y}
 let afterHooks=[];function after(){const h=afterHooks;afterHooks=[];h.forEach(f=>f())}
 const terminOpts=(sel,filter=()=>true)=>kegelTermine().filter(filter).map(t=>`<option value="${t.id}" ${t.id===sel?'selected':''}>${fmtD(t.datum)}${t.status==='ausgefallen'?' (ausgefallen)':t.status==='abgeschlossen'?' ✓':''}</option>`).join('');
@@ -635,7 +645,7 @@ act.adminPruefen=async()=>{const a=adminCfg(),el=$('#ap'),pw=el?.value||'';if(!p
  let h='';try{h=await pwHash(pw,a.salt,a.iter||150000)}catch(e){return toast('⚠ Prüfung nicht möglich: '+e.message,5000)}
  if(h!==a.hash){el.value='';el.focus();vib();return toast('Falsches Passwort')}
  adminAuf();closeSheet();shell();const w=window._adminWeiter;window._adminWeiter=null;rerender();toast('🔓 Admin-Bereich offen – sperrt nach '+ADMIN_MIN+' Min. ohne Tippen',3500);if(w)w()};
-act.adminSperren=()=>{lsDel('kt_admin_bis');ADMIN_WAR=false;shell();rerender();toast('🔒 Admin-Bereich gesperrt')};
+act.adminSperren=()=>{lsDel('kt_admin_bis');ADMIN_WAR=false;shellBleib();toast('🔒 Admin-Bereich gesperrt')};
 act.adminSetzen=()=>{const neu=!adminCfg();if(!neu&&!adminOffen())return act.adminLogin(act.adminSetzen);if(neu&&!darfEinrichten())return toast('Das Passwort kann nur ein Admin festlegen.');
  sheet(`<h3>${neu?'Admin-Passwort festlegen':'Admin-Passwort ändern'}</h3><p class="muted small" style="margin-top:0">Mindestens 10 Zeichen. Gespeichert wird nur ein verschlüsselter Prüfwert – das Passwort selbst steht nirgends.${neu?' Danach gilt: Admin ist, wer dieses Passwort kennt.':''}</p>
  <label>Neues Passwort</label><input id="ap1" type="password" autocomplete="new-password"><label>Wiederholen</label><input id="ap2" type="password" autocomplete="new-password" onkeydown="if(event.key==='Enter')act.adminSpeichern()">
@@ -645,7 +655,7 @@ act.adminSpeichern=async()=>{const p1=$('#ap1').value,p2=$('#ap2').value,neu=!ad
  if(neu?!darfEinrichten():!adminOffen())return toast('Keine Berechtigung');
  const salt=btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16)))),iter=150000,hash=await pwHash(p1,salt,iter);
  closeSheet();try{await saveVerein(d=>{d.admin={salt,iter,hash,gesetzt:new Date().toISOString(),von:S.me}},'Admin-Passwort '+(neu?'festgelegt':'geändert'))}catch(e){return toast('⚠ '+e.message,5000)}
- adminAuf();shell();rerender();toast('✓ Admin-Passwort gespeichert',3000)};
+ adminAuf();shellBleib();toast('✓ Admin-Passwort gespeichert',3000)};
 act.syncJetzt=async()=>{toast(S.offline?'Versuche zu verbinden…':'Speichere…');await flushOutbox();if(lsGet('kt_abend_dirty'))await speichereAbend();syncAnzeige();if(!OUT.list.length&&!lsGet('kt_abend_dirty'))toast('✓ Alles hochgeladen')};
 
 /* ---------------- TERMINE ---------------- */
@@ -2058,7 +2068,7 @@ function applyTheme(){const st=stilAktiv(),fa=farbeWahl(),de=document.documentEl
  const href=SCHRIFT[st]?'https://fonts.googleapis.com/css2?family='+SCHRIFT[st]+'&display=swap':'';if(href&&l.getAttribute('href')!==href)l.href=href;
  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=st==='vereinsheim'?'#F3F4F6':st==='flutlicht'?'#0E0F12':fa==='rw'?'#0E2240':'#0A0A0A'}
 function slogan(){const sp=THEMES[themeAktiv()]?.sprueche;if(!sp)return'';const d=new Date(),doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);return sp[doy%sp.length]}
-const neuZeichnen=()=>{applyTheme();if($('#app header')){shell();rerender()}};
+const neuZeichnen=()=>{applyTheme();if($('#app header'))shellBleib()};
 act.stil=k=>{lsSet('kt_stil',k);neuZeichnen();toast(STILE[k].name)};
 act.farbe=k=>{lsSet('kt_farbe',k);neuZeichnen();toast(FARBEN[k].name)};
 act.hellDunkel=()=>{lsSet('kt_stil',stilAktiv()==='flutlicht'?'vereinsheim':'flutlicht');neuZeichnen()};
